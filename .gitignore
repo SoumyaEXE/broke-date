@@ -1,0 +1,28 @@
+# private data: never committed
+data/real/
+out/real/
+brokedate-private/
+*.pdf
+*.sqlite
+*.sqlite3
+*.db
+*.xls
+*.xlsx
+
+# generated
+out/*
+!out/.gitkeep
+web/public/demo/
+web/dist/
+web/node_modules/
+engine/.venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+*.egg-info/
+.env
+.env.*
+.tabpfn_models/

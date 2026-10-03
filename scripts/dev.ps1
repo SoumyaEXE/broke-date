@@ -1,0 +1,38 @@
+# Windows task runner mirroring the Makefile:  .\scripts\dev.ps1 <target> [args...]
+param([Parameter(Position = 0)][string]$Target = "help", [Parameter(ValueFromRemainingArguments = $true)]$Rest)
+$ErrorActionPreference = "Stop"
+. "$PSScriptRoot\env.ps1"
+$repo = Split-Path -Parent $PSScriptRoot
+Set-Location $repo
+
+function Uv { & uv --project engine @args; if ($LASTEXITCODE) { exit $LASTEXITCODE } }
+function Bd { Uv run brokedate @args }
+function Web { Push-Location web; try { & pnpm @args; if ($LASTEXITCODE) { exit $LASTEXITCODE } } finally { Pop-Location } }
+
+switch ($Target) {
+    "setup" {
+        Uv sync
+        Copy-Item scripts/hooks/pre-commit .git/hooks/pre-commit -Force
+        if (Test-Path web/package.json) { Web install }
+    }
+    "sim" { Uv run python scripts/simulate_statement.py --seed 13 --out data/sim }
+    "lint" { Uv run ruff check engine scripts; Uv run ruff format --check engine scripts }
+    "fmt" { Uv run ruff format engine scripts; Uv run ruff check --fix engine scripts }
+    "types" { Uv run mypy engine/brokedate }
+    "test" { Uv run pytest engine/tests @Rest }
+    "offline" { Uv run pytest engine/tests --disable-socket --allow-hosts=127.0.0.1,localhost,::1 @Rest }
+    "check" {
+        Uv run ruff check engine scripts
+        Uv run mypy engine/brokedate
+        Uv run pytest engine/tests -m "not slow and not ollama" --disable-socket --allow-hosts=127.0.0.1,localhost,::1
+        if (Test-Path web/package.json) { Web run typecheck; Web run test }
+    }
+    "engine" { Bd serve @Rest }
+    "web" { Web run dev }
+    "demo" { Bd export-demo @Rest; Web run build:demo }
+    "pocket" { Bd export-pocket @Rest }
+    "bench" { Bd bench @Rest }
+    "backtest" { Bd backtest @Rest }
+    "post-numbers" { Bd post-numbers @Rest }
+    default { "targets: setup sim lint fmt types test offline check engine web demo pocket bench backtest post-numbers" }
+}

@@ -1,0 +1,158 @@
+{
+  "persona": {
+    "city_tier": 2,
+    "city_label": "tier-2 city, West Bengal (illustrative)",
+    "start": "2025-10-01",
+    "end": "2026-09-30",
+    "opening_balance": 640,
+    "allowance_sender": "SANCHITA DAS",
+    "allowance_day": 1,
+    "allowance_jitter_days": 3,
+    "phases": [
+      [
+        "2025-10-01",
+        "2026-03-20",
+        2500,
+        true,
+        "class 12 + boards"
+      ],
+      [
+        "2026-03-21",
+        "2026-07-31",
+        3000,
+        false,
+        "post-boards break"
+      ],
+      [
+        "2026-08-01",
+        "2026-09-30",
+        4000,
+        true,
+        "first year college"
+      ]
+    ],
+    "exams": [
+      [
+        "2025-12-01",
+        "2025-12-12"
+      ],
+      [
+        "2026-02-16",
+        "2026-03-20"
+      ]
+    ],
+    "festivals": {
+      "Durga Puja": [
+        "2025-09-28",
+        "2025-10-02"
+      ],
+      "Kali Puja / Diwali": [
+        "2025-10-19",
+        "2025-10-21"
+      ],
+      "Christmas": [
+        "2025-12-23",
+        "2025-12-26"
+      ],
+      "New Year": [
+        "2025-12-31",
+        "2026-01-01"
+      ],
+      "Saraswati Puja": [
+        "2026-01-22",
+        "2026-01-23"
+      ],
+      "Holi": [
+        "2026-03-03",
+        "2026-03-04"
+      ],
+      "Poila Baishakh": [
+        "2026-04-14",
+        "2026-04-15"
+      ]
+    },
+    "broke_rupees": 150
+  },
+  "prices_rupees": {
+    "toto": [
+      10,
+      20
+    ],
+    "auto": [
+      15,
+      40
+    ],
+    "bus": [
+      10,
+      20
+    ],
+    "chai": [
+      10,
+      20
+    ],
+    "canteen": [
+      30,
+      80
+    ],
+    "street_food": [
+      30,
+      90
+    ],
+    "delivery": [
+      140,
+      340
+    ],
+    "grocery_snacks": [
+      60,
+      260
+    ],
+    "movie": [
+      150,
+      260
+    ],
+    "cafe": [
+      120,
+      380
+    ],
+    "mall": [
+      180,
+      550
+    ],
+    "outing_fest": [
+      250,
+      900
+    ],
+    "split": [
+      40,
+      250
+    ],
+    "shopping": [
+      250,
+      900
+    ],
+    "game_topup": [
+      49,
+      79,
+      99,
+      149,
+      199
+    ],
+    "xerox": [
+      10,
+      120
+    ],
+    "haircut": [
+      80,
+      150
+    ],
+    "data_pack": [
+      19,
+      29,
+      49
+    ],
+    "recharge": 349,
+    "recharge_every": 28
+  },
+  "seed": 13,
+  "note": "SIMULATED. Not a real person's data."
+}

@@ -1,0 +1,49 @@
+# Copy to ~/.brokedate/config.toml. Every tunable lives here.
+
+[general]
+timezone = "Asia/Kolkata"
+data_dir = "~/.brokedate"           # overridden by $BROKEDATE_DATA_DIR (Windows dev: D:\...\brokedate-private)
+currency_symbol = "₹"
+
+[subject.subarna]
+anchor_mode = "allowance"          # allowance | irregular
+anchor_sender_pattern = ""         # filled after anchor confirmation in the UI
+irregular_min_income_rupees = 0     # used only when anchor_mode = "irregular"
+
+[forecast]
+broke_line_rupees = 150
+risk_tolerance = 0.10
+n_futures = 500
+n_futures_interactive = 250
+seed = 20261002
+quantile_grid = 99                  # linspace(0.01, 0.99, 99)
+anchor_to_direct_model = true
+calibration_k_min = 0.7
+calibration_k_max = 1.6
+safe_spend_precision_rupees = 10
+
+[tabpfn]
+device = "cpu"
+n_estimators = 2                    # measured in M0: ~11 ms per predicted row on the i3 (NOTES.md)
+model_version = "v2"                # v2 is ungated; v2.6/v3.5 need TABPFN_TOKEN
+fit_mode = "fit_with_cache"         # verified option name in tabpfn 9.1.0
+
+
+[gemma]
+enabled = true
+model = "gemma3:4b"                 # VERIFY with `ollama list`; use the smallest Gemma that writes well
+ollama_url = "http://127.0.0.1:11434"
+batch_size = 20
+temperature = 0
+confidence_threshold = 0.6
+letter_language = "Benglish"
+letter_max_attempts = 3
+
+[calendar]
+festivals_file = "config/festivals_kolkata.toml"
+
+[eval]
+# authoritative values live in docs/PREREGISTRATION.md once frozen
+stride_days = 2
+n_futures_eval = 200
+bootstrap_reps = 2000

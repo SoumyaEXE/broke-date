@@ -1,0 +1,10 @@
+#!/bin/sh
+# Installed into .git/hooks by `scripts/dev.ps1 setup` / `make setup`.
+root="$(git rev-parse --show-toplevel)"
+for py in "$root/engine/.venv/Scripts/python.exe" "$root/engine/.venv/bin/python" python3 python; do
+  if [ -x "$py" ] || command -v "$py" >/dev/null 2>&1; then
+    exec "$py" "$root/scripts/hooks/block_private.py"
+  fi
+done
+echo "pre-commit: no python found, refusing to commit unchecked" >&2
+exit 1
