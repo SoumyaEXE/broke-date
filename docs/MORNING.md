@@ -46,6 +46,21 @@ Pick the demo date so the story works: 2026-09-20 puts Durga Puja ~4 weeks out a
 last-year comparison) inside the 60-day heads-up window. Check `insights.json` has at least one unusual spend;
 if not, say "nothing unusual" honestly in the post rather than changing thresholds.
 
+## 3b. Subarna's real data (the biggest single improvement; start it EARLY, the backtest takes ~45 min)
+
+1. **Freeze the pre-registration first** (CLAUDE.md: needs your explicit OK). Review docs/PREREGISTRATION.md, then
+   commit it alone as `docs(prereg): freeze evaluation contract`. Only after that may anything run on real data.
+2. Put his statement in `D:\HACKTOBER WEEK - 1\brokedate-private\` (never in the repo; the pre-commit hook blocks it).
+3. Import and backtest (pick a short subject name, e.g. `subarna`):
+
+```powershell
+uv --project engine run --no-sync brokedate import "D:\HACKTOBER WEEK - 1\brokedate-private\<file>" -s subarna
+uv --project engine run --no-sync brokedate backtest -s subarna          # ~45 min on CPU: run it while you record
+uv --project engine run --no-sync brokedate share-card -s subarna --name Subarna   # relative-only, safe to quote
+```
+
+4. Do docs/FRIEND_INTERVIEW.md with him (10 min). His words + the share card replace the `[[...]]` in "What I Built".
+
 ## 4. Web build + checks
 
 ```powershell

@@ -6,6 +6,7 @@ import { Chip } from "@/components/base/badges/chip";
 import type { BacktestSummary, CI } from "../types";
 import type { DataProvider } from "../data/provider";
 import { Panel, Row, Rows, Tile, duo } from "./kit";
+import { TimeMachine } from "./TimeMachine";
 
 const NAMES: Record<string, [string, string]> = {
   M1: ["TabPFN (this app)", "full method"],
@@ -41,6 +42,7 @@ export function GradePage({ provider }: { provider: DataProvider }) {
         {sim ? "Sample student. " : ""}Tested like a real forecast: each day was predicted using only the days before it, under rules written down before any results.
       </div>
       <StatCards variant="footer" stats={stats} />
+      <TimeMachine provider={provider} />
       <Panel title="TabPFN against simpler methods" sub="Lower error is better. Small grey numbers are the 90% uncertainty range." icon={SealCheck} flush>
         <Table aria-label="Backtest results">
           <TableHeader>

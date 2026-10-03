@@ -36,6 +36,7 @@ And then it does the things a good friend would:
 - 🚨 **It notices the weird ones.** [[f: one real flagged example from the simulated demo, e.g. "₹X at Y when spends like it are usually ₹A–₹B"]] gets flagged as unusual, with the usual range drawn next to it.
 - 🪔 **It knows Durga Puja is coming.** *"Durga Puja starts in [[f: days]] days. Last time that week cost you [[f: extra]] more than a normal stretch."*
 - ✉️ **Once a week, a letter from a future that went broke**, written by Gemma: *"Bhai, I'm writing from the 27th…"*. Funny, a bit haunting, and every number in it is real.
+- ⏪ **A time machine for his own months.** Pick any past month and watch what Broke Date would have said every other day, using only the days before it, against the day the money actually ran out. It shows when it was right, when it was late, and when it cried wolf.
 
 **Nothing leaves his laptop.** Not the statement, not the chat, not the letter. [[Confirm once recorded: "I recorded the demo with Wi-Fi switched off."]]
 
@@ -50,6 +51,7 @@ Want to click around yourself? There's a **sample-data preview** that runs entir
 [[Screenshot 1: Overview dashboard: safe to spend, futures that make it, balance this month vs last.]]
 [[Screenshot 2: Ask: "Can I afford a ₹400 movie on Saturday?" with the answer card.]]
 [[Screenshot 3: Insights: unusual spends with their usual range, Puja heads-up.]]
+[[Screenshot 4: Time machine: a month that ran out, the warning line crossed days before the orange "ran out" line, and the calibration chart next to it.]]
 
 > The preview and the video use a **simulated** student (a generator I wrote that produces a realistic Kolkata-style UPI statement). Subarna's real statement only ever lived on his laptop.
 
@@ -124,7 +126,8 @@ Before running any evaluation, I committed the rules to the repo ([[link to PRER
 On the simulated student (12 months, 138 evaluated days, 10 complete months, 5 of which ran out before payday):
 
 <!-- source: out/backtest/sim/summary.json -->
-- Broke Date warned about running out on average **11.4 days ahead**, and it **never missed** a month that went broke (0 of 5).
+- Five of those months really ran out. Broke Date warned ahead of time in **4 of the 5** (27, 21, 5 and 4 days before); in the fifth, the warning came only on the day itself. Averaged over all five, that's **11.4 days of notice**. It also cried wolf in 2 months that made it.
+- Its probabilities are **good at the extremes and too timid in the middle**: when it said ~5% the month ran out 17% of the time, when it said ~94% it was 90%, but when it said ~33% it actually happened 79% of the time. You can see this in the app's calibration chart. <!-- source: web/public/demo/replay.json (brokedate.eval.replay, from the same backtest) -->
 - Its error predicting "will I go broke before payday?" (Brier score, lower is better) was **0.207** (90% range 0.104–0.323).
 - Simple methods: "keep spending like the last 14 days" scored **0.441**, "copy last month" **0.340**, and a LightGBM model inside the same simulator **0.248**.
 
@@ -134,7 +137,7 @@ I also have to say the honest part. By the rules I set myself, **the differences
 
 <!-- source: out/backtest/sim/summary.json; SIMULATED persona -->
 
-| Model | Brier ↓ (90% CI) | CRPS ₹ ↓ | 80% range held | Warned ahead | Missed |
+| Model | Brier ↓ (90% CI) | CRPS ₹ ↓ | 80% range held | Days of notice (avg) | No warning at all |
 |---|---|---|---|---|---|
 | **TabPFN simulation (the app)** | **0.207** (0.104–0.323) | 249 | 75% | 11.4 days | 0 / 5 |
 | TabPFN, no anchoring | 0.304 (0.200–0.413) | 241 | 90% | 13.4 days | 0 / 5 |

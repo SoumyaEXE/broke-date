@@ -1,5 +1,5 @@
 import type {
-  BacktestSummary, ForecastResponse, ImportReport, Insights, LabelsReport, LetterResponse, PlanRow, ReviewRow, Settings,
+  BacktestSummary, ForecastResponse, ImportReport, Insights, LabelsReport, LetterResponse, PlanRow, Replay, ReviewRow, Settings,
 } from "../types";
 import { Lattice, madeIt, meanRunway, percentileBand, rollout, safeToSpend, type SimPlan } from "../lib/sim";
 import { addDays } from "../lib/format";
@@ -19,6 +19,7 @@ export interface DataProvider {
   backtest(): Promise<BacktestSummary | null>;
   insights(): Promise<Insights | null>;
   labels(): Promise<LabelsReport | null>;
+  replay(): Promise<Replay | null>;
   settings(): Promise<Settings>;
   saveSettings(s: Partial<Settings>): Promise<Settings>;
   importFile?(f: File, subject: string): Promise<ImportReport>;
@@ -103,6 +104,9 @@ export class LiveProvider implements DataProvider {
   }
   async labels() {
     try { return await j<LabelsReport>(fetch(`${API}/labels?subject=${this.subject}`)); } catch { return null; }
+  }
+  async replay() {
+    try { return await j<Replay>(fetch(`${API}/replay?subject=${this.subject}`)); } catch { return null; }
   }
   settings() { return j<Settings>(fetch(`${API}/settings`)); }
   saveSettings(s: Partial<Settings>) {
@@ -223,6 +227,9 @@ export class StaticProvider implements DataProvider {
   }
   async labels() {
     try { return await j<LabelsReport>(fetch(`${this.root}labels.json`)); } catch { return null; }
+  }
+  async replay() {
+    try { return await j<Replay>(fetch(`${this.root}replay.json`)); } catch { return null; }
   }
   async settings() { return this.settingsState; }
   async saveSettings(s: Partial<Settings>) { this.settingsState = { ...this.settingsState, ...s }; return this.settingsState; }

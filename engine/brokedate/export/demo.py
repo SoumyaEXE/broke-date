@@ -67,6 +67,11 @@ def export_demo(as_of: date, out: Path = DEMO_DIR, letter: bool = True) -> dict[
         bt = REPO_ROOT / "out" / "backtest" / "sim" / "summary.json"
         if bt.exists():
             shutil.copy(bt, out / "backtest.json")
+        po = bt.parent / "per_origin.jsonl"
+        if po.exists():
+            from brokedate.eval.replay import build_replay, load_origins
+
+            (out / "replay.json").write_text(json.dumps(build_replay(load_origins(po))), encoding="utf-8")
         lab = REPO_ROOT / "out" / "labels" / "sim.json"
         if lab.exists():
             shutil.copy(lab, out / "labels.json")

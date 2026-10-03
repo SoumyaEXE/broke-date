@@ -135,3 +135,11 @@ export interface ReviewRow {
   merchant: string | null; category: string | null; counterparty: string | null; label_source: string;
   confidence: number | null;
 }
+
+export interface ReplayDay { date: string; p: number; p_B3?: number; p_B1?: number }
+export interface ReplayMonth {
+  cycle: number; start: string; payday: string; days: ReplayDay[]; broke_day: string | null; went_broke: boolean;
+  first_warning: string | null; lead_days: number | null; false_alarm: boolean;
+}
+export interface CalibBin { lo: number; hi: number; n: number; mean_p: number; observed: number }
+export interface Replay { threshold: number; model: string; n_days: number; months: ReplayMonth[]; calibration: Record<string, CalibBin[]> }

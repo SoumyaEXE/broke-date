@@ -137,6 +137,24 @@ def eval_labels(labels: Path = typer.Argument(None), subject: str = typer.Option
     _say(f"wrote {dest}")
 
 
+@app.command("share-card")
+def share_card_cmd(subject: str = typer.Option(..., "--subject", "-s"), name: str = typer.Option("my friend")) -> None:
+    """What the backtest on a real statement can say in public: counts and days only, no amounts/dates/merchants."""
+    from brokedate.eval.replay import load_origins
+    from brokedate.export.share_card import share_card, to_markdown
+
+    base = out_dir(subject) / "backtest" / subject
+    if not (base / "summary.json").is_file():
+        raise typer.BadParameter(f"no backtest for {subject!r} yet: run `brokedate backtest -s {subject}` first")
+    card = share_card(json.loads((base / "summary.json").read_text(encoding="utf-8")), load_origins(base / "per_origin.jsonl"))
+    md = to_markdown(card, name)
+    dest = out_dir(subject) / "share" / f"{subject}.md"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(md + "\n", encoding="utf-8")
+    _say(md)
+    _say(f"\nwrote {dest} (relative numbers only; ask {name} before publishing)")
+
+
 @app.command("eval-chat")
 def eval_chat(language: str = typer.Option("English")) -> None:
     """Gemma reliability: how often each model's chat draft passes the number guards, and how fast it is."""

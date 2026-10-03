@@ -325,6 +325,18 @@ def get_insights(subject: str) -> dict[str, Any]:
     return dict(cache[key])
 
 
+@app.get("/replay")
+def get_replay(subject: str) -> dict[str, Any]:
+    """Time machine + calibration, regrouped from the backtest's own per-day records."""
+    from brokedate.cli import out_dir
+    from brokedate.eval.replay import build_replay, load_origins
+
+    f = out_dir(subject) / "backtest" / subject / "per_origin.jsonl"
+    if not f.is_file():
+        raise HTTPException(404, "no backtest yet")
+    return build_replay(load_origins(f))
+
+
 @app.get("/labels")
 def get_labels(subject: str) -> dict[str, Any]:
     """Categorization accuracy report written by `brokedate eval-labels` (rules vs TabPFN vs Gemma)."""
