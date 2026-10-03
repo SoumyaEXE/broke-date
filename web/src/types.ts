@@ -53,12 +53,29 @@ export interface Scenario {
 export interface ForecastResponse {
   as_of: string; subject: string; seed: number; n_futures: number; horizon_days: number;
   next_anchor_date: string; next_anchor_known: boolean; broke_line_paise: number; balance_now_paise: number;
-  safe_to_spend_paise: number; nothing_safe: boolean; risk_tolerance: number; risk_now: number;
+  safe_to_spend_paise: number; nothing_safe: boolean; marginal_spend_paise?: number; risk_tolerance: number; risk_now: number;
   safe_curve: SafePoint[]; p_make_it: number; n_make_it: number; broke_day: BrokeDay | null;
   runway_days_mean: number; paths: Paths; band: Band; similar_month: SimilarMonth | null; plans: PlanRow[];
   plan_scenarios: Record<string, Scenario>; recent: RecentRow[]; facts: Record<string, Fact>;
   fact_ids: Record<string, string>; model: ModelInfo; sim?: SimState | null;
   demo?: { simulated: boolean; note: string };
+  context?: DashboardContext | null;
+}
+
+export interface GroupSpend {
+  group: string; spent_paise: number; typical_paise: number | null; n_txns: number; categories: string[];
+  top: { category: string; spent_paise: number; typical_paise: number | null }[];
+}
+export interface TxnRow {
+  id: string; date: string; merchant: string; category: string | null; direction: string; amount_paise: number;
+  status: string; label_source: string | null; is_anchor: boolean;
+}
+export interface DashboardContext {
+  cycle: { start: string; day_in_cycle: number; anchor_paise: number; spent_paise: number;
+    typical_spent_paise: number | null; avg_daily_14d_paise: number; groups: GroupSpend[]; n_past_cycles: number };
+  balance_compare: { this: number[]; last: { start: string; balances_paise: number[]; label: string } | null };
+  recurring: { name: string; amount_paise: number; period_days: number; next_date: string; last_date: string; n_seen: number }[];
+  transactions: TxnRow[];
 }
 
 export interface LetterSegment { type: "text" | "fact"; text: string; fact_id?: string }

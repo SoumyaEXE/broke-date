@@ -100,6 +100,7 @@ class ForecastResponse(BaseModel):
     balance_now_paise: int
     safe_to_spend_paise: int
     nothing_safe: bool
+    marginal_spend_paise: int = 0
     risk_tolerance: float
     risk_now: float
     safe_curve: list[SafePoint]
@@ -117,6 +118,7 @@ class ForecastResponse(BaseModel):
     fact_ids: dict[str, str]
     model: ModelInfo
     sim: dict[str, Any] | None = None
+    context: dict[str, Any] | None = None
 
 
 class LetterResponse(BaseModel):

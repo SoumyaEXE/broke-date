@@ -11,6 +11,7 @@ import numpy as np
 
 from brokedate import __version__
 from brokedate.forecast import engine as fe
+from brokedate.forecast.context import dashboard_context
 from brokedate.forecast.facts import Facts
 from brokedate.forecast.similar import similar_month
 from brokedate.sim.events import Plan
@@ -93,6 +94,7 @@ def build_forecast(p: fe.Prepared, plans: list[Plan], subject: str, include_latt
         "next_anchor_date": str(p.next_anchor), "next_anchor_known": p.anchor_known,
         "broke_line_paise": p.cfg.broke_line_paise, "balance_now_paise": int(round(p.si.bal0 * 100)),
         "safe_to_spend_paise": int(round(sts["safe_rupees"] * 100)), "nothing_safe": sts["nothing_safe"],
+        "marginal_spend_paise": int(round(sts.get("marginal_rupees", 0.0) * 100)),
         "risk_tolerance": p.cfg.forecast.risk_tolerance, "risk_now": sts["risk_now"],
         "safe_curve": [{"spend_paise": int(round(s * 100)), "p_broke": r} for s, r in sts["curve"]],
         "p_make_it": summ["p_make_it"], "n_make_it": summ["n_make_it"], "broke_day": summ["broke_day"],
@@ -106,6 +108,7 @@ def build_forecast(p: fe.Prepared, plans: list[Plan], subject: str, include_latt
                   "timings_s": {**{k: round(v, 2) for k, v in p.timings.items()}, "outputs": round(t_outputs, 2)},
                   "history_from": str(p.led.first_day), "history_to": str(min(p.led.last_day, p.as_of))},
     }
+    resp["context"] = dashboard_context(p.led, p.as_of)
     if include_lattice:
         resp["sim"] = export_sim_state(p)
     return ForecastBundle(p, resp, facts)

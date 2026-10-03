@@ -4,8 +4,8 @@ import { inr, shortDate } from "../lib/format";
 
 interface Props { data: ForecastResponse; prev: ForecastResponse | null }
 
-const MADE = [15, 118, 110];
-const BROKE = [217, 72, 15];
+const MADE = [124, 92, 252];
+const BROKE = [249, 115, 22];
 const ANIM_MS = 600;
 
 function ease(t: number) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
@@ -98,7 +98,7 @@ export default function FuturesCanvas({ data, prev }: Props) {
         const broke = fb >= 1 && fb <= H;
         const end = broke ? fb : H;
         const col = broke ? BROKE : MADE;
-        ctx.strokeStyle = `rgba(${col[0]},${col[1]},${col[2]},${broke ? 0.16 : 0.08})`;
+        ctx.strokeStyle = `rgba(${col[0]},${col[1]},${col[2]},${broke ? 0.2 : 0.09})`;
         ctx.beginPath();
         const src = from ? from.paths.balances_paise[i] : null;
         for (let t = 0; t <= end; t++) {

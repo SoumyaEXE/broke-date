@@ -214,7 +214,18 @@ def safe_to_spend(p: Prepared, plans: list[Plan]) -> dict[str, Any]:
     risks = np.maximum.accumulate([c[1] for c in curve])
     curve = [(s, float(r)) for (s, _), r in zip(curve, risks, strict=True)]
     if r0 > tol:
-        return {"safe_rupees": 0.0, "nothing_safe": True, "risk_now": r0, "curve": curve, "iterations": 0}
+        # nothing is safe at the user's tolerance; also report what keeps today's risk within +2 points
+        lo, up = 0.0, hi
+        for _ in range(20):
+            if up - lo <= prec:
+                break
+            mid = (lo + up) / 2
+            if risk(mid) <= r0 + 0.02:
+                lo = mid
+            else:
+                up = mid
+        return {"safe_rupees": 0.0, "nothing_safe": True, "risk_now": r0, "curve": curve, "iterations": 0,
+                "marginal_rupees": float(np.floor(lo / prec) * prec)}
     if risk(hi) <= tol:
         return {"safe_rupees": float(np.floor(hi / prec) * prec), "nothing_safe": False, "risk_now": r0,
                 "curve": curve, "iterations": 1}
