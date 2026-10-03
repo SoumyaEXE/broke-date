@@ -58,7 +58,9 @@ def chat_messages(question: str, facts: list[dict[str, str]], template: str, ver
     user = (f"Question: {question}\n"
             + (f"Verdict from the simulation: {verdict}\n" if verdict else "")
             + (f"Facts (placeholders only):\n{lines}\n" if lines else "No numeric facts for this question.\n")
-            + f"A correct but plain reply, for reference only: {template}\n\nWrite your reply now.")
+            + f"A correct but plain reply, for reference only: {template}\n\n"
+            "Say the same thing in your own words, like a friend texting back. Do not copy the reference sentence. "
+            "Write your reply now.")
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 

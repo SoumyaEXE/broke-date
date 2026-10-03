@@ -7,6 +7,8 @@ import logging
 import shutil
 import tempfile
 import threading
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -36,7 +38,35 @@ from brokedate.service import NoDataError, default_as_of, load_ledger, load_plan
 
 log = logging.getLogger(__name__)
 
-app = FastAPI(title="Broke Date", version=__version__)
+def _warm() -> None:
+    """Prepare the newest subject's forecast (TabPFN fits take about a minute on CPU) and load the chat Gemma into
+    RAM, so the first page view and the first chat reply are quick. Failures only log: the app works without it."""
+    try:
+        cfg, db = cfg_db()
+        subjects = db.subjects()
+        if subjects:
+            _latest(subjects[0])
+            log.info("warm: forecast ready for %s", subjects[0])
+        if cfg.gemma.enabled:
+            from brokedate.narrate.chat import pick_chat_model
+
+            client = OllamaClient(cfg.gemma.ollama_url, cfg.gemma.model, cfg.gemma.timeout_s)
+            model = pick_chat_model(cfg, client.available_models())
+            if model:
+                for _ in client.chat_stream([{"role": "user", "content": "Reply with: ok"}], num_predict=2, model=model):
+                    pass
+                log.info("warm: %s loaded", model)
+    except Exception as e:  # pragma: no cover - best effort
+        log.warning("warm-up skipped: %s", e)
+
+
+@asynccontextmanager
+async def _lifespan(_: FastAPI) -> AsyncIterator[None]:
+    threading.Thread(target=_warm, name="warm", daemon=True).start()
+    yield
+
+
+app = FastAPI(title="Broke Date", version=__version__, lifespan=_lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
                    allow_methods=["*"], allow_headers=["*"])
 
