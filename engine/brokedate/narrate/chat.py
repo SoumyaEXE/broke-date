@@ -7,6 +7,7 @@ letter validator, otherwise the UI keeps the template reply."""
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from typing import Any
 
@@ -14,8 +15,8 @@ import psutil
 
 from brokedate.config import Config
 from brokedate.enrich.gemma import OllamaClient, OllamaError
-from brokedate.narrate.tone import LANGUAGE_NOTES
 from brokedate.narrate.templates import lang_key
+from brokedate.narrate.tone import LANGUAGE_NOTES
 from brokedate.narrate.validate import PLACEHOLDER, has_digit, validate
 
 CHAT_TONE = """\
@@ -26,6 +27,7 @@ Use ONLY the facts given. Do not add new facts, advice or numbers that are not i
 """
 
 CHAT_PREFERENCE = ("gemma3:4b", "gemma3:1b", "gemma3:270m", "gemma2:2b")
+_PARTIAL_TAIL = re.compile(r"\{f?\d*$")
 
 
 def pick_chat_model(cfg: Config, installed: list[str]) -> str | None:
@@ -84,7 +86,8 @@ def stream_reply(cfg: Config, question: str, facts: list[dict[str, str]], templa
                                         temperature=0.6, num_predict=160, model=model):
             buf += piece
             # live guard: a digit anywhere outside a placeholder ends the stream immediately
-            if has_digit(buf):
+            # (an unfinished placeholder at the very end, e.g. "{f1", is not a digit yet)
+            if has_digit(_PARTIAL_TAIL.sub("", buf)):
                 yield {"type": "done", "ok": False, "text": buf, "problems": ["wrote a digit"]}
                 return
             yield {"type": "token", "text": piece}

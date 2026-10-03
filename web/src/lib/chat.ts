@@ -56,10 +56,15 @@ export function parseDate(q: string, asOf: string): string | null {
   return null;
 }
 
+const NOT_A_THING = /^(it|that|this|something|today|tomorrow|tonight|weekend|(mon|tues|wednes|thurs|fri|satur|sun)day|next .*|this .*)$/i;
+
 function thing(q: string): string {
+  // "₹400 movie", "400 rs biryani": the noun right after the amount is the best guess
+  const a = q.match(/(?:₹|rs\.?|inr)?\s?\d[\d,]*(?:\s?(?:rs|rupees?))?\s+(?:for\s+|on\s+)?(?:a |an |the |some )?([a-z][a-z &'-]{2,24}?)(?:\s+(?:on|for|this|next|tomorrow|today|at)\b|[?.!,]|$)/i);
+  if (a?.[1] && !NOT_A_THING.test(a[1].trim())) return a[1].trim();
   const m = q.match(/(?:afford|buy|get|go (?:for|to)|spend\s+\S+\s+on|on)\s+(?:a |an |the |some )?([a-z][a-z +&'-]{2,28}?)(?:\s+(?:for|on|this|next|tomorrow|today|at|worth|of)\b|[?.!,]|$)/i);
   const t = m?.[1]?.trim();
-  if (!t || /^\d/.test(t) || /^(it|that|this|something|today|tomorrow)$/i.test(t)) return "this";
+  if (!t || /^\d/.test(t) || NOT_A_THING.test(t)) return "this";
   return t.length > 26 ? t.slice(0, 26) : t;
 }
 
@@ -129,7 +134,7 @@ export class Brain {
     } else {
       const v = c.verdict;
       segs.push({ t: v === "yes" ? "Yes. " : v === "tight" ? "Doable, but tight. " : "I'd hold off. ", tone: v === "yes" ? "good" : v === "tight" ? "brand" : "bad" },
-        { t: `I reran your ${n} futures with ${inr(amountPaise)} ${what === "this" ? "" : `on ${what} `}on ${dow(date)} ${shortDate(date)}. ` },
+        { t: `I reran your ${n} futures with ${what === "this" ? inr(amountPaise) : `a ${inr(amountPaise)} ${what}`} on ${dow(date)}, ${shortDate(date)}. ` },
         { t: `${c.afterMade} of ${n}`, tone: "num" }, { t: " still make it to payday" },
         { t: lost > 0 ? ` (${lost} fewer)` : " (no change)", tone: lost > 0 ? "bad" : "good" },
         { t: `, and it costs ` }, { t: days(cost), tone: "num" }, { t: " of runway on your own money. " });
@@ -208,4 +213,57 @@ export class Brain {
     return { intent: "help", segs: [{ t: "Ask me things like " }, { t: "\"can I afford ₹400 movie on Saturday?\"", tone: "brand" }, { t: ", " }, { t: "\"when will I go broke?\"", tone: "brand" }, { t: " or " }, { t: "\"what if I skip the earphones?\"", tone: "brand" }, { t: ". I answer by rerunning your futures, so every number is simulated, not guessed." }],
       follow: ["How much is safe today?", "Can I afford ₹300 on Saturday?", "How do you work?"] };
   }
+}
+
+/* ---------------- grounding for Gemma ----------------
+ * Turn a simulated answer into (a) facts {fN} -> exact value text, (b) a template with every number replaced by its
+ * placeholder. Gemma only ever sees the template and short descriptions, never a value (same contract as the letter).
+ */
+export interface GroundFact { id: string; text: string; desc: string; tone?: Seg["tone"] }
+export interface Grounded { template: string; facts: GroundFact[]; verdict: string | null }
+
+const NUM = /₹\s?[\d,]+(?:\.\d+)?|\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s(?:days?|futures?|months?)|\d{1,2}(?:st|nd|rd|th)\s[A-Z][a-z]{2,3}|\d+(?:\s?\/\s?\d+)?(?:\.\d+)?/g;
+
+function describe(before: string, value: string): string {
+  const ctx = before.replace(/\{f\d+\}/g, "").trim().split(/\s+/).slice(-7).join(" ");
+  const kind = value.includes("₹") ? "amount" : value.includes("%") ? "percentage" : /day/.test(value) ? "number of days"
+    : /[A-Z][a-z]{2}/.test(value) ? "date" : "count";
+  return ctx ? `${kind} after "${ctx}"` : kind;
+}
+
+export function ground(a: Answer): Grounded {
+  const facts: GroundFact[] = [];
+  let template = "";
+  const add = (value: string, tone?: Seg["tone"]) => {
+    const hit = facts.find((f) => f.text === value);
+    if (hit) return `{${hit.id}}`;
+    const id = `f${facts.length + 1}`;
+    facts.push({ id, text: value, desc: describe(template, value), tone });
+    return `{${id}}`;
+  };
+  for (const s of a.segs) {
+    if ((s.tone === "num" || s.tone === "good" || s.tone === "bad") && /\d/.test(s.t)) {
+      const [, lead, core, tail] = /^(\s*)([\s\S]*?)(\s*)$/.exec(s.t)!;
+      template += lead + add(core, s.tone) + tail;
+    }
+    else template += s.t.replace(NUM, (m) => add(m.trim()));
+  }
+  const v = a.card?.verdict;
+  const verdict = v === "yes" ? "comfortable: yes, they can afford it" : v === "tight" ? "doable but tight" : v === "no" ? "risky: better to hold off" : null;
+  return { template: template.replace(/\s+/g, " ").trim(), facts, verdict };
+}
+
+/** Split text that may contain {fN} placeholders into renderable parts; a half-streamed "{f" tail is held back. */
+export function splitPlaceholders(text: string, facts: GroundFact[]): Seg[] {
+  const out: Seg[] = [];
+  const clean = text.replace(/\{f?\d*$/, "");
+  let pos = 0;
+  for (const m of clean.matchAll(/\{(f\d+)\}/g)) {
+    if (m.index! > pos) out.push({ t: clean.slice(pos, m.index) });
+    const f = facts.find((x) => x.id === m[1]);
+    out.push(f ? { t: f.text, tone: f.tone ?? "num" } : { t: "" });
+    pos = m.index! + m[0].length;
+  }
+  if (pos < clean.length) out.push({ t: clean.slice(pos) });
+  return out;
 }

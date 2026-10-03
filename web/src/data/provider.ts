@@ -24,6 +24,33 @@ export interface DataProvider {
   saveReview?(rows: { id: string; category: string }[]): Promise<void>;
   confirmAnchors?(subject: string, ids: string[]): Promise<void>;
   health?(): Promise<Record<string, unknown>>;
+  /** Stream a Gemma-written reply for an already simulated answer (live engine only). */
+  chat?(body: ChatRequest, onEvent: (e: ChatEvent) => void, signal?: AbortSignal): Promise<void>;
+}
+
+export interface ChatRequest { question: string; template: string; facts: { id: string; desc: string }[]; verdict: string | null; language?: string }
+export type ChatEvent =
+  | { type: "start"; model: string }
+  | { type: "token"; text: string }
+  | { type: "done"; ok: boolean; text: string; problems: string[] }
+  | { type: "error"; message: string };
+
+/** Read an NDJSON response body line by line as it arrives. */
+export async function readNdjson(res: Response, onEvent: (e: ChatEvent) => void): Promise<void> {
+  const reader = res.body!.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let nl: number;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (line) onEvent(JSON.parse(line) as ChatEvent);
+    }
+  }
 }
 
 const API = "http://127.0.0.1:8787";
@@ -42,6 +69,11 @@ export class LiveProvider implements DataProvider {
   readonly mode = "live" as const;
   constructor(private subject: string) {}
   setSubject(s: string) { this.subject = s; }
+  async chat(body: ChatRequest, onEvent: (e: ChatEvent) => void, signal?: AbortSignal) {
+    const res = await fetch(`${API}/chat`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), signal });
+    if (!res.ok || !res.body) { onEvent({ type: "error", message: `engine returned ${res.status}` }); return; }
+    await readNdjson(res, onEvent);
+  }
   forecast() {
     return j<ForecastResponse>(fetch(`${API}/forecast`, { method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ subject: this.subject }) }));

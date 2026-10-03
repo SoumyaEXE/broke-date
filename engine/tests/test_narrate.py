@@ -65,3 +65,82 @@ def test_render_links_facts():
     out, segs = render("Safe {f1} and {f6}.", f)
     assert out == "Safe ₹420 and 2.1 days."
     assert [s["fact_id"] for s in segs if s["type"] == "fact"] == ["f1", "f6"]
+
+
+# ---- chat (Gemma rephrases a simulated answer, streamed) ----
+
+class _FakeChatClient:
+    def __init__(self, pieces: list[str], models: list[str] | None = None) -> None:
+        self.pieces = pieces
+        self.models = models if models is not None else ["gemma3:1b"]
+
+    def available_models(self) -> list[str]:
+        return self.models
+
+    def chat_stream(self, messages, temperature=0.6, seed=0, num_predict=200, model=None):  # noqa: ANN001
+        assert "{f1}" in messages[1]["content"] and "₹" not in messages[1]["content"].split("Facts")[1].split("A correct")[0]
+        yield from self.pieces
+
+
+_FACTS = [{"id": "f1", "desc": "amount you can safely spend today"}, {"id": "f2", "desc": "chance of going broke"}]
+
+
+def _run(pieces: list[str], models: list[str] | None = None) -> list[dict]:
+    from brokedate.config import Config
+    from brokedate.narrate.chat import stream_reply
+
+    return list(stream_reply(Config(), "how much can I spend?", _FACTS, "You can spend up to {f1} today.", "yes",
+                             "English", client=_FakeChatClient(pieces, models)))  # type: ignore[arg-type]
+
+
+def test_chat_streams_and_accepts_placeholders() -> None:
+    ev = _run(["Good news: ", "you can spend ", "{f1} today, ", "and the risk stays at {f2}."])
+    assert ev[0] == {"type": "start", "model": "gemma3:1b"}
+    assert [e["text"] for e in ev if e["type"] == "token"][2] == "{f1} today, "
+    assert ev[-1]["type"] == "done" and ev[-1]["ok"] is True
+
+
+def test_chat_cuts_stream_on_digit() -> None:
+    ev = _run(["You can spend ", "₹860 today", " and more text that must never arrive"])
+    assert ev[-1] == {"type": "done", "ok": False, "text": "You can spend ₹860 today", "problems": ["wrote a digit"]}
+    assert not any(e.get("text", "").startswith(" and more") for e in ev if e["type"] == "token")
+
+
+def test_chat_rejects_number_words_and_unknown_placeholders() -> None:
+    ev = _run(["You can spend about five hundred, ", "see {f9}."])
+    assert ev[-1]["ok"] is False and any("number words" in p for p in ev[-1]["problems"])
+    assert any("unknown placeholders" in p for p in ev[-1]["problems"])
+
+
+def test_chat_model_pick_prefers_small_on_low_ram(monkeypatch) -> None:  # noqa: ANN001
+    import psutil
+
+    from brokedate.config import Config
+    from brokedate.narrate.chat import pick_chat_model
+
+    class VM:
+        total = 4 * 2**30
+
+    monkeypatch.setattr(psutil, "virtual_memory", lambda: VM)
+    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b:latest"]) == "gemma3:1b"
+    VM.total = 16 * 2**30
+    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b"]) == "gemma3:4b"
+    assert pick_chat_model(Config(), ["llama3:8b"]) is None
+
+
+def test_chat_reports_offline_gemma() -> None:
+    from brokedate.config import Config
+    from brokedate.enrich.gemma import OllamaError
+    from brokedate.narrate.chat import stream_reply
+
+    class Down(_FakeChatClient):
+        def available_models(self) -> list[str]:
+            raise OllamaError("connection refused")
+
+    ev = list(stream_reply(Config(), "q", _FACTS, "t {f1}", None, "English", client=Down([])))  # type: ignore[arg-type]
+    assert ev == [{"type": "error", "message": "Gemma is offline (OllamaError)"}]
+
+
+def test_chat_guard_waits_for_placeholder_to_close() -> None:
+    ev = _run(["You can spend up to {", "f", "1", "} today."])
+    assert ev[-1]["ok"] is True and ev[-1]["text"] == "You can spend up to {f1} today."

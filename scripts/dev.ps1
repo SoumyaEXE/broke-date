@@ -28,6 +28,13 @@ switch ($Target) {
         if (Test-Path web/package.json) { Web run typecheck; Web run test }
     }
     "engine" { Bd serve @Rest }
+    "ollama" {
+        # local Gemma server: loopback only; models, keys and cache all under D:\devtools\ollama (nothing on C:)
+        $env:USERPROFILE = "D:\devtools\ollama\home"; $env:HOME = $env:USERPROFILE
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
+        New-Item -ItemType Directory -Force $env:USERPROFILE, $env:OLLAMA_MODELS | Out-Null
+        if ($Rest) { & ollama @Rest } else { & ollama serve }
+    }
     "web" { Web run dev }
     "demo" { Bd export-demo @Rest; Web run build:demo }
     "pocket" { Bd export-pocket @Rest }
