@@ -9,7 +9,7 @@ import {
   RiSparklingLine,
   RiStopFill,
 } from "@remixicon/react";
-import { useRef, type FormEvent, type KeyboardEvent } from "react";
+import { useRef, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 
 import { ComposerLoader } from "@/components/application/composer-loader/composer-loader";
 import { cx } from "@/utils/cx";
@@ -48,6 +48,8 @@ export interface AgentComposerProps {
   /** Hide the attachment button (apps with nothing to attach). */
   showAttach?: boolean;
   placeholder?: string;
+  /** Replaces the static model label, e.g. with a model picker. */
+  modelSlot?: ReactNode;
 }
 
 export function AgentComposer({
@@ -63,6 +65,7 @@ export function AgentComposer({
   showStatus = true,
   showAttach = true,
   placeholder = "Ask me anything",
+  modelSlot,
 }: AgentComposerProps) {
   const localize = useTemplateCopy();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -126,7 +129,7 @@ export function AgentComposer({
             className="h-5 min-w-0 flex-1 bg-transparent text-body-regular text-text-primary caret-text-primary outline-none placeholder:text-text-tertiary"
           />
 
-          {model ? (
+          {modelSlot ?? (model ? (
             <span
               // Static where the Pro composer puts its model picker: the model
               // is set by an env var, so there is nothing to switch at runtime.
@@ -136,7 +139,7 @@ export function AgentComposer({
               <RiSparklingLine className="size-4 shrink-0 text-foreground-icon-secondary" aria-hidden />
               <span className="hidden max-w-[13ch] truncate sm:inline">{shortModel(model)}</span>
             </span>
-          ) : null}
+          ) : null)}
 
           <div className="flex shrink-0 items-center gap-2 ps-1.5">
             {busy ? (

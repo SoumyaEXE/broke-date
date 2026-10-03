@@ -31,7 +31,7 @@ fit_mode = "fit_with_cache"         # verified option name in tabpfn 9.1.0
 
 [gemma]
 enabled = true
-model = "gemma3:4b"                 # VERIFY with `ollama list`; use the smallest Gemma that writes well
+model = "gemma3:1b"                 # lightest Gemma by default; 4b only when chosen and free RAM allows
 ollama_url = "http://127.0.0.1:11434"
 batch_size = 20
 temperature = 0

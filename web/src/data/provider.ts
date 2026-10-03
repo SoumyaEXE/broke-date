@@ -30,7 +30,7 @@ export interface DataProvider {
 
 export interface ChatRequest { question: string; template: string; facts: { id: string; desc: string }[]; verdict: string | null; language?: string }
 export type ChatEvent =
-  | { type: "start"; model: string }
+  | { type: "start"; model: string; note?: string }
   | { type: "token"; text: string }
   | { type: "done"; ok: boolean; text: string; problems: string[] }
   | { type: "error"; message: string };

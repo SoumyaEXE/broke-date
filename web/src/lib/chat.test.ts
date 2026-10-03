@@ -31,3 +31,27 @@ describe("splitPlaceholders", () => {
     expect(splitPlaceholders("You can spend {f1} today", facts).map((s) => s.t)).toEqual(["You can spend ", "₹860", " today"]);
   });
 });
+
+describe("chat can act on the workspace", () => {
+  const brain = new Brain(data);
+  it("switches a plan on by any word of its name", () => {
+    const a = brain.ask("turn on the movie");
+    expect(a.ops).toEqual([expect.objectContaining({ kind: "toggle", active: true, name: "Saturday movie + popcorn" })]);
+  });
+  it("adds a plan with amount and date", () => {
+    const a = brain.ask("Add momos ₹150 on 12th Sep to plans");
+    expect(a.ops?.[0]).toMatchObject({ kind: "add", plan: { amount_paise: 15000, date: "2026-09-12" } });
+  });
+  it("opens a tab", () => expect(brain.ask("open futures").ops).toEqual([{ kind: "go", route: "futures" }]));
+  it("changes the risk limit and remembers the old one", () => {
+    expect(brain.ask("set risk to 5%").ops?.[0]).toMatchObject({ kind: "settings", patch: { risk_tolerance: 0.05 }, before: { risk_tolerance: data.risk_tolerance } });
+  });
+  it("draws charts inline", () => {
+    expect(brain.ask("show the range").artifact).toBe("range");
+    expect(brain.ask("show my spending").artifact).toBe("spending");
+    expect(brain.ask("show where I land on payday").artifact).toBe("payday");
+  });
+  it("still answers what-ifs about a plan without changing it", () => {
+    expect(brain.ask("what if I skip the earphones?").ops).toBeUndefined();
+  });
+});

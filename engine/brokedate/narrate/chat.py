@@ -11,10 +11,8 @@ import re
 from collections.abc import Iterator
 from typing import Any
 
-import psutil
-
 from brokedate.config import Config
-from brokedate.enrich.gemma import OllamaClient, OllamaError
+from brokedate.enrich.gemma import OllamaClient, OllamaError, fits
 from brokedate.narrate.templates import lang_key
 from brokedate.narrate.validate import PLACEHOLDER, has_digit, validate
 
@@ -31,24 +29,23 @@ SHORT_LANG = {
     "bengali": "Write in Bengali script, casual and warm.",
 }
 
-CHAT_PREFERENCE = ("gemma3:4b", "gemma3:1b", "gemma3:270m", "gemma2:2b")
+# Lightest first: the default must never push a student laptop into swapping or crashing (see enrich.gemma).
+CHAT_PREFERENCE = ("gemma3:1b", "gemma3:270m", "gemma2:2b", "gemma3:4b")
 _PARTIAL_TAIL = re.compile(r"\{f?\d*$")
 _UNIT_AFTER = re.compile(r"\{f\d+\}\s*(?:days?|din|%|percent|futures?|months?)\b", re.I)
 
 
-def pick_chat_model(cfg: Config, installed: list[str]) -> str | None:
-    """Choose the Gemma that this machine can run quickly. 4b needs ~8 GB RAM; 1b runs on low-end laptops."""
+def pick_chat_model(cfg: Config, installed: list[str], requested: str | None = None) -> str | None:
+    """The model to use for a reply. "auto" is the lightest installed Gemma. A heavier model is used only when it
+    was asked for (here or in config) AND enough RAM is free right now; otherwise we fall back to the lightest."""
     have = {m.removesuffix(":latest") for m in installed}
-    if cfg.gemma.chat_model != "auto":
-        return cfg.gemma.chat_model if cfg.gemma.chat_model in have else None
-    ram_gb = psutil.virtual_memory().total / 2**30
+    want = requested or (cfg.gemma.chat_model if cfg.gemma.chat_model != "auto" else None)
+    if want and want in have and fits(want):
+        return want
     for tag in CHAT_PREFERENCE:
-        if tag == "gemma3:4b" and ram_gb < 7.5:
-            continue
-        if tag in have:
+        if tag in have and (tag != "gemma3:4b" or fits(tag)):
             return tag
-    gemmas = sorted(m for m in have if m.startswith("gemma"))
-    return gemmas[0] if gemmas else None
+    return None
 
 
 def chat_messages(question: str, facts: list[dict[str, str]], template: str, verdict: str | None,
@@ -73,21 +70,26 @@ def warm_messages(language: str) -> list[dict[str, str]]:
 
 
 def stream_reply(cfg: Config, question: str, facts: list[dict[str, str]], template: str, verdict: str | None,
-                 language: str | None = None, client: OllamaClient | None = None) -> Iterator[dict[str, Any]]:
+                 language: str | None = None, client: OllamaClient | None = None, model: str | None = None,
+                 ) -> Iterator[dict[str, Any]]:
     """Yield events: {"type": "start", "model"}, {"type": "token", "text"}, {"type": "done", "ok", "text",
     "problems"} or {"type": "error", "message"}. Text uses {fN} placeholders; the browser fills in values."""
     language = language or cfg.gemma.letter_language
     client = client or OllamaClient(cfg.gemma.ollama_url, cfg.gemma.model, cfg.gemma.timeout_s)
     known = {f["id"] for f in facts}
     try:
-        model = pick_chat_model(cfg, client.available_models())
+        requested = model
+        model = pick_chat_model(cfg, client.available_models(), requested)
     except OllamaError as e:
         yield {"type": "error", "message": f"Gemma is offline ({e.__class__.__name__})"}
         return
     if model is None:
         yield {"type": "error", "message": "No Gemma model installed. Run: ollama pull gemma3:1b"}
         return
-    yield {"type": "start", "model": model}
+    start: dict[str, Any] = {"type": "start", "model": model}
+    if requested and requested != model:
+        start["note"] = f"{requested} needs more free memory than this laptop has right now, so {model} wrote this."
+    yield start
     buf = ""
     try:
         for piece in client.chat_stream(chat_messages(question, facts, template, verdict, language),

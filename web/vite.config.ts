@@ -11,5 +11,6 @@ export default defineConfig(({ mode }) => ({
   define: { __DEMO__: JSON.stringify(mode === "demo") },
   server: { port: 5173, strictPort: true },
   build: { sourcemap: false, chunkSizeWarningLimit: 900 },
-  test: { environment: "node", include: ["src/**/*.test.ts"] },
+  // one forked process: the worker-thread pool crashed on Windows, and one process keeps memory flat
+  test: { environment: "node", include: ["src/**/*.test.ts"], pool: "forks", poolOptions: { forks: { singleFork: true } } },
 }));

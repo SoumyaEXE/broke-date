@@ -37,23 +37,59 @@ CATEGORY_HELP = {
 }
 
 FEW_SHOT = [  # simulated narrations only
-    ("UPI-BABLU SK-bablusk24@ybl-SBIN0016209-602273575436-Payment", "DEBIT", 1800,
-     {"merchant": "Bablu Sk (toto driver)", "category": "transport", "counterparty": "person", "confidence": 0.7}),
-    ("UPI-SAYAN MONDAL-sayan.mondal@okaxis-ICIC0DC0099-686510505038-Split", "DEBIT", 15000,
-     {"merchant": "Sayan Mondal", "category": "transfer_to_person", "counterparty": "person", "confidence": 0.9}),
-    ("UPI-SWIGGY-swiggy.payu@hdfcbank-HDFC0MERUPI-512479957284-Payment", "DEBIT", 23400,
-     {"merchant": "Swiggy", "category": "food_delivery", "counterparty": "merchant", "confidence": 0.98}),
-    ("UPI-MAA TARA TEA STALL-taratea87@ybl-HDFC0MERUPI-636248020515-Payment", "DEBIT", 1500,
-     {"merchant": "Maa Tara Tea Stall", "category": "campus_food", "counterparty": "merchant", "confidence": 0.9}),
-    ("UPI-RIK BANERJEE-rikb@ybl-UTIB0000553-610055512345-Return later", "CREDIT", 30000,
-     {"merchant": "Rik Banerjee", "category": "transfer_from_person", "counterparty": "person", "confidence": 0.9}),
-    ("UPI-GOPAL BAURI-gopalb51@ybl-YESB0YBLUPI-623456789012-Payment", "DEBIT", 2000,
-     {"merchant": "Gopal Bauri (likely driver/vendor)", "category": "transport", "counterparty": "person",
-      "confidence": 0.55}),
-    ("UPI-GOOGLE PLAY-playstore@axisbank-UTIB0000553-645678901234-Google Play", "DEBIT", 9900,
-     {"merchant": "Google Play", "category": "gaming", "counterparty": "merchant", "confidence": 0.9}),
-    ("UPI-LOCAL GARMENTS-garments42@ybl-SBIN0016209-656789012345-Payment", "DEBIT", 45000,
-     {"merchant": "Local Garments", "category": "shopping", "counterparty": "merchant", "confidence": 0.85}),
+    (
+        "UPI-BABLU SK-bablusk24@ybl-SBIN0016209-602273575436-Payment",
+        "DEBIT",
+        1800,
+        {"merchant": "Bablu Sk (toto driver)", "category": "transport", "counterparty": "person", "confidence": 0.7},
+    ),
+    (
+        "UPI-SAYAN MONDAL-sayan.mondal@okaxis-ICIC0DC0099-686510505038-Split",
+        "DEBIT",
+        15000,
+        {"merchant": "Sayan Mondal", "category": "transfer_to_person", "counterparty": "person", "confidence": 0.9},
+    ),
+    (
+        "UPI-SWIGGY-swiggy.payu@hdfcbank-HDFC0MERUPI-512479957284-Payment",
+        "DEBIT",
+        23400,
+        {"merchant": "Swiggy", "category": "food_delivery", "counterparty": "merchant", "confidence": 0.98},
+    ),
+    (
+        "UPI-MAA TARA TEA STALL-taratea87@ybl-HDFC0MERUPI-636248020515-Payment",
+        "DEBIT",
+        1500,
+        {"merchant": "Maa Tara Tea Stall", "category": "campus_food", "counterparty": "merchant", "confidence": 0.9},
+    ),
+    (
+        "UPI-RIK BANERJEE-rikb@ybl-UTIB0000553-610055512345-Return later",
+        "CREDIT",
+        30000,
+        {"merchant": "Rik Banerjee", "category": "transfer_from_person", "counterparty": "person", "confidence": 0.9},
+    ),
+    (
+        "UPI-GOPAL BAURI-gopalb51@ybl-YESB0YBLUPI-623456789012-Payment",
+        "DEBIT",
+        2000,
+        {
+            "merchant": "Gopal Bauri (likely driver/vendor)",
+            "category": "transport",
+            "counterparty": "person",
+            "confidence": 0.55,
+        },
+    ),
+    (
+        "UPI-GOOGLE PLAY-playstore@axisbank-UTIB0000553-645678901234-Google Play",
+        "DEBIT",
+        9900,
+        {"merchant": "Google Play", "category": "gaming", "counterparty": "merchant", "confidence": 0.9},
+    ),
+    (
+        "UPI-LOCAL GARMENTS-garments42@ybl-SBIN0016209-656789012345-Payment",
+        "DEBIT",
+        45000,
+        {"merchant": "Local Garments", "category": "shopping", "counterparty": "merchant", "confidence": 0.85},
+    ),
 ]
 
 ITEM_SCHEMA = {
@@ -67,8 +103,11 @@ ITEM_SCHEMA = {
     },
     "required": ["i", "merchant", "category", "counterparty", "confidence"],
 }
-BATCH_SCHEMA = {"type": "object", "properties": {"items": {"type": "array", "items": ITEM_SCHEMA}},
-                "required": ["items"]}
+BATCH_SCHEMA = {
+    "type": "object",
+    "properties": {"items": {"type": "array", "items": ITEM_SCHEMA}},
+    "required": ["items"],
+}
 
 
 @dataclass
@@ -83,11 +122,41 @@ class OllamaError(RuntimeError):
     pass
 
 
+# Free RAM (not total) each model needs before we load it, with headroom for TabPFN and the browser. A student
+# laptop must never be pushed into swapping or a crash by the app: if a model does not fit right now we use the
+# lightest one that does, and if none fits, Gemma is skipped and callers fall back to their checked templates.
+NEEDS_FREE_GB = {"gemma3:4b": 5.0, "gemma2:2b": 3.0, "gemma3:1b": 1.5, "gemma3:270m": 0.8}
+LIGHT_MODELS = ("gemma3:1b", "gemma3:270m")
+KEEP_ALIVE = "5m"  # unload soon after the last request, giving the RAM back
+
+
+def free_gb() -> float:
+    import psutil
+
+    return float(psutil.virtual_memory().available) / 2**30
+
+
+def fits(model: str) -> bool:
+    return free_gb() >= NEEDS_FREE_GB.get(model.removesuffix(":latest"), 3.0)
+
+
 class OllamaClient:
     def __init__(self, url: str, model: str, timeout_s: float = 240.0) -> None:
         self.url = url.rstrip("/")
         self.model = model
         self.timeout = timeout_s
+
+    def safe_model(self, model: str | None = None) -> str:
+        """The requested model if it fits in free RAM right now, else the lightest installed one that does."""
+        want = model or self.model
+        if fits(want):
+            return want
+        have = {m.removesuffix(":latest") for m in self.available_models()}
+        for tag in LIGHT_MODELS:
+            if tag in have and fits(tag):
+                log.warning("not enough free RAM for %s (%.1f GB free); using %s", want, free_gb(), tag)
+                return tag
+        raise OllamaError(f"not enough free memory to run Gemma right now ({free_gb():.1f} GB free)")
 
     def available_models(self) -> list[str]:
         try:
@@ -100,13 +169,25 @@ class OllamaClient:
     def ensure_model(self) -> None:
         models = self.available_models()
         if self.model not in models and f"{self.model}:latest" not in models:
-            raise OllamaError(f"Gemma model {self.model!r} not found in Ollama (have: {models}). "
-                              f"Run: ollama pull {self.model}")
+            raise OllamaError(
+                f"Gemma model {self.model!r} not found in Ollama (have: {models}). Run: ollama pull {self.model}"
+            )
 
-    def chat(self, messages: list[dict[str, str]], fmt: Any = None, temperature: float = 0.0,
-             seed: int = 0, num_predict: int = 2048) -> tuple[str, dict[str, Any]]:
-        body: dict[str, Any] = {"model": self.model, "messages": messages, "stream": False,
-                                "options": {"temperature": temperature, "seed": seed, "num_predict": num_predict}}
+    def chat(
+        self,
+        messages: list[dict[str, str]],
+        fmt: Any = None,
+        temperature: float = 0.0,
+        seed: int = 0,
+        num_predict: int = 2048,
+    ) -> tuple[str, dict[str, Any]]:
+        body: dict[str, Any] = {
+            "model": self.safe_model(),
+            "messages": messages,
+            "stream": False,
+            "keep_alive": KEEP_ALIVE,
+            "options": {"temperature": temperature, "seed": seed, "num_predict": num_predict},
+        }
         if fmt is not None:
             body["format"] = fmt
         try:
@@ -117,12 +198,22 @@ class OllamaClient:
         data = r.json()
         return data["message"]["content"], data
 
-    def chat_stream(self, messages: list[dict[str, str]], temperature: float = 0.6, seed: int = 0,
-                    num_predict: int = 200, model: str | None = None) -> Iterator[str]:
+    def chat_stream(
+        self,
+        messages: list[dict[str, str]],
+        temperature: float = 0.6,
+        seed: int = 0,
+        num_predict: int = 200,
+        model: str | None = None,
+    ) -> Iterator[str]:
         """Yield content pieces as Ollama generates them (stream=true returns one JSON object per line)."""
-        body: dict[str, Any] = {"model": model or self.model, "messages": messages, "stream": True,
-                                "keep_alive": "30m",
-                                "options": {"temperature": temperature, "seed": seed, "num_predict": num_predict}}
+        body: dict[str, Any] = {
+            "model": self.safe_model(model),
+            "messages": messages,
+            "stream": True,
+            "keep_alive": KEEP_ALIVE,
+            "options": {"temperature": temperature, "seed": seed, "num_predict": num_predict},
+        }
         try:
             with httpx.stream("POST", f"{self.url}/api/chat", json=body, timeout=self.timeout) as r:
                 r.raise_for_status()
@@ -141,8 +232,10 @@ class OllamaClient:
 
 def _prompt(rows: list[tuple[str, str, int]]) -> list[dict[str, str]]:
     cats = "\n".join(f"- {k}: {v}" for k, v in CATEGORY_HELP.items())
-    shots = "\n".join(f"{json.dumps({'narration': n, 'direction': d, 'amount_rupees': a / 100})} -> {json.dumps(o)}"
-                      for n, d, a, o in FEW_SHOT)
+    shots = "\n".join(
+        f"{json.dumps({'narration': n, 'direction': d, 'amount_rupees': a / 100})} -> {json.dumps(o)}"
+        for n, d, a, o in FEW_SHOT
+    )
     system = (
         "You label Indian bank statement lines for a student's personal budget app. For each line return the "
         "merchant (clean human name), one category, the counterparty type and your confidence 0..1. "
@@ -150,12 +243,11 @@ def _prompt(rows: list[tuple[str, str, int]]) -> list[dict[str, str]]:
         "driver/vendor and the note does not say.\nCategories:\n" + cats + "\nExamples:\n" + shots
     )
     items = [{"i": i, "narration": n, "direction": d, "amount_rupees": a / 100} for i, (n, d, a) in enumerate(rows)]
-    user = "Label these lines. Return {\"items\": [...]} with one entry per input index.\n" + json.dumps(items)
+    user = 'Label these lines. Return {"items": [...]} with one entry per input index.\n' + json.dumps(items)
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
-def label_batch(client: OllamaClient, rows: list[tuple[str, str, int]], temperature: float = 0.0
-                ) -> list[Label | None]:
+def label_batch(client: OllamaClient, rows: list[tuple[str, str, int]], temperature: float = 0.0) -> list[Label | None]:
     content, _ = client.chat(_prompt(rows), fmt=BATCH_SCHEMA, temperature=temperature)
     return parse_batch_response(content, len(rows))
 

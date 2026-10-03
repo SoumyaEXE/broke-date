@@ -115,20 +115,40 @@ def test_chat_rejects_number_words_and_unknown_placeholders() -> None:
     assert any("unknown placeholders" in p for p in ev[-1]["problems"])
 
 
-def test_chat_model_pick_prefers_small_on_low_ram(monkeypatch) -> None:  # noqa: ANN001
+class _VM:
+    available = 2 * 2**30
+
+
+def test_chat_model_defaults_to_lightest_and_respects_free_ram(monkeypatch) -> None:  # noqa: ANN001
     import psutil
 
     from brokedate.config import Config
     from brokedate.narrate.chat import pick_chat_model
 
-    class VM:
-        total = 4 * 2**30
-
-    monkeypatch.setattr(psutil, "virtual_memory", lambda: VM)
-    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b:latest"]) == "gemma3:1b"
-    VM.total = 16 * 2**30
-    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b"]) == "gemma3:4b"
+    monkeypatch.setattr(psutil, "virtual_memory", lambda: _VM)
+    _VM.available = 12 * 2**30
+    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b:latest"]) == "gemma3:1b"  # auto = lightest, always
+    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b"], "gemma3:4b") == "gemma3:4b"  # asked + fits
+    _VM.available = 3 * 2**30
+    assert pick_chat_model(Config(), ["gemma3:4b", "gemma3:1b"], "gemma3:4b") == "gemma3:1b"  # asked, no room
+    assert pick_chat_model(Config(), ["gemma3:4b"]) is None  # only a heavy model and no room: skip Gemma
     assert pick_chat_model(Config(), ["llama3:8b"]) is None
+
+
+def test_ollama_client_never_loads_a_model_that_does_not_fit(monkeypatch) -> None:  # noqa: ANN001
+    import psutil
+    import pytest
+
+    from brokedate.enrich.gemma import OllamaClient, OllamaError
+
+    monkeypatch.setattr(psutil, "virtual_memory", lambda: _VM)
+    c = OllamaClient("http://127.0.0.1:11434", "gemma3:4b")
+    monkeypatch.setattr(c, "available_models", lambda: ["gemma3:4b", "gemma3:1b"])
+    _VM.available = 2 * 2**30
+    assert c.safe_model() == "gemma3:1b"
+    _VM.available = 1 * 2**30
+    with pytest.raises(OllamaError, match="not enough free memory"):
+        c.safe_model()
 
 
 def test_chat_reports_offline_gemma() -> None:

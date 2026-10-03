@@ -41,7 +41,7 @@ class TabPFNCfg:
 @dataclass
 class GemmaCfg:
     enabled: bool = True
-    model: str = "gemma3:4b"
+    model: str = "gemma3:1b"  # lightest by default; heavier only by choice and only when RAM is free
     ollama_url: str = "http://127.0.0.1:11434"
     batch_size: int = 20
     temperature: float = 0.0

@@ -32,6 +32,8 @@ switch ($Target) {
         # local Gemma server: loopback only; models, keys and cache all under D:\devtools\ollama (nothing on C:)
         $env:USERPROFILE = "D:\devtools\ollama\home"; $env:HOME = $env:USERPROFILE
         $env:OLLAMA_HOST = "127.0.0.1:11434"
+        # never more than one model or one request in RAM at a time; unload after 5 idle minutes
+        $env:OLLAMA_MAX_LOADED_MODELS = "1"; $env:OLLAMA_NUM_PARALLEL = "1"; $env:OLLAMA_KEEP_ALIVE = "5m"
         New-Item -ItemType Directory -Force $env:USERPROFILE, $env:OLLAMA_MODELS | Out-Null
         if ($Rest) { & ollama @Rest } else { & ollama serve }
     }

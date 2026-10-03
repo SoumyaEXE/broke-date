@@ -1,54 +1,91 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarPlus, Cpu, NotePencil, Sparkle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CalendarPlus, ChatsCircle, CheckCircle, Cpu, NotePencil, Sparkle, Trash, XCircle } from "@phosphor-icons/react";
 import { AgentComposer } from "@/components/application/agent-chat/agent-composer";
 import { AgentMessage } from "@/components/application/agent-chat/agent-chat-message";
 import { AgentThinking } from "@/components/application/agent-thinking/agent-thinking";
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { cx } from "@/utils/cx";
-import type { ForecastResponse } from "../types";
+import type { ForecastResponse, PlanRow, Settings } from "../types";
 import type { DataProvider } from "../data/provider";
-import { Brain, ground, splitPlaceholders, type Answer, type Grounded, type ScenarioCard } from "../lib/chat";
+import { Brain, ground, splitPlaceholders, type Answer, type Grounded, type Op, type ScenarioCard } from "../lib/chat";
+import { shortDate } from "../lib/format";
 import { duo } from "./kit";
+import { ChatArtifact } from "./ChatArtifact";
+import { ModelPicker, type ModelChoice } from "./ModelPicker";
+import type { Route } from "../App";
 
 type Bot = {
   id: number; role: "bot"; at: number; a: Answer; g: Grounded;
   text: string;                       // reply so far, with {fN} placeholders
   status: "thinking" | "streaming" | "done";
   source: "gemma" | "template"; model?: string; note?: string;
+  applied?: "working" | "done" | "undone" | "failed"; snapshot?: PlanRow;
 };
 type Msg = { id: number; role: "user"; text: string; at: number } | Bot;
+type Thread = { id: string; title: string; updatedAt: number; msgs: Msg[] };
 
 const STARTERS = [
   "Can I afford a ₹400 movie on Saturday?",
-  "How much can I spend today?",
-  "When would I run out?",
+  "Show the range",
   "Where did my money go?",
-  "How does this work?",
+  "Add momos ₹150 on Friday to plans",
+  "When would I run out?",
 ];
+const STORE = "brokedate:chats:v1";
+const MODEL_STORE = "brokedate:chat-model";
 
-export function AskPage({ data, provider, question, onAddPlan }: {
+/* Chats are a per-browser convenience: kept in this browser only, never sent anywhere. */
+function loadThreads(): Thread[] {
+  try {
+    const t = JSON.parse(localStorage.getItem(STORE) ?? "[]") as Thread[];
+    return t.map((th) => ({ ...th, msgs: th.msgs.map((m) => (m.role === "bot" && m.status !== "done" ? { ...m, status: "done" as const } : m)) }));
+  } catch { return []; }
+}
+function saveThreads(t: Thread[]) { try { localStorage.setItem(STORE, JSON.stringify(t.slice(0, 30))); } catch { /* storage off: chats just aren't kept */ } }
+const newId = () => `c${Date.now().toString(36)}`;
+
+export function AskPage({ data, provider, question, onUpdate, onSettings, go }: {
   data: ForecastResponse | null; provider: DataProvider; question: { q: string; n: number } | null;
-  onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void;
+  onUpdate: (fn: () => Promise<ForecastResponse>) => Promise<void>;
+  onSettings: (patch: Partial<Settings>) => Promise<void>;
+  go: (r: Route) => void;
 }) {
   const brain = useMemo(() => { try { return data?.sim ? new Brain(data) : null; } catch { return null; } }, [data]);
-  const [msgs, setMsgs] = useState<Msg[]>([]);
+  const [threads, setThreads] = useState<Thread[]>(loadThreads);
+  const [activeId, setActiveId] = useState<string>(() => newId());
   const [text, setText] = useState("");
   const [under, setUnder] = useState(false);
   const [language, setLanguage] = useState<string | undefined>();
+  const [installed, setInstalled] = useState<string[]>([]);
+  const [model, setModel] = useState<ModelChoice>(() => { try { return (localStorage.getItem(MODEL_STORE) as ModelChoice) || "auto"; } catch { return "auto"; } });
   const scroller = useRef<HTMLDivElement>(null);
   const abort = useRef<AbortController | null>(null);
   const typer = useRef<number | null>(null);
   const seen = useRef<number | null>(null);
+  const dataRef = useRef(data);
+  dataRef.current = data;
+  const live = !!provider.chat;
   const n = data?.n_futures ?? 500;
+
+  const thread = threads.find((t) => t.id === activeId);
+  const msgs = thread?.msgs ?? [];
   const busy = msgs.some((m) => m.role === "bot" && m.status !== "done");
 
   useEffect(() => { void provider.settings().then((s) => setLanguage(s.letter_language)).catch(() => undefined); }, [provider]);
+  useEffect(() => { if (provider.health) void provider.health().then((h) => setInstalled((h.models as string[]) ?? [])).catch(() => undefined); }, [provider]);
+  useEffect(() => { saveThreads(threads); }, [threads]);
+  useEffect(() => { try { localStorage.setItem(MODEL_STORE, model); } catch { /* ignore */ } }, [model]);
 
-  const patch = (id: number, p: Partial<Bot>) => setMsgs((ms) => ms.map((m) => (m.id === id && m.role === "bot" ? { ...m, ...p } : m)));
-  const append = (id: number, piece: string) => setMsgs((ms) => ms.map((m) => (m.id === id && m.role === "bot" ? { ...m, text: m.text + piece, status: "streaming" } : m)));
+  const mutate = (fn: (ms: Msg[]) => Msg[], title?: string) => setThreads((ts) => {
+    const cur = ts.find((t) => t.id === activeId);
+    const next: Thread = cur ? { ...cur, msgs: fn(cur.msgs), updatedAt: Date.now() } : { id: activeId, title: title ?? "New chat", updatedAt: Date.now(), msgs: fn([]) };
+    return [next, ...ts.filter((t) => t.id !== activeId)];
+  });
+  const patch = (id: number, p: Partial<Bot>) => mutate((ms) => ms.map((m) => (m.id === id && m.role === "bot" ? { ...m, ...p } : m)));
+  const append = (id: number, piece: string) => mutate((ms) => ms.map((m) => (m.id === id && m.role === "bot" ? { ...m, text: m.text + piece, status: "streaming" } : m)));
 
-  /** Reveal the checked template word by word (demo, or when Gemma is offline / its draft was rejected). */
+  /** Reveal the checked answer word by word (demo, "No AI words", or when Gemma is offline / its draft was rejected). */
   const typeOut = (id: number, template: string, note?: string) => {
     const words = template.split(/(\s+)/);
     let i = 0;
@@ -57,7 +94,39 @@ export function AskPage({ data, provider, question, onAddPlan }: {
       i += 2;
       patch(id, { text: words.slice(0, i).join("") });
       if (i >= words.length) { window.clearInterval(typer.current!); patch(id, { status: "done" }); }
-    }, 32);
+    }, 28);
+  };
+
+  /** Carry out what the user asked the chat to change, so the dashboard updates too. */
+  const apply = async (id: number, ops: Op[]) => {
+    patch(id, { applied: "working" });
+    try {
+      for (const op of ops) {
+        if (op.kind === "toggle") await onUpdate(() => provider.togglePlan(op.planId, op.active));
+        else if (op.kind === "add") await onUpdate(() => provider.addPlan(op.plan));
+        else if (op.kind === "remove") {
+          patch(id, { snapshot: dataRef.current?.plans.find((p) => p.id === op.planId) });
+          await onUpdate(() => provider.removePlan(op.planId));
+        } else if (op.kind === "settings") await onSettings(op.patch);
+        else if (op.kind === "go") window.setTimeout(() => go(op.route), 700);
+      }
+      patch(id, { applied: "done" });
+    } catch { patch(id, { applied: "failed" }); }
+  };
+  const undo = async (m: Bot) => {
+    try {
+      for (const op of [...(m.a.ops ?? [])].reverse()) {
+        if (op.kind === "toggle") await onUpdate(() => provider.togglePlan(op.planId, !op.active));
+        else if (op.kind === "add") {
+          const p = dataRef.current?.plans.find((x) => x.name === op.plan.name && x.date === op.plan.date && x.amount_paise === op.plan.amount_paise);
+          if (p) await onUpdate(() => provider.removePlan(p.id));
+        } else if (op.kind === "remove" && m.snapshot) {
+          const s = m.snapshot;
+          await onUpdate(() => provider.addPlan({ name: s.name, amount_paise: s.amount_paise, date: s.date }));
+        } else if (op.kind === "settings") await onSettings(op.before);
+      }
+      patch(m.id, { applied: "undone" });
+    } catch { patch(m.id, { applied: "failed" }); }
   };
 
   const send = (q: string) => {
@@ -67,16 +136,18 @@ export function AskPage({ data, provider, question, onAddPlan }: {
     const a = brain.ask(t);            // the real work: TabPFN futures rerun in the browser, milliseconds
     const g = ground(a);
     const id = now + 1;
-    setMsgs((m) => [...m, { id: now, role: "user", text: t, at: now },
-      { id, role: "bot", at: now, a, g, text: "", status: "thinking", source: "template" }]);
+    mutate((m) => [...m, { id: now, role: "user", text: t, at: now }, { id, role: "bot", at: now, a, g, text: "", status: "thinking", source: "template" }],
+      t.length > 48 ? `${t.slice(0, 46)}…` : t);
     setText("");
-    if (!provider.chat) { window.setTimeout(() => typeOut(id, g.template), 380); return; }
+    if (a.ops?.length) void apply(id, a.ops);
+    if (!provider.chat || model === "none") { window.setTimeout(() => typeOut(id, g.template), 320); return; }
     const ctl = new AbortController();
     abort.current = ctl;
     let started = false;
-    provider.chat({ question: t, template: g.template, facts: g.facts.map(({ id: fid, desc }) => ({ id: fid, desc })), verdict: g.verdict, language },
+    provider.chat({ question: t, template: g.template, facts: g.facts.map(({ id: fid, desc }) => ({ id: fid, desc })), verdict: g.verdict, language,
+      ...(model !== "auto" ? { model } : {}) },
       (e) => {
-        if (e.type === "start") { started = true; patch(id, { source: "gemma", model: e.model }); }
+        if (e.type === "start") { started = true; patch(id, { source: "gemma", model: e.model, ...(e.note ? { note: e.note } : {}) }); }
         else if (e.type === "token") append(id, e.text);
         else if (e.type === "done") {
           if (e.ok) patch(id, { text: e.text, status: "done" });
@@ -87,61 +158,99 @@ export function AskPage({ data, provider, question, onAddPlan }: {
   const stop = () => {
     abort.current?.abort();
     if (typer.current) window.clearInterval(typer.current);
-    setMsgs((ms) => ms.map((m) => (m.role === "bot" && m.status !== "done" ? { ...m, status: "done" } : m)));
+    mutate((ms) => ms.map((m) => (m.role === "bot" && m.status !== "done" ? { ...m, status: "done" } : m)));
   };
-  const reset = () => { stop(); setMsgs([]); setText(""); };
+  const newChat = () => { stop(); setActiveId(newId()); setText(""); };
+  const remove = (id: string) => { setThreads((ts) => ts.filter((t) => t.id !== id)); if (id === activeId) setActiveId(newId()); };
 
   useEffect(() => {
     if (question && brain && seen.current !== question.n) { seen.current = question.n; send(question.q); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question, brain]);
-  useEffect(() => { scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" }); }, [msgs]);
+  useEffect(() => { scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" }); }, [msgs.length, msgs[msgs.length - 1]]);
   useEffect(() => () => { abort.current?.abort(); if (typer.current) window.clearInterval(typer.current); }, []);
 
-  const first = msgs.find((m): m is Extract<Msg, { role: "user" }> => m.role === "user");
   return (
-    <section className="relative flex min-h-[560px] flex-1 flex-col overflow-hidden rounded-3xl bg-background-secondary-default">
-      {/* BoardUI chat header: overlaid, transparent until the transcript scrolls under it, then frosted */}
-      <header className={cx("absolute inset-x-0 top-0 z-10 flex h-12 items-center gap-2 border-b px-4 transition-colors duration-200",
-        under ? "border-separator-border bg-white/40 backdrop-blur-[20px]" : "border-transparent")}>
-        <span className="min-w-0 flex-1 truncate text-headline-medium text-text-primary">{first ? first.text : "New chat"}</span>
-        {msgs.length > 0 && <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={reset}>New chat</Button>}
-      </header>
+    <section className="relative flex min-h-[560px] flex-1 overflow-hidden rounded-3xl bg-background-secondary-default">
+      <History threads={threads} activeId={activeId} onSelect={(id) => { stop(); setActiveId(id); }} onNew={newChat} onDelete={remove} />
+      <div className="relative flex min-w-0 flex-1 flex-col">
+        {/* BoardUI chat header: overlaid, transparent until the transcript scrolls under it, then frosted */}
+        <header className={cx("absolute inset-x-0 top-0 z-10 flex h-12 items-center gap-2 border-b px-4 transition-colors duration-200",
+          under ? "border-separator-border bg-white/40 backdrop-blur-[20px]" : "border-transparent")}>
+          <span className="min-w-0 flex-1 truncate text-headline-medium text-text-primary">{thread?.title ?? "New chat"}</span>
+          {msgs.length > 0 && <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={newChat} className="lg:hidden">New chat</Button>}
+        </header>
 
-      <div ref={scroller} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 0)} className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
-        <div className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-[72px] pb-6", msgs.length === 0 && "min-h-full justify-center")}>
-          {msgs.length === 0 ? (
-            <div className="reveal flex flex-col items-center gap-5 text-center">
-              <span className="flex size-12 items-center justify-center rounded-2xl bg-background-inner-default shadow-card">
-                <Sparkle weight="duotone" className="size-6 text-accent-500" aria-hidden />
-              </span>
-              <div className="flex flex-col gap-1">
-                <h2 className="text-title-2-medium text-text-primary">Ask about your month</h2>
-                <p className="text-body-regular text-text-secondary">TabPFN works out every number from {n} simulated months. {provider.chat ? "Gemma, running on this laptop, puts it into words." : "In the full app, Gemma on your laptop puts it into words."}</p>
+        <div ref={scroller} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 0)} className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
+          <div className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-[72px] pb-6", msgs.length === 0 && "min-h-full justify-center")}>
+            {msgs.length === 0 ? (
+              <div className="reveal flex flex-col items-center gap-5 text-center">
+                <span className="flex size-12 items-center justify-center rounded-2xl bg-background-inner-default shadow-card">
+                  <Sparkle weight="duotone" className="size-6 text-accent-500" aria-hidden />
+                </span>
+                <div className="flex flex-col gap-1">
+                  <h2 className="text-title-2-medium text-text-primary">Ask about your month, or tell me what to change</h2>
+                  <p className="text-body-regular text-text-secondary">TabPFN works out every number from {n} simulated months. {live ? "Gemma, on this laptop, puts it into words." : "In the full app, Gemma on your laptop puts it into words."}</p>
+                </div>
+                <div className="flex max-w-2xl flex-wrap justify-center gap-2">
+                  {STARTERS.map((q) => (
+                    <button key={q} type="button" disabled={!brain} onClick={() => send(q)}
+                      className="cursor-pointer rounded-full bg-background-primary-default px-3.5 py-2 text-body-regular text-text-secondary shadow-xs transition-colors hover:bg-background-primary-hover hover:text-text-primary disabled:opacity-50">
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex max-w-xl flex-wrap justify-center gap-2">
-                {STARTERS.map((q) => (
-                  <button key={q} type="button" disabled={!brain} onClick={() => send(q)}
-                    className="cursor-pointer rounded-full bg-background-primary-default px-3.5 py-2 text-body-regular text-text-secondary shadow-xs transition-colors hover:bg-background-primary-hover hover:text-text-primary disabled:opacity-50">
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : msgs.map((m) => m.role === "user"
-            ? <AgentMessage key={m.id} role="user" text={m.text} at={m.at} />
-            : <BotTurn key={m.id} m={m} n={n} live={!!provider.chat} onFollow={send} onAddPlan={onAddPlan} />)}
+            ) : msgs.map((m) => m.role === "user"
+              ? <AgentMessage key={m.id} role="user" text={m.text} at={m.at} />
+              : <BotTurn key={m.id} m={m} n={n} live={live && model !== "none"} data={data} go={go} onFollow={send} onUndo={() => void undo(m)} />)}
+          </div>
         </div>
-      </div>
 
-      <div className="shrink-0 px-3 pb-3">
-        <div className="mx-auto w-full max-w-3xl">
-          <AgentComposer value={text} onValueChange={setText} onSubmit={() => send(text)} onStop={stop} busy={busy}
-            model={data ? `TabPFN ${data.model.model_version?.split(" ").pop() ?? ""}`.trim() : "TabPFN"}
-            messageCount={msgs.length} showStatus={false} showAttach={false} placeholder="Can I afford ₹600 on Friday?" />
+        <div className="shrink-0 px-3 pb-3">
+          <div className="mx-auto w-full max-w-3xl">
+            <AgentComposer value={text} onValueChange={setText} onSubmit={() => send(text)} onStop={stop} busy={busy}
+              messageCount={msgs.length} showStatus={false} showAttach={false} placeholder="Ask, or say “turn on the movie”"
+              modelSlot={<ModelPicker value={model} onChange={setModel} installed={installed} live={live} />} />
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function History({ threads, activeId, onSelect, onNew, onDelete }: {
+  threads: Thread[]; activeId: string; onSelect: (id: string) => void; onNew: () => void; onDelete: (id: string) => void;
+}) {
+  const ago = (t: number) => {
+    const m = Math.round((Date.now() - t) / 60000);
+    return m < 1 ? "now" : m < 60 ? `${m}m` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`;
+  };
+  return (
+    <aside className="hidden w-64 shrink-0 flex-col border-e border-separator-border lg:flex">
+      <div className="flex h-12 items-center gap-2 px-4">
+        <ChatsCircle weight="duotone" className="size-4 text-text-secondary" aria-hidden />
+        <span className="flex-1 text-body-medium text-text-primary">Chats</span>
+        <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={onNew}>New</Button>
+      </div>
+      <ul className="no-scrollbar flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2 pb-3">
+        {threads.length === 0 && <li className="px-2 py-2 text-body-2-medium text-text-tertiary">Your chats stay in this browser.</li>}
+        {threads.map((t) => (
+          <li key={t.id} className="group relative">
+            <button type="button" onClick={() => onSelect(t.id)}
+              className={cx("flex w-full cursor-pointer items-center gap-2 rounded-xl px-2.5 py-2 text-start transition-colors",
+                t.id === activeId ? "bg-background-inner-default shadow-card" : "hover:bg-background-primary-hover")}>
+              <span className="min-w-0 flex-1 truncate text-body-2-medium text-text-primary">{t.title}</span>
+              <span className="text-caption-1-medium text-text-tertiary tabular-nums group-hover:invisible">{ago(t.updatedAt)}</span>
+            </button>
+            <button type="button" aria-label={`Delete ${t.title}`} onClick={() => onDelete(t.id)}
+              className="invisible absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-text-tertiary hover:text-status-rose-text group-hover:visible">
+              <Trash className="size-3.5" aria-hidden />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </aside>
   );
 }
 
@@ -150,15 +259,18 @@ function rejection(problems: string[]): string {
   const p = problems.join(" ");
   const why = /digit|number words/.test(p) ? "wrote a number itself instead of using TabPFN's"
     : /left out/.test(p) ? "left out one of the numbers, which changed the meaning"
+    : /unit word/.test(p) ? "repeated a unit after a number"
     : /unknown placeholders|malformed/.test(p) ? "referred to a number that does not exist"
     : "did not pass the checks";
   return `Gemma's draft ${why}, so this is the checked answer.`;
 }
 
-function BotTurn({ m, n, live, onFollow, onAddPlan }: { m: Bot; n: number; live: boolean; onFollow: (q: string) => void; onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void }) {
-  const [added, setAdded] = useState(false);
+function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
+  m: Bot; n: number; live: boolean; data: ForecastResponse | null; go: (r: Route) => void; onFollow: (q: string) => void; onUndo: () => void;
+}) {
   const segs = splitPlaceholders(m.text, m.g.facts);
   const done = m.status === "done";
+  const plan = m.a.actions?.find((x) => x.plan)?.plan;
   return (
     <div className="flex flex-col gap-3 px-1">
       {m.status === "thinking" ? (
@@ -169,18 +281,17 @@ function BotTurn({ m, n, live, onFollow, onAddPlan }: { m: Bot; n: number; live:
             <span key={i} className={cx("animate-[page-reveal_360ms_ease-out_both] font-semibold tabular-nums",
               s.tone === "good" && "text-status-lime-text", s.tone === "bad" && "text-status-rose-text", s.tone === "brand" && "text-accent-600")}>{s.t}</span>
           ) : <span key={i}>{s.t}</span>)}
-          {!done && <span className="ms-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse rounded-full bg-accent-500 align-baseline" aria-hidden />}
+          {!done && <span className="ms-0.5 inline-block h-4 w-0.5 translate-y-0.5 animate-pulse rounded-full bg-accent-500 align-baseline" aria-hidden />}
         </p>
       )}
+      {m.applied && <AppliedChip state={m.applied} ops={m.a.ops ?? []} onUndo={onUndo} />}
       {/* TabPFN's numbers are ready the moment the question is asked; the words catch up above them */}
       {m.a.card && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ScenarioTile c={m.a.card} /></div>}
+      {m.a.artifact && data && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ChatArtifact kind={m.a.artifact} data={data} go={go} /></div>}
       {done && (
         <div className="flex animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both] flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            {m.a.actions?.map((ac) => ac.plan && (
-              <Button key={ac.label} variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} disabled={added}
-                onClick={() => { onAddPlan(ac.plan!); setAdded(true); }}>{added ? "Added to plans" : ac.label}</Button>
-            ))}
+            {plan && <Button variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} onClick={() => onFollow(`Add ${plan.name} ₹${Math.round(plan.amount_paise / 100)} on ${shortDate(plan.date)} to plans`)}>Add as a plan</Button>}
             {m.a.follow?.map((f) => <Button key={f} variant="secondary" size="xs" onClick={() => onFollow(f)}>{f}</Button>)}
           </div>
           <p className="flex items-center gap-1.5 text-caption-1-medium text-text-tertiary">
@@ -190,6 +301,19 @@ function BotTurn({ m, n, live, onFollow, onAddPlan }: { m: Bot; n: number; live:
           {m.note && <p className="text-caption-1-medium text-text-tertiary">{m.note}</p>}
         </div>
       )}
+    </div>
+  );
+}
+
+function AppliedChip({ state, ops, onUndo }: { state: NonNullable<Bot["applied"]>; ops: Op[]; onUndo: () => void }) {
+  const undoable = ops.some((o) => o.kind !== "go");
+  return (
+    <div className="flex items-center gap-2">
+      {state === "working" && <Chip variant="caption" color="neutral">Updating your workspace…</Chip>}
+      {state === "done" && <Chip variant="caption" color="lime"><CheckCircle weight="fill" className="me-1 size-3.5" aria-hidden />Done · dashboard updated</Chip>}
+      {state === "undone" && <Chip variant="caption" color="neutral"><ArrowCounterClockwise className="me-1 size-3.5" aria-hidden />Undone</Chip>}
+      {state === "failed" && <Chip variant="caption" color="rose"><XCircle weight="fill" className="me-1 size-3.5" aria-hidden />Could not apply</Chip>}
+      {state === "done" && undoable && <Button variant="ghost" size="xs" leadingIcon={duo(ArrowCounterClockwise)} onClick={onUndo}>Undo</Button>}
     </div>
   );
 }

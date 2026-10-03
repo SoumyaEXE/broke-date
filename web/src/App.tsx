@@ -145,7 +145,8 @@ export default function App() {
           <div key={route} className={route === "ask" ? "reveal flex min-h-0 flex-1 flex-col pb-3" : "reveal flex w-full flex-col gap-4 pb-6"}>
             {!data && !error && route !== "ask" && <Loading />}
             {data && route === "overview" && <OverviewPage data={data} prev={prev} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} go={go} />}
-            {route === "ask" && <AskPage data={data} provider={provider} question={question} onAddPlan={(p) => void update(() => provider.addPlan(p))} />}
+            {route === "ask" && <AskPage data={data} provider={provider} question={question} onUpdate={update} go={go}
+              onSettings={async (p) => { await provider.saveSettings(p); await load(); }} />}
             {data && route === "futures" && <FuturesPage data={data} prev={prev} />}
             {data && route === "plans" && <PlansPage data={data} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} />}
             {data && route === "activity" && <ActivityPage data={data} />}

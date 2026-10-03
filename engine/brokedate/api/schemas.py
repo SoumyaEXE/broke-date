@@ -184,3 +184,4 @@ class ChatIn(BaseModel):
     facts: list[ChatFact] = []
     verdict: str | None = None
     language: str | None = None
+    model: str | None = None  # a specific installed Gemma tag; None = auto

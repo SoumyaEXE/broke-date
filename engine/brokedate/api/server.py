@@ -158,6 +158,7 @@ def health() -> dict[str, Any]:
             from brokedate.narrate.chat import pick_chat_model
 
             out["chat_model"] = pick_chat_model(cfg, models)
+            out["models"] = sorted(m.removesuffix(":latest") for m in models)
         except OllamaError as e:
             out["gemma_available"] = False
             out["gemma_error"] = str(e)
@@ -296,7 +297,8 @@ def post_chat(body: ChatIn) -> StreamingResponse:
     if not cfg.gemma.enabled:
         raise HTTPException(409, "Gemma is switched off in settings")
     facts = [f.model_dump() for f in body.facts]
-    return StreamingResponse(ndjson(stream_reply(cfg, body.question, facts, body.template, body.verdict, body.language)),
+    events = stream_reply(cfg, body.question, facts, body.template, body.verdict, body.language, model=body.model)
+    return StreamingResponse(ndjson(events),
                              media_type="application/x-ndjson")
 
 

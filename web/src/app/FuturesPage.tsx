@@ -114,7 +114,7 @@ function SimilarSpark({ this_, then }: { this_: number[]; then: number[] }) {
 }
 
 /** Histogram of payday balances over all futures; bins under the broke line are orange. */
-function PaydayHistogram({ data }: { data: ForecastResponse }) {
+export function PaydayHistogram({ data }: { data: ForecastResponse }) {
   const H = data.horizon_days;
   const ends = data.paths.balances_paise.map((p) => p[Math.min(H, p.length - 1)]);
   const sorted = [...ends].sort((a, b) => a - b);

@@ -100,7 +100,9 @@ export class Brain {
   }
 
   private route(q: string, raw: string): Omit<Answer, "ms"> {
-    const planHit = this.d.plans.find((p) => q.includes(p.name.toLowerCase().split(/[ +]/)[0]) && p.name.length > 2);
+    // a plan is meant if any meaningful word of its name appears ("the movie" -> "Saturday movie + popcorn")
+    const words = (name: string) => name.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3 && !/^(with|from|this|that|then)$/.test(w));
+    const planHit = this.d.plans.find((p) => words(p.name).some((w) => new RegExp(`\\b${w}`).test(q)));
     const cmd = this.command(q, raw, planHit);
     if (cmd) return cmd;
     if (/\b(skip|cancel|drop|without|don'?t|not go|na jai|bad di)\b/.test(q) && planHit) return this.skip(planHit);
@@ -231,7 +233,7 @@ export class Brain {
   private command(q: string, raw: string, planHit: PlanRow | undefined): Omit<Answer, "ms"> | null {
     // inline charts
     if (/\b(show|draw|plot|chart|graph|visuali[sz]e|dekha)\b/.test(q)) {
-      if (/\b(spend|spent|categor|where|breakdown|kharcha)\b/.test(q)) return this.show("spending", "Here's where this month's money went, against a typical month.");
+      if (/\b(spend\w*|spent|categor\w*|where|breakdown|kharcha)\b/.test(q) && !/\bpayday\b/.test(q)) return this.show("spending", "Here's where this month's money went, against a typical month.");
       if (/\b(payday|land|end of (the )?month|histogram)\b/.test(q)) return this.show("payday", `Here's where all ${this.d.n_futures} simulated months land on payday.`);
       if (/\bplans?\b/.test(q) && !/\bopen\b/.test(q)) return this.show("plans", "Here are your plans and what each one costs in days of runway.");
       if (/\b(range|future|fan|balance|month|forecast)\b/.test(q)) return this.show("range", `Here's the range of your balance to payday across ${this.d.n_futures} simulated months.`);
@@ -286,8 +288,8 @@ export class Brain {
   }
 
   help(): Omit<Answer, "ms"> {
-    return { intent: "help", segs: [{ t: "Ask me things like " }, { t: "\"can I afford ₹400 movie on Saturday?\"", tone: "brand" }, { t: ", " }, { t: "\"when will I go broke?\"", tone: "brand" }, { t: " or " }, { t: "\"what if I skip the earphones?\"", tone: "brand" }, { t: ". I answer by rerunning your futures, so every number is simulated, not guessed." }],
-      follow: ["How much is safe today?", "Can I afford ₹300 on Saturday?", "How do you work?"] };
+    return { intent: "help", segs: [{ t: "Ask me things like " }, { t: "\"can I afford ₹400 movie on Saturday?\"", tone: "brand" }, { t: ", " }, { t: "\"when will I go broke?\"", tone: "brand" }, { t: " or " }, { t: "\"what if I skip the earphones?\"", tone: "brand" }, { t: ". I can also change things for you: " }, { t: "\"add momos ₹150 on Friday to plans\"", tone: "brand" }, { t: ", " }, { t: "\"turn on the movie\"", tone: "brand" }, { t: ", " }, { t: "\"show my spending\"", tone: "brand" }, { t: " or " }, { t: "\"set risk to 5%\"", tone: "brand" }, { t: ". Every number comes from rerunning your futures, never guessed." }],
+      follow: ["How much is safe today?", "Show the range", "Can I afford ₹300 on Saturday?"] };
   }
 }
 
