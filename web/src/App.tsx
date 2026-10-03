@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  CalendarBlank, CalendarCheck, Wallet, ChartLineUp, ChatsCircle, Receipt, SealCheck, ChatCircleText, SquaresFour, UploadSimple,
+  CalendarBlank, CalendarCheck, Lightbulb, Wallet, ChartLineUp, ChatsCircle, Receipt, SealCheck, ChatCircleText, SquaresFour, UploadSimple,
 } from "@phosphor-icons/react";
 import { RiMenuLine } from "@remixicon/react";
 import { DashboardSidebar, type DashboardNavItem } from "@/components/application/dashboard/dashboard-sidebar";
@@ -20,13 +20,15 @@ import { AskPage } from "./app/AskPage";
 import { ImportPage } from "./app/ImportPage";
 import { SettingsPage } from "./app/SettingsPage";
 import { AboutPage } from "./app/AboutPage";
+import { InsightsPage } from "./app/InsightsPage";
+import { OfflineCard } from "./app/OfflineCard";
 import { EvidenceSheet } from "./app/EvidenceSheet";
 import { PocketCard } from "./app/PocketCard";
 
-export type Route = "overview" | "ask" | "futures" | "plans" | "activity" | "grade" | "import" | "settings" | "about";
+export type Route = "overview" | "ask" | "futures" | "plans" | "activity" | "insights" | "grade" | "import" | "settings" | "about";
 
 const TITLES: Record<Route, string> = {
-  overview: "Overview", ask: "Ask Broke Date", futures: "Futures", plans: "Plans", activity: "Activity",
+  overview: "Overview", ask: "Ask Broke Date", futures: "Futures", plans: "Plans", activity: "Activity", insights: "Insights",
   grade: "How good am I?", import: "Import statement", settings: "Settings", about: "How it works",
 };
 
@@ -95,6 +97,7 @@ export default function App() {
     { key: "futures", label: "Futures", icon: duo(ChartLineUp), href: "#/futures", badge: data?.n_futures },
     { key: "plans", label: "Plans", icon: duo(CalendarCheck), href: "#/plans", badge: data?.plans.filter((p) => p.active).length || undefined },
     { key: "activity", label: "Activity", icon: duo(Receipt), href: "#/activity" },
+    { key: "insights", label: "Insights", icon: duo(Lightbulb), href: "#/insights", badge: (data?.context?.upcoming?.length ?? 0) > 0 ? data?.context?.upcoming?.length : undefined },
     { key: "grade", label: "How good am I?", icon: duo(SealCheck), href: "#/grade" },
     ...(IS_DEMO ? [] : [{ key: "import", label: "Import statement", icon: duo(UploadSimple), href: "#/import" }]),
   ];
@@ -103,7 +106,7 @@ export default function App() {
     <DashboardSidebar items={nav} selected={route} userName={userName} showThemeToggle={false}
       mobile={mobile} onClose={() => setNavOpen(false)}
       onSettings={() => go("settings")} onSupport={() => go("about")}
-      footer={<PocketCard demo={IS_DEMO} subject={subject} />}
+      footer={<div className="flex flex-col gap-2"><OfflineCard onOpen={() => go("about")} /><PocketCard demo={IS_DEMO} subject={subject} /></div>}
       className={mobile ? "flex" : "hidden lg:flex"} />
   );
 
@@ -150,13 +153,14 @@ export default function App() {
           )}
 
           <div key={route} className={route === "ask" ? "reveal flex min-h-0 flex-1 flex-col pb-3" : "reveal flex w-full flex-col gap-4 pb-6"}>
-            {!data && !error && ["overview", "futures", "plans", "activity"].includes(route) && <Loading />}
+            {!data && !error && ["overview", "futures", "plans", "activity", "insights"].includes(route) && <Loading />}
             {data && route === "overview" && <OverviewPage data={data} prev={prev} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} go={go} />}
             {route === "ask" && <AskPage data={data} provider={provider} question={question} onUpdate={update} go={go}
               onSettings={async (p) => { await provider.saveSettings(p); await load(); }} />}
             {data && route === "futures" && <FuturesPage data={data} prev={prev} />}
             {data && route === "plans" && <PlansPage data={data} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} />}
             {data && route === "activity" && <ActivityPage data={data} />}
+            {data && route === "insights" && <InsightsPage data={data} provider={provider} />}
             {route === "grade" && <GradePage provider={provider} />}
             {route === "import" && provider instanceof LiveProvider && <ImportPage provider={provider} subject={subject} onDone={() => { go("overview"); void load(); }} />}
             {route === "settings" && <SettingsPage provider={provider} data={data} onSaved={() => void load()} />}

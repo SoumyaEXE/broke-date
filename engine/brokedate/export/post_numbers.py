@@ -46,8 +46,15 @@ def collect() -> dict[str, Any]:
     for f in [OUT / "labels" / "sim.json", *sorted((OUT / "real" / "labels").glob("*.json"))]:
         lab = _load(f)
         if lab:
-            out[f"labels_{f.stem}"] = {k: lab[k] for k in ("n_rows", "rules_coverage", "accuracy_overall",
-                                                           "accuracy_by_source", "gemma_model")}
+            out[f"labels_{f.stem}"] = {k: lab.get(k) for k in ("n_rows", "rules_coverage", "accuracy_overall",
+                                                               "accuracy_by_source", "gemma_model", "compare")}
+    ins = _load(REPO_ROOT / "web" / "public" / "demo" / "insights.json")
+    if ins:
+        u = ins["unusual"]
+        out["unusual_sim"] = {"as_of": u["as_of"], "window_days": u["window_days"], "n_checked": u["n_checked"],
+                              "n_flagged": len(u["unusual"]), "examples": u["unusual"][:3]}
+    if demo and (demo.get("context") or {}).get("upcoming"):
+        out["festivals_sim"] = demo["context"]["upcoming"]
     bench = _load(OUT / "bench.json")
     if bench:
         out["bench"] = [{k: r.get(k) for k in ("label", "machine", "full_forecast_s", "prepare_s", "lattice_s",

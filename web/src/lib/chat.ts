@@ -20,7 +20,7 @@ export type Op =
   | { kind: "go"; route: "overview" | "futures" | "plans" | "activity" | "grade" | "settings" | "about" }
   | { kind: "settings"; patch: { risk_tolerance?: number; broke_line_rupees?: number }; before: { risk_tolerance?: number; broke_line_rupees?: number } };
 /** Charts the chat can draw inline, from the same futures as the dashboard. */
-export type Artifact = "range" | "spending" | "payday" | "plans";
+export type Artifact = "range" | "spending" | "payday" | "plans" | "unusual";
 export interface Answer {
   segs: Seg[]; card?: ScenarioCard; actions?: ChatAction[]; follow?: string[]; intent: string; ms: number;
   ops?: Op[]; artifact?: Artifact;
@@ -234,6 +234,23 @@ export class Brain {
 
   /** Imperative requests: act on the workspace or draw a chart. Returns null for ordinary questions. */
   private command(q: string, raw: string, planHit: PlanRow | undefined): Omit<Answer, "ms"> | null {
+    // unusual spends (TabPFN anomaly check) and festival heads-up
+    if (/\b(unusual|weird|strange|odd|suspicious|anomal\w*|out of (the )?ordinary|overspen\w*|too much on)\b/.test(q))
+      return { intent: "unusual", segs: [{ t: "Here is what TabPFN flagged: spends far above what that kind of spend normally costs you." }], artifact: "unusual",
+        follow: ["Where did my money go?", "How much is safe today?"] };
+    const fest = this.d.context?.upcoming ?? [];
+    if (fest.length && /\b(festival|puja|pujo|diwali|durga|kali|holi|christmas|new year|coming up|upcoming)\b/.test(q)) {
+      const f = fest.find((x) => q.includes(x.name.toLowerCase().split(/[ \/]/)[0])) ?? fest[0];
+      const segs: Seg[] = [{ t: `${f.name} ${f.days_until === 0 ? "is on now" : `starts ${shortDate(f.start)}, in ${f.days_until} days`}. ` }];
+      if (f.last) segs.push({ t: "Last time you spent " }, { t: inr(f.last.spent_paise), tone: "num" }, { t: ` over ${f.last.days} days` },
+        ...(f.last.extra_paise > 0 ? [{ t: ", " }, { t: inr(f.last.extra_paise), tone: "bad" as const }, { t: " more than a normal stretch." }] : [{ t: "." }]));
+      else segs.push({ t: "Your statement doesn't cover the last one yet, so I can't compare." });
+      return { intent: "festival", segs, follow: [`Can I afford ₹500 on ${shortDate(f.start)}?`, "How much is safe today?"] };
+    }
+    // "should I ask home for ₹500?": rerun the same futures with that money arriving today
+    const topUp = parseAmount(q);
+    if (topUp && /\b(ask (home|mom|mum|maa|ma|dad|baba|papa|parents)|top ?up|(home|mom|mum|maa|dad|baba|papa|parents) (send|give|transfer)s?|send me|borrow|extra money|pocket money)\b/.test(q))
+      return this.topUp(topUp);
     // inline charts
     if (/\b(show|draw|plot|chart|graph|visuali[sz]e|dekha)\b/.test(q)) {
       if (/\b(spend\w*|spent|categor\w*|where|breakdown|kharcha)\b/.test(q) && !/\bpayday\b/.test(q)) return this.show("spending", "Here's where this month's money went, against a typical month.");
@@ -278,6 +295,21 @@ export class Brain {
         ops: [{ kind: "settings", patch: { broke_line_rupees: r }, before: { broke_line_rupees: Math.round(this.d.broke_line_paise / 100) } }] };
     }
     return null;
+  }
+
+  /** Money arriving today (from home, a friend paying back): how many more futures make it to payday. */
+  topUp(amountPaise: number): Omit<Answer, "ms"> {
+    const plans = this.plans();
+    const base = rollout(this.d.sim!, this.lat, { plans });
+    const after = rollout(this.d.sim!, this.lat, { plans, balDelta: amountPaise / 100 });
+    const n = base.firstBroke.length, b = madeIt(base), a = madeIt(after);
+    const c = this.card(`${inr(amountPaise)} arriving today`, base, after);
+    c.verdict = a - b >= Math.max(5, n * 0.02) ? "yes" : a > b ? "tight" : "no";
+    const segs: Seg[] = b === n
+      ? [{ t: "You don't need it this month: " }, { t: `${b} of ${n}`, tone: "good" }, { t: " futures already make it to payday." }]
+      : [{ t: `With ${inr(amountPaise)} from home today, ` }, { t: `${a} of ${n}`, tone: a > b ? "good" : "num" }, { t: " futures make it to payday, instead of " }, { t: String(b), tone: "num" },
+         { t: a - b > 0 ? `. That's ${a - b} more months that work out.` : ". It barely changes anything." }];
+    return { intent: "topup", segs, card: c, follow: ["How much is safe today?", "When would I run out?"] };
   }
 
   private show(artifact: Artifact, text: string): Omit<Answer, "ms"> {

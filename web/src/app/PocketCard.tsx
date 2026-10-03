@@ -1,18 +1,19 @@
-import { DeviceMobile } from "@phosphor-icons/react";
-import { LinkButton } from "@/components/base/buttons/link-button";
+import { DeviceMobile, DownloadSimple } from "@phosphor-icons/react";
 
-/** Sidebar footer card: the offline phone file. */
+/** Sidebar footer row: the offline phone file ("can I afford it?" in airplane mode). */
 export function PocketCard({ demo, subject }: { demo: boolean; subject: string }) {
-  return (
-    <div className="flex flex-col gap-2 rounded-2xl bg-background-inner-default p-3 shadow-card">
-      <span className="flex items-center gap-2 text-body-medium text-text-primary">
-        <span className="flex size-7 items-center justify-center rounded-lg bg-accent-50"><DeviceMobile weight="duotone" className="size-4 text-accent-600" aria-hidden /></span>
-        Pocket file
+  const body = (
+    <>
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent-50"><DeviceMobile weight="duotone" className="size-4 text-accent-600" aria-hidden /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-body-medium text-text-primary">Pocket file</span>
+        <span className="block truncate text-caption-1-medium text-text-tertiary">{demo ? "Works on your phone offline" : `brokedate export-pocket -s ${subject}`}</span>
       </span>
-      <p className="text-body-2-medium text-text-tertiary">One offline page for your phone: “can I afford it?” in airplane mode.</p>
-      {demo
-        ? <LinkButton href={`${import.meta.env.BASE_URL}demo/pocket.html`} download="broke-date-pocket.html">Download</LinkButton>
-        : <p className="text-caption-1-medium text-text-tertiary">Run <code className="font-mono">brokedate export-pocket -s {subject}</code></p>}
-    </div>
+      {demo && <DownloadSimple weight="bold" className="size-4 shrink-0 text-text-tertiary" aria-hidden />}
+    </>
   );
+  const cls = "flex w-full items-center gap-2.5 rounded-2xl bg-background-inner-default p-3 text-start shadow-card";
+  return demo
+    ? <a href={`${import.meta.env.BASE_URL}demo/pocket.html`} download="broke-date-pocket.html" className={`${cls} transition-colors hover:bg-background-primary-hover`}>{body}</a>
+    : <div className={cls} title="Run this to make the phone file">{body}</div>;
 }

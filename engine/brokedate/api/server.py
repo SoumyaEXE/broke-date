@@ -325,6 +325,17 @@ def get_insights(subject: str) -> dict[str, Any]:
     return dict(cache[key])
 
 
+@app.get("/labels")
+def get_labels(subject: str) -> dict[str, Any]:
+    """Categorization accuracy report written by `brokedate eval-labels` (rules vs TabPFN vs Gemma)."""
+    from brokedate.cli import out_dir
+
+    f = out_dir(subject) / "labels" / f"{subject}.json"
+    if not f.is_file():
+        raise HTTPException(404, "no categorization report yet; run brokedate eval-labels")
+    return dict(json.loads(f.read_text(encoding="utf-8")))
+
+
 @app.get("/backtest")
 def get_backtest(subject: str) -> dict[str, Any]:
     from brokedate.cli import out_dir

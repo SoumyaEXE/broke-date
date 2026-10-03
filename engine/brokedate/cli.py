@@ -126,7 +126,10 @@ def eval_labels(labels: Path = typer.Argument(None), subject: str = typer.Option
     from brokedate.enrich.eval_labels import evaluate
 
     cfg, db = _ctx()
+    from brokedate.enrich.eval_labels import compare_labellers
+
     res = evaluate(db, cfg, subject, labels, use_gemma=gemma)
+    res["compare"] = compare_labellers(db, cfg, subject, labels, gemma=gemma)["variants"]
     _say(json.dumps({k: v for k, v in res.items() if k != "confusion"}, indent=2))
     dest = out_dir(subject) / "labels" / f"{subject}.json"
     dest.parent.mkdir(parents=True, exist_ok=True)

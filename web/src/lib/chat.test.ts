@@ -81,3 +81,35 @@ describe("everyday messages get their own short answers", () => {
       for (const f of brain.ask(q).follow ?? []) expect(brain.ask(f).intent).not.toBe("help");
   });
 });
+
+describe("insights in chat", () => {
+  it("asks TabPFN's anomaly check for unusual spends", () => {
+    const a = new Brain(data).ask("did I spend anything unusual?");
+    expect(a.intent).toBe("unusual");
+    expect(a.artifact).toBe("unusual");
+  });
+  it("answers festival questions from last year's measured spend", () => {
+    const withFest = { ...data, context: { ...data.context!, upcoming: [
+      { name: "Durga Puja", start: "2026-10-17", end: "2026-10-21", days_until: 12, last: { start: "2025-10-19", end: "2025-10-21", days: 5, spent_paise: 210000, usual_paise: 90000, extra_paise: 120000 } },
+    ] } } as ForecastResponse;
+    const a = new Brain(withFest).ask("is puja coming?");
+    expect(a.intent).toBe("festival");
+    const text = a.segs.map((s) => s.t).join("");
+    expect(text).toContain("in 12 days");
+    expect(text).toContain("₹2,100");
+    expect(text).toContain("₹1,200");
+  });
+});
+
+describe("asking home for money", () => {
+  const brain = new Brain(data);
+  it("reruns the same futures with the money arriving today", () => {
+    const a = brain.ask("should I ask home for ₹500?");
+    expect(a.intent).toBe("topup");
+    expect(a.card!.afterMade).toBeGreaterThanOrEqual(a.card!.beforeMade);   // more money never hurts (same draws)
+    expect(brain.ask("what if mom sends ₹1000").intent).toBe("topup");
+  });
+  it("is not confused with affording something", () => {
+    expect(brain.ask("can I afford ₹500 biryani on Saturday?").intent).toBe("afford");
+  });
+});

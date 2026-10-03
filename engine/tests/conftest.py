@@ -13,6 +13,7 @@ SIM_STATEMENT = SIM_DIR / "statement.csv"
 SIM_TRUTH = SIM_DIR / "truth.csv"
 
 os.environ.setdefault("BROKEDATE_GEMMA", "0")
+os.environ.setdefault("BROKEDATE_TABPFN_CAT", "0")  # unit tests use stub classifiers; real TabPFN runs in -m slow
 
 
 @pytest.fixture

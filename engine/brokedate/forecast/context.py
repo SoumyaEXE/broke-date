@@ -93,4 +93,36 @@ def dashboard_context(led: Ledger, as_of: date) -> dict[str, Any]:
         "balance_compare": {"this": this_bal, "last": last},
         "recurring": rec,
         "transactions": txns,
+        "upcoming": upcoming_festivals(led, as_of),
     }
+
+
+def _base_name(name: str) -> str:
+    """'Diwali / Kali Puja' and 'Kali Puja / Diwali' are the same festival: compare sorted name parts."""
+    return " / ".join(sorted(p.strip().lower() for p in name.split("/")))
+
+
+def upcoming_festivals(led: Ledger, as_of: date, within_days: int = 60) -> list[dict[str, Any]]:
+    """Festivals starting in the next `within_days` (or happening now), each with what the same festival cost last
+    time it appears in the statement: spend in its window (plus two days of build-up) vs an ordinary stretch of the
+    same length (median daily spend of the 60 days before it). Measured from the ledger, never forecast."""
+    spend = led.txns[led.txns["is_spend"]]
+    daily = spend.groupby("date")["amount_paise"].sum()
+    out = []
+    for name, a, b in led.calendar.festivals:
+        if b < as_of or a > as_of + timedelta(days=within_days):
+            continue
+        prev = [(n, x, y) for n, x, y in led.calendar.festivals
+                if _base_name(n) == _base_name(name) and y < a and x >= led.first_day]
+        last = None
+        if prev:
+            _, x, y = prev[-1]
+            win_start = x - timedelta(days=2)
+            n_days = (y - win_start).days + 1
+            spent = int(sum(int(daily.get(win_start + timedelta(days=i), 0)) for i in range(n_days)))
+            before = [int(daily.get(win_start - timedelta(days=i), 0)) for i in range(1, 61)]
+            usual = int(round(float(np.median(before)) * n_days)) if before else 0
+            last = {"start": str(x), "end": str(y), "days": n_days, "spent_paise": spent, "usual_paise": usual,
+                    "extra_paise": spent - usual}
+        out.append({"name": name, "start": str(a), "end": str(b), "days_until": max(0, (a - as_of).days), "last": last})
+    return out

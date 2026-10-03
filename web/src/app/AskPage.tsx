@@ -29,9 +29,10 @@ type Thread = { id: string; title: string; updatedAt: number; msgs: Msg[] };
 
 const STARTERS = [
   "Can I afford a ₹400 movie on Saturday?",
-  "Show the range",
-  "Where did my money go?",
+  "Anything unusual this month?",
+  "Should I ask home for ₹500?",
   "Add momos ₹150 on Friday to plans",
+  "Show the range",
   "When would I run out?",
 ];
 const STORE = "brokedate:chats:v1";
@@ -206,7 +207,7 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
               </div>
             ) : msgs.map((m) => m.role === "user"
               ? <AgentMessage key={m.id} role="user" text={m.text} at={m.at} />
-              : <BotTurn key={m.id} m={m} n={n} live={live && model !== "none"} data={data} go={go} onFollow={send} onUndo={() => void undo(m)} />)}
+              : <BotTurn key={m.id} m={m} n={n} live={live && model !== "none"} data={data} go={go} onFollow={send} onUndo={() => void undo(m)} provider={provider} />)}
           </div>
         </div>
 
@@ -281,8 +282,8 @@ function rejection(problems: string[]): string {
   return `Gemma's draft ${why}, so this is the checked answer.`;
 }
 
-function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
-  m: Bot; n: number; live: boolean; data: ForecastResponse | null; go: (r: Route) => void; onFollow: (q: string) => void; onUndo: () => void;
+function BotTurn({ m, n, live, data, go, onFollow, onUndo, provider }: {
+  m: Bot; n: number; live: boolean; data: ForecastResponse | null; go: (r: Route) => void; onFollow: (q: string) => void; onUndo: () => void; provider: DataProvider;
 }) {
   const segs = splitPlaceholders(m.text, m.g.facts);
   const done = m.status === "done";
@@ -303,7 +304,7 @@ function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
       {m.applied && <AppliedChip state={m.applied} ops={m.a.ops ?? []} onUndo={onUndo} />}
       {/* TabPFN's numbers are ready the moment the question is asked; the words catch up above them */}
       {m.a.card && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ScenarioTile c={m.a.card} /></div>}
-      {m.a.artifact && data && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ChatArtifact kind={m.a.artifact} data={data} go={go} /></div>}
+      {m.a.artifact && data && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ChatArtifact kind={m.a.artifact} data={data} go={go} provider={provider} /></div>}
       {done && (
         <div className="flex animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both] flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">

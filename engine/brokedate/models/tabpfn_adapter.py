@@ -117,6 +117,42 @@ class LGBMQuantileDist(DistRegressor):
         return np.stack([np.interp(qs, self.grid, row) for row in own], axis=0)
 
 
+class TabPFNClf:
+    """TabPFN classifier (categorizer stage). fit(X, labels) then proba(X) -> (n, k) aligned with .classes_."""
+
+    def __init__(self, n_estimators: int = 2, model_version: str = "v2", device: str = "cpu", seed: int = 0) -> None:
+        self.n_estimators, self.model_version, self.device, self.seed = n_estimators, model_version, device, seed
+        self._m: Any = None
+        self.classes_: np.ndarray = np.array([])
+
+    def fit(self, X: np.ndarray, labels: np.ndarray) -> TabPFNClf:
+        os.environ.setdefault("TABPFN_NO_BROWSER", "1")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from tabpfn import TabPFNClassifier
+            from tabpfn.constants import ModelVersion
+
+            self._m = TabPFNClassifier.create_default_for_version(
+                ModelVersion(self.model_version), device=self.device, n_estimators=self.n_estimators,
+                random_state=self.seed)
+            # encode labels ourselves: columns of predict_proba are then exactly codes 0..k-1 -> self.classes_
+            self.classes_, codes = np.unique(np.asarray(labels).astype(str), return_inverse=True)
+            self._m.fit(np.asarray(X, dtype=np.float32), codes.astype(np.int64))
+        return self
+
+    def proba(self, X: np.ndarray) -> np.ndarray:
+        if self._m is None:
+            raise RuntimeError("fit first")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return np.asarray(self._m.predict_proba(np.asarray(X, dtype=np.float32)), dtype=float)
+
+
+def make_tabpfn_clf(cfg: Any, seed: int) -> TabPFNClf:
+    t = cfg.tabpfn
+    return TabPFNClf(t.n_estimators, t.model_version, t.device, seed)
+
+
 def make_tabpfn(cfg: Any, seed: int) -> TabPFNDist:
     t = cfg.tabpfn
     return TabPFNDist(t.n_estimators, t.model_version, t.fit_mode, t.device, seed)

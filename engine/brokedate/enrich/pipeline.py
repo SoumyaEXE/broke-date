@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Any
 
 from brokedate.config import Config
 from brokedate.db import DB
@@ -19,12 +21,15 @@ class EnrichStats:
     by_rules: int = 0
     by_cache: int = 0
     by_gemma: int = 0
+    by_tabpfn: int = 0
     needs_review: int = 0
     gemma_error: str | None = None
+    tabpfn_error: str | None = None
     review_ids: list[str] = field(default_factory=list)
 
 
-def label_rows(rows: list[dict], db: DB, cfg: Config, use_gemma: bool | None = None) -> EnrichStats:
+def label_rows(rows: list[dict], db: DB, cfg: Config, use_gemma: bool | None = None,
+               use_tabpfn: bool | None = None, make_clf: Callable[[], Any] | None = None) -> EnrichStats:
     """rows: dicts with id, raw_narration, direction, amount_paise. Mutates rows with labels."""
     st = EnrichStats(total=len(rows))
     use_gemma = cfg.gemma.enabled if use_gemma is None else use_gemma
@@ -45,6 +50,26 @@ def label_rows(rows: list[dict], db: DB, cfg: Config, use_gemma: bool | None = N
             continue
         r.update(category=p.category, label_source="rule", confidence=p.confidence)
         pending.append(r)
+
+    # TabPFN stage: learn from the confidently labelled rows, label the leftovers it is sure about
+    use_tabpfn = cfg.tabpfn.classifier if use_tabpfn is None else use_tabpfn
+    if pending and use_tabpfn:
+        from brokedate.enrich.tabpfn_cat import classify_pending
+        from brokedate.models.tabpfn_adapter import make_tabpfn_clf
+
+        pending_ids = {r["id"] for r in pending}
+        done = [r for r in rows if r["id"] not in pending_ids and r.get("category")]
+        try:
+            st.by_tabpfn = classify_pending(done, pending, make_clf or (lambda: make_tabpfn_clf(cfg, seed=0)),
+                                            cfg.tabpfn.classifier_min_prob, cfg.tabpfn.classifier_min_train)
+        except Exception as e:  # weights missing / out of memory: fall through to Gemma and the review queue
+            log.warning("TabPFN categorizer skipped: %s", e)
+            st.tabpfn_error = str(e)
+        for r in pending:
+            if r.get("label_source") == "tabpfn":
+                db.cache_put(normalize_key(r["raw_narration"]) + "|" + r["direction"], r.get("merchant"),
+                             r["category"], r.get("counterparty"), "tabpfn", r["confidence"])
+        pending = [r for r in pending if r.get("label_source") != "tabpfn"]
 
     if pending and use_gemma:
         client = OllamaClient(cfg.gemma.ollama_url, cfg.gemma.model, cfg.gemma.timeout_s)

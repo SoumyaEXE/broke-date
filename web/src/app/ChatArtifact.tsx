@@ -1,9 +1,11 @@
 /* Charts the chat draws inline (Claude-style artifacts), always from the live forecast the dashboard uses. */
-import { ArrowSquareOut, ChartBar, ChartLineUp, ChartPieSlice, Target } from "@phosphor-icons/react";
+import { ArrowSquareOut, ChartBar, ChartLineUp, ChartPieSlice, Target, WarningCircle } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
 import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/base/buttons/button";
 import { cx } from "@/utils/cx";
-import type { ForecastResponse } from "../types";
+import type { ForecastResponse, Insights, UnusualSpend } from "../types";
+import type { DataProvider } from "../data/provider";
 import type { Artifact } from "../lib/chat";
 import { days, inr, inr0, shortDate } from "../lib/format";
 import { BrokeByDay, FanChart, useFan } from "./FanChart";
@@ -13,12 +15,13 @@ import type { Route } from "../App";
 
 const META: Record<Artifact, { title: string; icon: PhosphorIcon; route: Route }> = {
   range: { title: "Balance to payday", icon: ChartLineUp, route: "futures" },
+  unusual: { title: "Unusual spends", icon: WarningCircle, route: "insights" },
   spending: { title: "Where it went", icon: ChartPieSlice, route: "overview" },
   payday: { title: "Where you land on payday", icon: ChartBar, route: "futures" },
   plans: { title: "Your plans", icon: Target, route: "plans" },
 };
 
-export function ChatArtifact({ kind, data, go }: { kind: Artifact; data: ForecastResponse; go: (r: Route) => void }) {
+export function ChatArtifact({ kind, data, go, provider }: { kind: Artifact; data: ForecastResponse; go: (r: Route) => void; provider?: DataProvider }) {
   const m = META[kind];
   return (
     <figure className="overflow-hidden rounded-2xl bg-background-inner-default shadow-card ring-1 ring-separator-border">
@@ -32,6 +35,7 @@ export function ChatArtifact({ kind, data, go }: { kind: Artifact; data: Forecas
         {kind === "spending" && <Spending data={data} />}
         {kind === "payday" && <div className="flex h-64 flex-col"><PaydayHistogram data={data} /></div>}
         {kind === "plans" && <Plans data={data} />}
+        {kind === "unusual" && <UnusualList provider={provider} />}
       </div>
     </figure>
   );
@@ -95,6 +99,26 @@ function Plans({ data }: { data: ForecastResponse }) {
         </div>
       ))}
       <p className="text-body-2-medium text-text-secondary tabular-nums">With the plans that are on, {data.n_make_it} of {data.n_futures} months make it to payday.</p>
+    </div>
+  );
+}
+
+function UnusualList({ provider }: { provider?: DataProvider }) {
+  const [ins, setIns] = useState<Insights | null | undefined>(undefined);
+  useEffect(() => { if (provider) void provider.insights().then(setIns); else setIns(null); }, [provider]);
+  if (ins === undefined) return <p className="text-body-2-medium text-text-tertiary">Checking with TabPFN…</p>;
+  const u = ins?.unusual;
+  if (!u) return <p className="text-body-2-medium text-text-tertiary">Not available yet.</p>;
+  if (u.note) return <p className="text-body-2-medium text-text-tertiary">{u.note}.</p>;
+  if (!u.unusual.length) return <p className="text-body-2-medium text-text-secondary">Nothing unusual in the last {Math.round(u.window_days / 7)} weeks ({u.n_checked} spends checked).</p>;
+  return (
+    <div className="flex flex-col gap-2.5">
+      {u.unusual.slice(0, 4).map((s: UnusualSpend) => (
+        <div key={s.txn_id} className="flex items-baseline justify-between gap-3">
+          <span className="min-w-0 truncate text-body-2-medium text-text-primary">{s.merchant} <span className="text-text-tertiary">· {shortDate(s.date)}</span></span>
+          <span className="shrink-0 text-body-2-medium tabular-nums"><span className="text-status-orange-text">{inr(s.amount_paise)}</span><span className="text-text-tertiary"> vs usual {inr0(s.usual_paise)}</span></span>
+        </div>
+      ))}
     </div>
   );
 }
