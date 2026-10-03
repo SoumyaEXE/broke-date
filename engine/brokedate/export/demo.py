@@ -59,6 +59,11 @@ def export_demo(as_of: date, out: Path = DEMO_DIR, letter: bool = True) -> dict[
             for lang in ("Benglish", "English", "Bengali"):
                 letters[lang] = write_letter(bundle, cfg, lang)
             (out / "letters.json").write_text(json.dumps(letters, ensure_ascii=False), encoding="utf-8")
+        from brokedate.insights.anomaly import find_unusual
+        from brokedate.models.tabpfn_adapter import make_tabpfn
+
+        unusual = find_unusual(led, as_of, lambda: make_tabpfn(cfg, seed=cfg.forecast.seed))
+        (out / "insights.json").write_text(json.dumps({"unusual": unusual.to_dict()}), encoding="utf-8")
         bt = REPO_ROOT / "out" / "backtest" / "sim" / "summary.json"
         if bt.exists():
             shutil.copy(bt, out / "backtest.json")

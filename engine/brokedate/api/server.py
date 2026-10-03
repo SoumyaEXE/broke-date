@@ -103,6 +103,9 @@ def _invalidate(subject: str | None = None) -> None:
         if subject is None or k[0] == subject:
             _state["prepared"].pop(k, None)
             _state["bundles"].pop(k, None)
+    for k in list(_state.get("insights", {})):
+        if subject is None or k[0] == subject:
+            _state["insights"].pop(k, None)
 
 
 def _prepared(subject: str, as_of: date | None, n: int | None, seed: int | None) -> fe.Prepared:
@@ -300,6 +303,26 @@ def post_chat(body: ChatIn) -> StreamingResponse:
     events = stream_reply(cfg, body.question, facts, body.template, body.verdict, body.language, model=body.model)
     return StreamingResponse(ndjson(events),
                              media_type="application/x-ndjson")
+
+
+@app.get("/insights")
+def get_insights(subject: str) -> dict[str, Any]:
+    """Unusual spends (TabPFN quantiles of what each spend normally costs). Cached per (subject, as_of)."""
+    from brokedate.insights.anomaly import find_unusual
+    from brokedate.models.tabpfn_adapter import make_tabpfn
+
+    cfg, db = cfg_db()
+    try:
+        led = load_ledger(db, cfg, subject)
+    except NoDataError as e:
+        raise HTTPException(404, str(e)) from e
+    as_of = default_as_of(led)
+    key = (subject, str(as_of))
+    cache = _state.setdefault("insights", {})
+    if key not in cache:
+        with _lock:
+            cache[key] = {"unusual": find_unusual(led, as_of, lambda: make_tabpfn(cfg, seed=cfg.forecast.seed)).to_dict()}
+    return dict(cache[key])
 
 
 @app.get("/backtest")

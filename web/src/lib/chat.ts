@@ -103,10 +103,11 @@ export class Brain {
     // a plan is meant if any meaningful word of its name appears ("the movie" -> "Saturday movie + popcorn")
     const words = (name: string) => name.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3 && !/^(with|from|this|that|then)$/.test(w));
     const planHit = this.d.plans.find((p) => words(p.name).some((w) => new RegExp(`\\b${w}`).test(q)));
-    const talk = this.smallTalk(q);
-    if (talk) return talk;
+    // explicit requests ("show…", "add…", "turn on…") first, so "show where I land on payday" draws a chart
     const cmd = this.command(q, raw, planHit);
     if (cmd) return cmd;
+    const talk = this.smallTalk(q);
+    if (talk) return talk;
     if (/\b(skip|cancel|drop|without|don'?t|not go|na jai|bad di)\b/.test(q) && planHit) return this.skip(planHit);
     if (/\b(how (do|does) (you|this|it) work|tabpfn|what model|how accurate|accuracy|trust|backtest|brier|why should i believe)\b/.test(q)) return this.model();
     const amount = parseAmount(q);

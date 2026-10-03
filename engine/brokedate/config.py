@@ -36,6 +36,10 @@ class TabPFNCfg:
     lattice_bal_points: int = 11
     lattice_s3_points: int = 3
     lattice_s14_points: int = 4
+    # TabPFN categorizer stage between the regex rules and Gemma (enrich/tabpfn_cat.py)
+    classifier: bool = True
+    classifier_min_prob: float = 0.6
+    classifier_min_train: int = 40
 
 
 @dataclass
@@ -131,4 +135,6 @@ def load_config(path: Path | None = None) -> Config:
         cfg.data_dir = Path(data_dir_env)
     if os.environ.get("BROKEDATE_GEMMA") == "0":
         cfg.gemma.enabled = False
+    if os.environ.get("BROKEDATE_TABPFN_CAT") == "0":
+        cfg.tabpfn.classifier = False
     return cfg
