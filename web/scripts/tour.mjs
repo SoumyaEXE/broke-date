@@ -14,7 +14,7 @@ page.on("pageerror", (e) => errors.push(String(e)));
 const report = {};
 for (const r of routes) {
   await page.goto(`${base}#/${r}`, { waitUntil: "load" });
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(Number(process.env.TOUR_WAIT ?? 3000));
   report[r] = await page.evaluate(() => {
     const doc = document.documentElement;
     const scrollers = [...document.querySelectorAll("*")].filter((el) => {

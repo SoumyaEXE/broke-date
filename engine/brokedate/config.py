@@ -46,7 +46,7 @@ class GemmaCfg:
     batch_size: int = 20
     temperature: float = 0.0
     confidence_threshold: float = 0.6
-    letter_language: str = "Benglish"
+    letter_language: str = "English"
     letter_max_attempts: int = 3
     # chat replies: "auto" picks gemma3:4b when RAM allows and it is installed, else gemma3:1b (low-end laptops)
     chat_model: str = "auto"

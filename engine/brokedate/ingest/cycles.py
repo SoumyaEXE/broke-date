@@ -85,6 +85,9 @@ def detect_anchors(txns: pd.DataFrame, mode: str = "allowance", sender_pattern: 
     return Anchors(sel["id"].tolist(), list(sel["date"]), sel["amount_paise"].astype(int).tolist(), sender, mode)
 
 
+OVERDUE_GRACE_DAYS = 7  # an allowance this late is still expected (seen: up to 3 days late in practice)
+
+
 def next_anchor_date(anchors: Anchors, as_of: date, quantile: float = 0.75) -> tuple[date, bool]:
     """Predicted next anchor after `as_of`. Returns (date, scheduled?)."""
     if not anchors.dates:
@@ -93,13 +96,17 @@ def next_anchor_date(anchors: Anchors, as_of: date, quantile: float = 0.75) -> t
     if anchors.mode == "allowance" and last is not None:
         dom = int(np.median([d.day for d in anchors.dates[-6:]]))
         y, m = last.year, last.month
-        for _ in range(3):
+        for i in range(3):
             m += 1
             if m > 12:
                 y, m = y + 1, 1
             d = date(y, m, min(dom, calendar.monthrange(y, m)[1]))
             if d > as_of:
                 return d, True
+            # the month right after the last allowance is due but has not arrived yet: it is late, not skipped.
+            # Expect it any day now (predicted, not scheduled) instead of jumping a whole month ahead.
+            if i == 0 and (as_of - d).days <= OVERDUE_GRACE_DAYS:
+                return as_of + timedelta(days=1), False
         return as_of + timedelta(days=30), True
     gaps = anchors.gaps()
     g = int(np.quantile(gaps, quantile)) if gaps else 30

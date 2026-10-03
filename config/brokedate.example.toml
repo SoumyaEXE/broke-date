@@ -36,7 +36,7 @@ ollama_url = "http://127.0.0.1:11434"
 batch_size = 20
 temperature = 0
 confidence_threshold = 0.6
-letter_language = "Benglish"
+letter_language = "English"
 letter_max_attempts = 3
 
 [calendar]

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowCounterClockwise, CalendarPlus, CheckCircle, ClockCounterClockwise, Lightning, NotePencil, Trash, XCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CalendarPlus, CheckCircle, ClockCounterClockwise, NotePencil, Trash, XCircle } from "@phosphor-icons/react";
 import { Dropdown, DropdownDivider, DropdownItem, DropdownPopover, DropdownTrigger } from "@/components/base/dropdown/dropdown";
 import { AgentComposer } from "@/components/application/agent-chat/agent-composer";
 import { AgentMessage } from "@/components/application/agent-chat/agent-chat-message";
@@ -310,11 +310,6 @@ function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
             {plan && <Button variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} onClick={() => onFollow(`Add ${plan.name} ₹${Math.round(plan.amount_paise / 100)} on ${shortDate(plan.date)} to plans`)}>Add as a plan</Button>}
             {m.a.follow?.map((f) => <Button key={f} variant="secondary" size="xs" onClick={() => onFollow(f)}>{f}</Button>)}
           </div>
-          <span title={m.note ?? `Numbers from ${n} TabPFN futures`}
-            className="flex w-fit items-center gap-1.5 rounded-full bg-background-inner-default px-2.5 py-1 text-caption-1-medium text-text-tertiary shadow-xs">
-            {m.source === "gemma" ? <BrandLogo brand="google" className="size-3" /> : <Lightning weight="fill" className="size-3" aria-hidden />}
-            {m.source === "gemma" ? `TabPFN · Gemma ${m.model?.split(":")[1]?.toUpperCase() ?? ""}` : "TabPFN · checked"}
-          </span>
         </div>
       )}
     </div>

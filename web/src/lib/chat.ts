@@ -103,6 +103,8 @@ export class Brain {
     // a plan is meant if any meaningful word of its name appears ("the movie" -> "Saturday movie + popcorn")
     const words = (name: string) => name.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3 && !/^(with|from|this|that|then)$/.test(w));
     const planHit = this.d.plans.find((p) => words(p.name).some((w) => new RegExp(`\\b${w}`).test(q)));
+    const talk = this.smallTalk(q);
+    if (talk) return talk;
     const cmd = this.command(q, raw, planHit);
     if (cmd) return cmd;
     if (/\b(skip|cancel|drop|without|don'?t|not go|na jai|bad di)\b/.test(q) && planHit) return this.skip(planHit);
@@ -287,9 +289,37 @@ export class Brain {
       follow: ["How much is safe today?", "When would I run out?"] };
   }
 
+  /** Everyday messages: greetings, thanks, today's date, payday, balance. Short, direct, never the help wall. */
+  private smallTalk(q: string): Omit<Answer, "ms"> | null {
+    const words = q.replace(/[^a-z\s']/g, " ").trim().split(/\s+/).filter(Boolean);
+    const today = this.d.as_of, pay = this.d.next_anchor_date;
+    const left = Math.round((Date.parse(pay) - Date.parse(today)) / 86400000);
+    const payText = left <= 0 ? "today" : left === 1 ? `tomorrow, ${dow(pay)} ${shortDate(pay)}` : `${dow(pay)} ${shortDate(pay)}, in ${left} days`;
+    if (words.length <= 4 && /^(hi|hii+|hey|hello|helo|yo|sup|namaste|nomoskar|hola|gm|good (morning|evening|afternoon))\b/.test(words.join(" "))) {
+      return { intent: "hello", segs: [{ t: "Hey! You have " }, { t: inr(this.d.balance_now_paise), tone: "num" }, { t: ` right now, and your allowance is due ${payText}. What do you want to check?` }],
+        follow: ["How much is safe today?", "Can I afford ₹300 on Saturday?", "Where did my money go?"] };
+    }
+    if (words.length <= 6 && /\b(thanks|thank you|thx|ty|dhonnobad|ok|okay|cool|nice|great)\b/.test(q)) {
+      return { intent: "thanks", segs: [{ t: "Anytime. Ask again whenever a plan comes up." }], follow: ["Show the range", "How much is safe today?"] };
+    }
+    if (/\b(date|what day|which day|today'?s? date|day is it)\b/.test(q) && !/\b(broke|run out|pay ?day|allowance|afford)\b/.test(q)) {
+      return { intent: "date", segs: [{ t: "Today is " }, { t: `${dow(today)}, ${shortDate(today)}`, tone: "num" }, { t: `. Your allowance is due ${payText}.` }],
+        follow: ["How much is safe today?", "When would I run out?"] };
+    }
+    if (/\b(pay ?day|allowance|pocket money|when (do|will) i get|money (come|arrive))\b/.test(q) && !/\b(afford|spend|broke|run out)\b/.test(q)) {
+      return { intent: "payday", segs: [{ t: "Your allowance is due " }, { t: payText, tone: "num" }, { t: this.d.next_anchor_known ? "." : ", based on when it usually arrives." }],
+        follow: ["When would I run out?", "How much is safe today?"] };
+    }
+    if (/\b(balance|how much (money )?(do i have|is left|have i got)|money left|in my account)\b/.test(q)) {
+      return { intent: "balance", segs: [{ t: "You have " }, { t: inr(this.d.balance_now_paise), tone: "num" }, { t: ` as of ${shortDate(today)}.` }],
+        follow: ["How much is safe today?", "Where did my money go?"] };
+    }
+    return null;
+  }
+
   help(): Omit<Answer, "ms"> {
-    return { intent: "help", segs: [{ t: "Ask me things like " }, { t: "\"can I afford ₹400 movie on Saturday?\"", tone: "brand" }, { t: ", " }, { t: "\"when will I go broke?\"", tone: "brand" }, { t: " or " }, { t: "\"what if I skip the earphones?\"", tone: "brand" }, { t: ". I can also change things for you: " }, { t: "\"add momos ₹150 on Friday to plans\"", tone: "brand" }, { t: ", " }, { t: "\"turn on the movie\"", tone: "brand" }, { t: ", " }, { t: "\"show my spending\"", tone: "brand" }, { t: " or " }, { t: "\"set risk to 5%\"", tone: "brand" }, { t: ". Every number comes from rerunning your futures, never guessed." }],
-      follow: ["How much is safe today?", "Show the range", "Can I afford ₹300 on Saturday?"] };
+    return { intent: "help", segs: [{ t: "I can only answer questions about your money this month. Try one of these, or ask if you can afford something." }],
+      follow: ["How much is safe today?", "Can I afford ₹300 on Saturday?", "Show the range", "Add momos ₹150 on Friday to plans"] };
   }
 }
 

@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { EnvelopeSimpleOpen } from "@phosphor-icons/react";
 import { SegmentedControl, SegmentedControlItem } from "@/components/base/segmented-control/segmented-control";
-import { AgentThinking } from "@/components/application/agent-thinking/agent-thinking";
 import type { Fact, ForecastResponse, LetterResponse } from "../types";
 import type { DataProvider } from "../data/provider";
 import { Panel } from "./kit";
 
-const LANGS = ["Benglish", "English", "Bengali"] as const;
+const LANGS = ["English", "Benglish", "Bengali"] as const;
 
 export function LetterPanel({ provider, data, openFact }: {
   provider: DataProvider; data: ForecastResponse; openFact: (id: string | undefined, pool?: Record<string, Fact>) => void;
 }) {
-  const [lang, setLang] = useState<string>("Benglish");
+  const [lang, setLang] = useState<string>("English");
   const [letter, setLetter] = useState<LetterResponse | null>(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -32,7 +31,13 @@ export function LetterPanel({ provider, data, openFact }: {
         </SegmentedControl>
       }>
       <div className="mb-4 min-h-[9rem]" lang={lang === "Bengali" ? "bn" : "en"} aria-live="polite">
-        {loading ? <AgentThinking variant="wave" label="Writing" shimmer /> : letter ? (<>
+        {loading ? (
+          <div className="flex flex-col gap-3 pt-1" aria-label="Writing the letter" role="status">
+            {["w-full", "w-11/12", "w-full", "w-4/5", "w-2/5"].map((w, i) => (
+              <span key={i} className={`h-4 animate-pulse rounded-full bg-background-secondary-default ${w}`} style={{ animationDelay: `${i * 120}ms` }} />
+            ))}
+          </div>
+        ) : letter ? (<>
           <p className="text-headline-medium leading-relaxed text-text-primary" style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 400 }}>
             {letter.segments.map((s, i) => s.type === "fact" ? (
               <button key={i} type="button" onClick={() => openFact(s.fact_id, letter.facts)}

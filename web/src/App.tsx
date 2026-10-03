@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  CalendarCheck, ChartLineUp, ChatsCircle, Receipt, SealCheck, ChatCircleText, SquaresFour, UploadSimple,
+  CalendarBlank, CalendarCheck, Wallet, ChartLineUp, ChatsCircle, Receipt, SealCheck, ChatCircleText, SquaresFour, UploadSimple,
 } from "@phosphor-icons/react";
 import { RiMenuLine } from "@remixicon/react";
 import { DashboardSidebar, type DashboardNavItem } from "@/components/application/dashboard/dashboard-sidebar";
@@ -9,7 +9,7 @@ import { IconButton } from "@/components/base/buttons/icon-button";
 import { Chip } from "@/components/base/badges/chip";
 import type { Fact, ForecastResponse } from "./types";
 import { IS_DEMO, LiveProvider, StaticProvider, type DataProvider } from "./data/provider";
-import { daysBetween, shortDate } from "./lib/format";
+import { daysBetween, dow, shortDate } from "./lib/format";
 import { duo } from "./app/kit";
 import { OverviewPage } from "./app/OverviewPage";
 import { FuturesPage } from "./app/FuturesPage";
@@ -128,8 +128,15 @@ export default function App() {
             </div>
             <div className="flex flex-wrap items-center justify-end gap-2.5">
               {data && (
-                <span className="hidden text-body-2-medium text-text-secondary md:inline">
-                  {shortDate(data.as_of)} · {daysBetween(data.as_of, data.next_anchor_date) === 1 ? "allowance tomorrow" : `allowance in ${daysBetween(data.as_of, data.next_anchor_date)} days`}
+                <span className="hidden items-center gap-1 rounded-full bg-background-secondary-default p-1 text-body-2-medium md:flex">
+                  <span className="flex items-center gap-1.5 px-2.5 text-text-secondary">
+                    <CalendarBlank weight="duotone" className="size-4" aria-hidden />
+                    {dow(data.as_of)}, {shortDate(data.as_of)}
+                  </span>
+                  <span className="flex items-center gap-1.5 rounded-full bg-background-inner-default px-2.5 py-1 text-text-primary shadow-xs">
+                    <Wallet weight="duotone" className="size-4 text-accent-600" aria-hidden />
+                    {(() => { const d = daysBetween(data.as_of, data.next_anchor_date); return d <= 0 ? "Payday today" : d === 1 ? "Payday tomorrow" : `Payday in ${d} days`; })()}
+                  </span>
                 </span>
               )}
               {route !== "ask" && <Button variant="primary" size="small" leadingIcon={duo(ChatCircleText)} onClick={() => ask()}>Ask Broke Date</Button>}
@@ -143,7 +150,7 @@ export default function App() {
           )}
 
           <div key={route} className={route === "ask" ? "reveal flex min-h-0 flex-1 flex-col pb-3" : "reveal flex w-full flex-col gap-4 pb-6"}>
-            {!data && !error && route !== "ask" && <Loading />}
+            {!data && !error && ["overview", "futures", "plans", "activity"].includes(route) && <Loading />}
             {data && route === "overview" && <OverviewPage data={data} prev={prev} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} go={go} />}
             {route === "ask" && <AskPage data={data} provider={provider} question={question} onUpdate={update} go={go}
               onSettings={async (p) => { await provider.saveSettings(p); await load(); }} />}

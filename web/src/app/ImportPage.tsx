@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { CheckCircle, FileArrowUp, ListChecks, Wallet } from "@phosphor-icons/react";
+import { CheckCircle, FileArrowUp, ListChecks, LockKey, Wallet } from "@phosphor-icons/react";
+import { cx } from "@/utils/cx";
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { Select, SelectItem } from "@/components/base/select/select";
@@ -37,17 +38,57 @@ export function ImportPage({ provider, subject, onDone }: { provider: LiveProvid
     }
   };
 
+  const drop = (
+    <label onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)}
+      onDrop={(e) => { e.preventDefault(); setDrag(false); const f = e.dataTransfer.files[0]; if (f) void upload(f); }}
+      className={cx("group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed text-center transition-all duration-200",
+        report ? "px-6 py-10" : "px-6 py-16 sm:py-20",
+        drag ? "scale-[1.01] border-accent-400 bg-accent-50" : "border-border-button-default hover:border-accent-300 hover:bg-background-primary-hover")}>
+      <span className="flex size-14 items-center justify-center rounded-2xl bg-accent-50 transition-transform duration-200 group-hover:-translate-y-0.5">
+        <FileArrowUp weight="duotone" className="size-7 text-accent-600" aria-hidden />
+      </span>
+      <span className="mt-4 text-title-3-semibold text-text-primary">{stage === "working" ? "Reading your statement…" : "Drop your bank statement"}</span>
+      <span className="mt-1 text-body-medium text-text-tertiary">or click to choose a file</span>
+      <span className="mt-4 flex gap-1.5">
+        {["CSV", "XLSX", "PDF"].map((x) => <Chip key={x} variant="caption" color="neutral">{x}</Chip>)}
+      </span>
+      <input type="file" className="sr-only" accept=".csv,.xlsx,.pdf,.txt" onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); }} />
+    </label>
+  );
+
+  if (!report) {
+    return (
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 pt-2">
+        <section className="rounded-3xl bg-background-secondary-default p-2">
+          <div className="rounded-2lg bg-background-inner-default p-3 shadow-card">{drop}</div>
+        </section>
+        {stage === "error" && <p role="alert" className="rounded-xl bg-status-rose-background px-4 py-3 text-body-medium text-status-rose-text">{err}</p>}
+        <ol className="grid gap-3 sm:grid-cols-3">
+          {[
+            { icon: FileArrowUp, t: "Read", d: "On this laptop" },
+            { icon: CheckCircle, t: "Checked", d: "Every row vs balance" },
+            { icon: ListChecks, t: "Sorted", d: "Rules, then Gemma" },
+          ].map((s, i) => (
+            <li key={s.t} className="flex items-center gap-3 rounded-2xl bg-background-secondary-default p-3">
+              <Tile icon={s.icon} tone="accent" />
+              <div className="min-w-0">
+                <p className="text-body-medium text-text-primary"><span className="text-text-tertiary tabular-nums">{i + 1} · </span>{s.t}</p>
+                <p className="truncate text-body-2-medium text-text-tertiary">{s.d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="flex items-center justify-center gap-1.5 text-body-2-medium text-text-tertiary">
+          <LockKey weight="duotone" className="size-4" aria-hidden />Never uploaded · saved as “{subject}”
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
       <Panel title="Bring your statement" sub="Read on this laptop, checked row by row against the balance, never uploaded" icon={FileArrowUp}>
-        <label onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)}
-          onDrop={(e) => { e.preventDefault(); setDrag(false); const f = e.dataTransfer.files[0]; if (f) void upload(f); }}
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition ${drag ? "border-accent-400 bg-accent-50" : "border-border-button-default hover:bg-background-primary-hover"}`}>
-          <FileArrowUp weight="duotone" className="size-9 text-accent-500" aria-hidden />
-          <span className="mt-3 text-body-medium text-text-primary">Drop a CSV, XLSX or PDF statement</span>
-          <span className="text-body-2-medium text-text-tertiary">or click to choose · saved as “{subject}”</span>
-          <input type="file" className="sr-only" accept=".csv,.xlsx,.pdf,.txt" onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); }} />
-        </label>
+        {drop}
         {stage === "working" && <p className="mt-3 text-body-medium text-text-secondary" aria-live="polite">Parsing · reconciling · categorizing…</p>}
         {stage === "error" && <p role="alert" className="mt-3 rounded-xl bg-status-rose-background px-3 py-2 text-body-medium text-status-rose-text">{err}</p>}
         {report && (

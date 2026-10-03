@@ -127,7 +127,7 @@ export class StaticProvider implements DataProvider {
   private plans: PlanRow[] = [];
   private letters: Record<string, LetterResponse> | null = null;
   private settingsState: Settings = { broke_line_rupees: 150, risk_tolerance: 0.1, n_futures: 500,
-    letter_language: "Benglish", gemma_enabled: true, letters_enabled: true };
+    letter_language: "English", gemma_enabled: true, letters_enabled: true };
   constructor(private root = `${import.meta.env.BASE_URL}demo/`) {}
 
   private async load(): Promise<ForecastResponse> {

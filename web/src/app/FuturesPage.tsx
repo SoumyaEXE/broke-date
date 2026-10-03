@@ -36,9 +36,9 @@ export function FuturesPage({ data }: { data: ForecastResponse; prev: ForecastRe
         {view === "range" ? (
           <>
             <div className="mb-2 flex flex-wrap gap-4">
-              <Legend swatch="var(--color-accent-600)" label="Typical" />
-              <Legend swatch="color-mix(in srgb, var(--color-accent-500) 45%, white)" label="Half of futures" />
-              <Legend swatch="color-mix(in srgb, var(--color-accent-400) 25%, white)" label="Almost all futures" />
+              <Legend swatch="var(--color-text-primary)" label="This month so far" />
+              <Legend swatch="var(--color-accent-600)" label="Typical ahead" dashed />
+              <Legend swatch="color-mix(in srgb, var(--color-accent-500) 45%, white)" label="Likely range" />
             </div>
             <FanChart data={data} pts={pts} />
             <div className="mt-4 border-t border-separator-border pt-3">

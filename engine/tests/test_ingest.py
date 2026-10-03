@@ -103,3 +103,15 @@ def test_irregular_mode(cfg, db):
 
 def test_parsed_statement_type():
     assert isinstance(_parse(), ParsedStatement)
+
+
+def test_late_allowance_is_expected_tomorrow_not_next_month() -> None:
+    from datetime import date
+
+    from brokedate.ingest.cycles import Anchors, next_anchor_date
+
+    months = [date(2026, m, 2) for m in range(4, 10)]  # arrives on the 2nd every month
+    a = Anchors([str(i) for i in range(len(months))], months, [300000] * len(months), "PARENT", "allowance")
+    assert next_anchor_date(a, date(2026, 9, 20)) == (date(2026, 10, 2), True)  # normal: next month, scheduled
+    assert next_anchor_date(a, date(2026, 10, 3)) == (date(2026, 10, 4), False)  # late by a day: expect tomorrow
+    assert next_anchor_date(a, date(2026, 10, 15)) == (date(2026, 11, 2), True)  # far past due: next month

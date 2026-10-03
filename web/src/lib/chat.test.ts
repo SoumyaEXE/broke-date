@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import demo from "../../public/demo/forecast.json";
 import type { ForecastResponse } from "../types";
 import { Brain, ground, splitPlaceholders } from "./chat";
+import { shortDate } from "./format";
 
 const data = demo as unknown as ForecastResponse;
 const QUESTIONS = [
@@ -53,5 +54,30 @@ describe("chat can act on the workspace", () => {
   });
   it("still answers what-ifs about a plan without changing it", () => {
     expect(brain.ask("what if I skip the earphones?").ops).toBeUndefined();
+  });
+});
+
+describe("everyday messages get their own short answers", () => {
+  const brain = new Brain(data);
+  const text = (q: string) => brain.ask(q).segs.map((s) => s.t).join("");
+  it("greets instead of dumping help", () => { expect(brain.ask("hi").intent).toBe("hello"); expect(text("hey")).toContain("right now"); });
+  it("tells today's date from the forecast, not a hard-coded one", () => {
+    const a = brain.ask("uhm whats the todays date");
+    expect(a.intent).toBe("date");
+    expect(text("whats the date today")).toContain(shortDate(data.as_of));
+  });
+  it("answers payday and balance", () => {
+    expect(brain.ask("when is my allowance coming").intent).toBe("payday");
+    expect(brain.ask("how much money do i have").intent).toBe("balance");
+  });
+  it("unknown questions get one short line, not the same wall of examples", () => {
+    const a = brain.ask("who won the cricket match");
+    expect(a.intent).toBe("help");
+    expect(text("who won the cricket match").length).toBeLessThan(120);
+    expect(a.follow?.length).toBeGreaterThan(2);
+  });
+  it("every follow-up button is a question the brain understands", () => {
+    for (const q of ["hi", "thanks", "whats the date", "when is payday", "my balance", "who won the match"])
+      for (const f of brain.ask(q).follow ?? []) expect(brain.ask(f).intent).not.toBe("help");
   });
 });
