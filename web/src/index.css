@@ -1,115 +1,36 @@
-@import "tailwindcss";
 @import "@fontsource-variable/inter";
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
+@import "../styles/globals.css";
+@source "../components";
+@source "../src";
 
-@theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --color-app: #f6f6f7;
-  --color-card: #ffffff;
-  --color-line: #ececef;
-  --color-line-2: #f2f2f4;
-  --color-ink: #121316;
-  --color-ink-2: #3a3d44;
-  --color-mute: #7b7f88;
-  --color-brand: #7c5cfc;
-  --color-brand-2: #ede8ff;
-  --color-good: #12a150;
-  --color-good-2: #e7f6ee;
-  --color-warn: #f97316;
-  --color-warn-2: #fff1e7;
-  --color-gold: #f5b10a;
-  --color-bad: #e5484d;
-  --color-bad-2: #fdecec;
-}
-
+/* Fonts are bundled locally (no remote fonts): BoardUI reads these two variables. */
 :root {
-  color-scheme: light;
-  --made: #7c5cfc;
-  --broke: #f97316;
-  --fg: #121316;
-  --mut: #7b7f88;
-  --rule: #ececef;
-  --bg: #ffffff;
-  --bg-2: #f6f6f7;
-  --color-made: #7c5cfc;
-  --color-broke: #f97316;
+  --font-inter: "Inter Variable";
+  --font-mono-source: "IBM Plex Mono";
 }
 
-/* helpers used by the detail components */
-.rule { border-color: var(--rule); }
-.bg-2 { background: var(--bg-2); }
-.dashed-rule { border-top: 1px dashed var(--rule); }
-.hatch { background-image: repeating-linear-gradient(135deg, rgba(249, 115, 22, 0.45) 0 2px, transparent 2px 6px); }
-
-html, body { background: var(--color-app); color: var(--color-ink); }
-body {
-  font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss01", "tnum";
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.006em;
+/* Accent ramp re-tinted to violet (BoardUI's documented way to re-theme CTAs, switches, tabs, focus). */
+@theme {
+  --color-accent-50: var(--color-violet-50);
+  --color-accent-100: var(--color-violet-100);
+  --color-accent-200: var(--color-violet-200);
+  --color-accent-300: var(--color-violet-300);
+  --color-accent-400: var(--color-violet-400);
+  --color-accent-500: var(--color-violet-500);
+  --color-accent-600: var(--color-violet-600);
+  --color-accent-700: var(--color-violet-700);
+  --color-accent-800: var(--color-violet-800);
+  --color-accent-900: var(--color-violet-900);
+  --color-accent-950: var(--color-violet-950);
 }
 
-.num { font-variant-numeric: tabular-nums; }
-.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.muted { color: var(--color-mute); }
+html, body { overflow-x: hidden; }
+body { font-feature-settings: "cv11", "ss01"; }
 
-.card {
-  background: var(--color-card);
-  border: 1px solid var(--color-line);
-  border-radius: 20px;
-  box-shadow: 0 1px 2px rgba(16, 18, 24, 0.03);
-}
-.card-head { border-bottom: 1px solid var(--color-line); }
-.divide-soft > * + * { border-top: 1px solid var(--color-line-2); }
-
-.pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  border: 1px solid var(--color-line); border-radius: 999px;
-  padding: 6px 14px; font-size: 14px; background: #fff; color: var(--color-ink);
-  transition: background .15s, border-color .15s, box-shadow .15s;
-}
-.pill:hover { background: #fafafb; border-color: #e2e2e7; }
-.tag {
-  display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 10px;
-  font-size: 12.5px; background: #f3f3f5; color: var(--color-ink-2);
-}
-.icon-badge {
-  width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center;
-  background: #f6f6f8; border: 1px solid var(--color-line-2); flex: none;
-}
-.btn-primary {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: linear-gradient(180deg, #8a6dff 0%, #7254f5 100%); color: #fff; border-radius: 12px;
-  padding: 10px 16px; font-weight: 500; box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 4px 12px rgba(124,92,252,.28);
-  transition: transform .12s, box-shadow .15s, filter .15s;
-}
-.btn-primary:hover { filter: brightness(1.04); box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 6px 18px rgba(124,92,252,.34); }
-.btn-primary:active { transform: translateY(1px) scale(.99); }
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 6px; border-radius: 10px; padding: 8px 12px;
-  color: var(--color-ink-2); transition: background .15s;
-}
-.btn-ghost:hover { background: #f4f4f6; }
-.input {
-  width: 100%; border: 1px solid var(--color-line); border-radius: 12px; padding: 9px 12px; background: #fff;
-  outline: none; transition: border-color .15s, box-shadow .15s;
-}
-.input:focus { border-color: #c9bbff; box-shadow: 0 0 0 4px #f0ebff; }
-
-.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
-.scroll-thin::-webkit-scrollbar-thumb { background: #e3e3e8; border-radius: 99px; }
-
-:focus-visible { outline: 2px solid #a48dff; outline-offset: 2px; border-radius: 8px; }
-
-@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.rise { animation: rise .35s cubic-bezier(.2,.7,.2,1) both; }
-@keyframes blink { 0%, 80%, 100% { opacity: .25 } 40% { opacity: 1 } }
-.dot-typing span { animation: blink 1.2s infinite both; }
-.dot-typing span:nth-child(2) { animation-delay: .2s; }
-.dot-typing span:nth-child(3) { animation-delay: .4s; }
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+/* Data-viz colours that must stay identical in canvas/SVG code paths (made it / went broke). */
+:root {
+  --made: var(--color-violet-500);
+  --broke: var(--color-orange-500);
 }
