@@ -48,12 +48,12 @@ def _warm() -> None:
             _latest(subjects[0])
             log.info("warm: forecast ready for %s", subjects[0])
         if cfg.gemma.enabled:
-            from brokedate.narrate.chat import pick_chat_model
+            from brokedate.narrate.chat import pick_chat_model, warm_messages
 
             client = OllamaClient(cfg.gemma.ollama_url, cfg.gemma.model, cfg.gemma.timeout_s)
             model = pick_chat_model(cfg, client.available_models())
             if model:
-                for _ in client.chat_stream([{"role": "user", "content": "Reply with: ok"}], num_predict=2, model=model):
+                for _ in client.chat_stream(warm_messages(cfg.gemma.letter_language), num_predict=1, model=model):
                     pass
                 log.info("warm: %s loaded", model)
     except Exception as e:  # pragma: no cover - best effort

@@ -78,7 +78,10 @@ class _FakeChatClient:
         return self.models
 
     def chat_stream(self, messages, temperature=0.6, seed=0, num_predict=200, model=None):  # noqa: ANN001
-        assert "{f1}" in messages[1]["content"] and "₹" not in messages[1]["content"].split("Facts")[1].split("A correct")[0]
+        import re
+
+        body = messages[1]["content"]
+        assert "{f1}" in body and not re.search(r"\d", re.sub(r"\{f\d+\}", "", body))
         yield from self.pieces
 
 
@@ -144,3 +147,17 @@ def test_chat_reports_offline_gemma() -> None:
 def test_chat_guard_waits_for_placeholder_to_close() -> None:
     ev = _run(["You can spend up to {", "f", "1", "} today."])
     assert ev[-1]["ok"] is True and ev[-1]["text"] == "You can spend up to {f1} today."
+
+
+def test_chat_rejects_reply_that_drops_a_fact() -> None:
+    from brokedate.config import Config
+    from brokedate.narrate.chat import stream_reply
+
+    ev = list(stream_reply(Config(), "when?", _FACTS, "{f1} of them run out, around {f2}.", None, "English",
+                           client=_FakeChatClient(["Bhai, you will run out around {f2}, sorry."])))  # type: ignore[arg-type]
+    assert ev[-1]["ok"] is False and "left out facts ['f1']" in ev[-1]["problems"]
+
+
+def test_chat_rejects_repeated_unit() -> None:
+    ev = _run(["You can spend {f1} today; risk is {f2} percent."])
+    assert ev[-1]["ok"] is False and "unit word repeated after a placeholder" in ev[-1]["problems"]

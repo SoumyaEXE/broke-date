@@ -16,18 +16,24 @@ import psutil
 from brokedate.config import Config
 from brokedate.enrich.gemma import OllamaClient, OllamaError
 from brokedate.narrate.templates import lang_key
-from brokedate.narrate.tone import LANGUAGE_NOTES
 from brokedate.narrate.validate import PLACEHOLDER, has_digit, validate
 
-CHAT_TONE = """\
-You are Broke Date, a money buddy for a college student in Kolkata. You talk like a kind older cousin: warm,
-direct, a little funny, never preachy. Never shame, never moralize, never lecture about saving.
-Answer the question in one to three short sentences. Lead with the answer (yes / tight / no, or the number).
-Use ONLY the facts given. Do not add new facts, advice or numbers that are not in the facts.
-"""
+# Kept short on purpose: on CPU, prompt processing dominates time-to-first-token, and gemma3's sliding-window
+# attention means Ollama cannot reuse a cached prefix across different questions.
+CHAT_TONE = (
+    "You are Broke Date, a warm, funny older-cousin money buddy for a Kolkata college student. Never shame or "
+    "lecture. Reply in one to three short sentences. If a verdict is given, open with it; if not, do not judge. "
+    "Use only the facts in the plain answer and keep their meaning. "
+)
+SHORT_LANG = {
+    "benglish": "Write in Benglish: Bengali in Latin letters mixed with English, like Kolkata students text.",
+    "english": "Write in casual Indian English.",
+    "bengali": "Write in Bengali script, casual and warm.",
+}
 
 CHAT_PREFERENCE = ("gemma3:4b", "gemma3:1b", "gemma3:270m", "gemma2:2b")
 _PARTIAL_TAIL = re.compile(r"\{f?\d*$")
+_UNIT_AFTER = re.compile(r"\{f\d+\}\s*(?:days?|din|%|percent|futures?|months?)\b", re.I)
 
 
 def pick_chat_model(cfg: Config, installed: list[str]) -> str | None:
@@ -48,22 +54,22 @@ def pick_chat_model(cfg: Config, installed: list[str]) -> str | None:
 def chat_messages(question: str, facts: list[dict[str, str]], template: str, verdict: str | None,
                   language: str) -> list[dict[str, str]]:
     lk = lang_key(language)
-    lang_note = LANGUAGE_NOTES.get(lk, f"Write in {language}.")
-    lines = "\n".join(f"- {{{f['id']}}}: {f['desc']}" for f in facts)
-    system = (CHAT_TONE + lang_note + "\n\nHARD RULE: never write any digit, number, date or number word "
-              "(not in English, not in Bengali, not transliterated). Whenever you need a number, amount, "
-              "percentage or date, write its placeholder exactly as given, in curly braces, e.g. {f1}. "
-              "Placeholders already include ₹, % and units, so never put ₹, Rs, rupees, % or 'days' next to them. "
-              "Plain text only. No greeting, no sign-off, no emojis, under sixty words.")
+    lang_note = SHORT_LANG.get(lk, f"Write in {language}.")
+    kinds = ", ".join(f"{{{f['id']}}} {f['desc'].split(',')[0]}" for f in facts)
+    system = (CHAT_TONE + lang_note + " Never write digits or number words: copy placeholders like {f1} exactly; "
+              "they already include ₹, % and units. No greeting, no emojis.")
     user = (f"Question: {question}\n"
-            + (f"Verdict from the simulation: {verdict}\n" if verdict else "")
-            + (f"Facts (placeholders only):\n{lines}\n" if lines else "No numeric facts for this question.\n")
-            + f"A correct but plain reply, for reference only: {template}\n\n"
-            "Say the same thing in your own words, like a friend texting back. Do not copy the reference sentence. "
-            "Write your reply now.")
+            + (f"Verdict: {verdict}\n" if verdict else "")
+            + f"Plain answer: {template}\n"
+            + (f"Placeholders: {kinds}\n" if kinds else "")
+            + "Say it in your own words, like a friend texting back.")
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
+def warm_messages(language: str) -> list[dict[str, str]]:
+    """A real-shaped request, so warming loads the model and its compute graph for this prompt size."""
+    return chat_messages("How much can I spend today?", [{"id": "f1", "desc": "amount"}], "You can spend {f1}.",
+                         None, language)
 
 
 def stream_reply(cfg: Config, question: str, facts: list[dict[str, str]], template: str, verdict: str | None,
@@ -85,7 +91,7 @@ def stream_reply(cfg: Config, question: str, facts: list[dict[str, str]], templa
     buf = ""
     try:
         for piece in client.chat_stream(chat_messages(question, facts, template, verdict, language),
-                                        temperature=0.6, num_predict=160, model=model):
+                                        temperature=0.35, num_predict=160, model=model):
             buf += piece
             # live guard: a digit anywhere outside a placeholder ends the stream immediately
             # (an unfinished placeholder at the very end, e.g. "{f1", is not a digit yet)
@@ -100,6 +106,13 @@ def stream_reply(cfg: Config, question: str, facts: list[dict[str, str]], templa
     problems = validate(text, known, min_words=4, max_words=80)
     if not facts:
         problems = [p for p in problems if p != "no facts referenced"]
+    # placeholders already carry their unit ("0.7 days", "5%"); a repeated unit reads "0.7 days days"
+    if _UNIT_AFTER.search(text):
+        problems.append("unit word repeated after a placeholder")
+    # coverage: dropping a number changes the meaning ("sixteen of five hundred run out" -> "you'll run out")
+    missing = sorted(set(PLACEHOLDER.findall(template)) - set(PLACEHOLDER.findall(text)))
+    if missing:
+        problems.append(f"left out facts {missing}")
     yield {"type": "done", "ok": not problems, "text": text, "problems": problems}
 
 

@@ -12,7 +12,19 @@ export interface ScenarioCard {
   brokeLine: number; dayCost?: number; verdict: "yes" | "tight" | "no";
 }
 export interface ChatAction { label: string; plan?: { name: string; amount_paise: number; date: string } }
-export interface Answer { segs: Seg[]; card?: ScenarioCard; actions?: ChatAction[]; follow?: string[]; intent: string; ms: number }
+/** Changes the chat makes to the workspace when asked ("turn on the movie", "open futures", "set risk to 5%"). */
+export type Op =
+  | { kind: "toggle"; planId: string; name: string; active: boolean }
+  | { kind: "add"; plan: { name: string; amount_paise: number; date: string } }
+  | { kind: "remove"; planId: string; name: string }
+  | { kind: "go"; route: "overview" | "futures" | "plans" | "activity" | "grade" | "settings" | "about" }
+  | { kind: "settings"; patch: { risk_tolerance?: number; broke_line_rupees?: number }; before: { risk_tolerance?: number; broke_line_rupees?: number } };
+/** Charts the chat can draw inline, from the same futures as the dashboard. */
+export type Artifact = "range" | "spending" | "payday" | "plans";
+export interface Answer {
+  segs: Seg[]; card?: ScenarioCard; actions?: ChatAction[]; follow?: string[]; intent: string; ms: number;
+  ops?: Op[]; artifact?: Artifact;
+}
 
 const WEEKDAYS: Record<string, number> = {
   sun: 0, sunday: 0, robibar: 0, mon: 1, monday: 1, sombar: 1, tue: 2, tues: 2, tuesday: 2, mongolbar: 2,
@@ -89,6 +101,8 @@ export class Brain {
 
   private route(q: string, raw: string): Omit<Answer, "ms"> {
     const planHit = this.d.plans.find((p) => q.includes(p.name.toLowerCase().split(/[ +]/)[0]) && p.name.length > 2);
+    const cmd = this.command(q, raw, planHit);
+    if (cmd) return cmd;
     if (/\b(skip|cancel|drop|without|don'?t|not go|na jai|bad di)\b/.test(q) && planHit) return this.skip(planHit);
     if (/\b(how (do|does) (you|this|it) work|tabpfn|what model|how accurate|accuracy|trust|backtest|brier|why should i believe)\b/.test(q)) return this.model();
     const amount = parseAmount(q);
@@ -129,7 +143,9 @@ export class Brain {
     const lost = c.beforeMade - c.afterMade;
     const segs: Seg[] = [];
     if (idx >= T || date >= this.d.next_anchor_date) {
-      segs.push({ t: `${shortDate(date)} is after your allowance lands (${shortDate(this.d.next_anchor_date)}), so it doesn't touch this month's ` },
+      segs.push({ t: date === this.d.next_anchor_date
+        ? `${shortDate(date)} is the day your allowance lands, so it doesn't touch this month's `
+        : `${shortDate(date)} is after your allowance lands (${shortDate(this.d.next_anchor_date)}), so it doesn't touch this month's ` },
         { t: "futures", tone: "brand" }, { t: `. It still costs about ` }, { t: days(cost), tone: "num" }, { t: " of your own money's runway." });
     } else {
       const v = c.verdict;
@@ -169,10 +185,12 @@ export class Brain {
     const b = Array.from(r.firstBroke).filter((x) => x >= 1 && x <= H).sort((a, z) => a - z);
     if (!b.length) return { intent: "broke", segs: [{ t: "In none of your " }, { t: String(n), tone: "num" }, { t: ` futures do you go broke before ${shortDate(this.d.next_anchor_date)}. ` }, { t: "You're fine this month.", tone: "good" }], follow: ["How much is safe today?", "How long does my money last?"] };
     const q = (p: number) => b[Math.min(b.length - 1, Math.round(p * (b.length - 1)))];
+    const lo = shortDate(addDays(this.d.as_of, q(0.1) - 1)), hi = shortDate(addDays(this.d.as_of, q(0.9) - 1));
     return {
       intent: "broke",
-      segs: [{ t: `${b.length} of ${n}`, tone: "bad" }, { t: " futures go broke before payday. When they do, it's most often around " },
-        { t: shortDate(addDays(this.d.as_of, q(0.5) - 1)), tone: "num" }, { t: ` (80% of them between ${shortDate(addDays(this.d.as_of, q(0.1) - 1))} and ${shortDate(addDays(this.d.as_of, q(0.9) - 1))}).` }],
+      segs: [{ t: `${b.length} of ${n}`, tone: "bad" }, { t: " simulated months run out before payday. When they do, it's most often around " },
+        { t: shortDate(addDays(this.d.as_of, q(0.5) - 1)), tone: "num" },
+        { t: lo === hi ? ", right at the end of the month." : ` (most of them between ${lo} and ${hi}).` }],
       follow: ["How much is safe today?", "What if I skip my plans?"],
     };
   }
@@ -207,6 +225,64 @@ export class Brain {
     return { intent: "model", segs: [{ t: "TabPFN", tone: "brand" }, { t: " learned the full spread of how much you might spend on any day, from your own history, no training loop. I simulate " },
       { t: `${this.d.n_futures} futures`, tone: "num" }, { t: " day by day from it and answer every question by rerunning those same futures with your change. Then I grade myself on your past months under rules committed before seeing results; see " }, { t: "How good am I?", tone: "brand" }, { t: "." }],
       follow: ["Can I afford ₹500 biryani on Saturday?", "When would I go broke?"] };
+  }
+
+  /** Imperative requests: act on the workspace or draw a chart. Returns null for ordinary questions. */
+  private command(q: string, raw: string, planHit: PlanRow | undefined): Omit<Answer, "ms"> | null {
+    // inline charts
+    if (/\b(show|draw|plot|chart|graph|visuali[sz]e|dekha)\b/.test(q)) {
+      if (/\b(spend|spent|categor|where|breakdown|kharcha)\b/.test(q)) return this.show("spending", "Here's where this month's money went, against a typical month.");
+      if (/\b(payday|land|end of (the )?month|histogram)\b/.test(q)) return this.show("payday", `Here's where all ${this.d.n_futures} simulated months land on payday.`);
+      if (/\bplans?\b/.test(q) && !/\bopen\b/.test(q)) return this.show("plans", "Here are your plans and what each one costs in days of runway.");
+      if (/\b(range|future|fan|balance|month|forecast)\b/.test(q)) return this.show("range", `Here's the range of your balance to payday across ${this.d.n_futures} simulated months.`);
+    }
+    // navigation
+    const tab = q.match(/\b(?:open|go to|take me to|switch to|navigate to)\s+(?:the\s+)?(overview|home|dashboard|futures?|plans?|activity|transactions|grade|how good|settings|about|how it works)\b/);
+    if (tab) {
+      const t = tab[1];
+      const route = /overview|home|dashboard/.test(t) ? "overview" : /future/.test(t) ? "futures" : /plan/.test(t) ? "plans"
+        : /activity|transactions/.test(t) ? "activity" : /grade|how good/.test(t) ? "grade" : /settings/.test(t) ? "settings" : "about";
+      return { intent: "go", segs: [{ t: "Opening " }, { t: route === "grade" ? "How good am I?" : route[0].toUpperCase() + route.slice(1), tone: "brand" }, { t: "." }], ops: [{ kind: "go", route }] };
+    }
+    // plan switches
+    if (planHit && /\b(turn on|switch on|enable|activate|count|add .* back|i('| a)?m doing|i will do|do it)\b/.test(q) && !planHit.active)
+      return this.opPlan({ kind: "toggle", planId: planHit.id, name: planHit.name, active: true }, `Switched on ${planHit.name}.`);
+    if (planHit && /\b(turn off|switch off|disable|deactivate|not doing|pause)\b/.test(q) && planHit.active)
+      return this.opPlan({ kind: "toggle", planId: planHit.id, name: planHit.name, active: false }, `Switched off ${planHit.name}.`);
+    if (planHit && /\b(delete|remove)\b/.test(q))
+      return this.opPlan({ kind: "remove", planId: planHit.id, name: planHit.name }, `Removed ${planHit.name} from your plans.`);
+    // new plan
+    const amount = parseAmount(q);
+    if (amount && /\b(add|plan|schedule|put)\b/.test(q) && /\b(add|to (my )?plans?|as a plan)\b/.test(q)) {
+      const date = parseDate(q, this.d.as_of) ?? this.d.as_of;
+      const name = thing(raw);
+      const plan = { name: name === "this" ? "New plan" : name[0].toUpperCase() + name.slice(1), amount_paise: amount, date };
+      return this.opPlan({ kind: "add", plan }, `Added ${plan.name}, ${inr(amount)} on ${shortDate(date)}, to your plans.`);
+    }
+    // settings
+    const risk = q.match(/\b(?:risk|comfort)\b.*?\b(\d{1,2})\s?%/);
+    if (risk && /\b(set|change|make|put|lower|raise)\b/.test(q)) {
+      const v = Math.min(50, Math.max(1, Number(risk[1]))) / 100;
+      return { intent: "settings", segs: [{ t: "Your risk limit is now " }, { t: pct(v), tone: "num" }, { t: ". Safe-to-spend recalculates on the same futures." }],
+        ops: [{ kind: "settings", patch: { risk_tolerance: v }, before: { risk_tolerance: this.d.risk_tolerance } }] };
+    }
+    const line = q.match(/\bbroke line\b.*?(?:₹|rs\.?\s?)?(\d{2,5})\b/);
+    if (line && /\b(set|change|make|put|to)\b/.test(q)) {
+      const r = Number(line[1]);
+      return { intent: "settings", segs: [{ t: "Broke line is now " }, { t: inr(r * 100), tone: "num" }, { t: ". Every future reruns against it." }],
+        ops: [{ kind: "settings", patch: { broke_line_rupees: r }, before: { broke_line_rupees: Math.round(this.d.broke_line_paise / 100) } }] };
+    }
+    return null;
+  }
+
+  private show(artifact: Artifact, text: string): Omit<Answer, "ms"> {
+    return { intent: "show", segs: [{ t: text }], artifact,
+      follow: artifact === "spending" ? ["When would I run out?", "Show the range"] : ["Where did my money go?", "How much is safe today?"] };
+  }
+
+  private opPlan(op: Op, text: string): Omit<Answer, "ms"> {
+    return { intent: "act", segs: [{ t: text }, { t: " Every future has been rerun with it." }], ops: [op], artifact: "plans",
+      follow: ["How much is safe today?", "When would I run out?"] };
   }
 
   help(): Omit<Answer, "ms"> {
@@ -247,6 +323,13 @@ export function ground(a: Answer): Grounded {
       template += lead + add(core, s.tone) + tail;
     }
     else template += s.t.replace(NUM, (m) => add(m.trim()));
+  }
+  // say exactly what each number means: its kind plus the sentence it sits in (other numbers stay placeholders)
+  const sentences = template.replace(/\s+/g, " ").split(/(?<=[.!?])\s+/);
+  for (const f of facts) {
+    const s = sentences.find((x) => x.includes(`{${f.id}}`));
+    const kind = f.desc.split(" after ")[0];
+    if (s) f.desc = `${kind}, in "${s.trim()}"`;
   }
   const v = a.card?.verdict;
   const verdict = v === "yes" ? "comfortable: yes, they can afford it" : v === "tight" ? "doable but tight" : v === "no" ? "risky: better to hold off" : null;

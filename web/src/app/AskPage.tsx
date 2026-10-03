@@ -80,7 +80,7 @@ export function AskPage({ data, provider, question, onAddPlan }: {
         else if (e.type === "token") append(id, e.text);
         else if (e.type === "done") {
           if (e.ok) patch(id, { text: e.text, status: "done" });
-          else typeOut(id, g.template, "Gemma's draft contained a number it was not given, so here is the checked answer instead.");
+          else typeOut(id, g.template, rejection(e.problems));
         } else if (e.type === "error") typeOut(id, g.template, started ? "Gemma stopped mid-reply; showing the checked answer." : `${e.message}. Showing the checked answer.`);
       }, ctl.signal).catch(() => typeOut(id, g.template, "Engine not reachable; showing the checked answer."));
   };
@@ -130,7 +130,7 @@ export function AskPage({ data, provider, question, onAddPlan }: {
             </div>
           ) : msgs.map((m) => m.role === "user"
             ? <AgentMessage key={m.id} role="user" text={m.text} at={m.at} />
-            : <BotTurn key={m.id} m={m} n={n} onFollow={send} onAddPlan={onAddPlan} />)}
+            : <BotTurn key={m.id} m={m} n={n} live={!!provider.chat} onFollow={send} onAddPlan={onAddPlan} />)}
         </div>
       </div>
 
@@ -145,23 +145,37 @@ export function AskPage({ data, provider, question, onAddPlan }: {
   );
 }
 
-function BotTurn({ m, n, onFollow, onAddPlan }: { m: Bot; n: number; onFollow: (q: string) => void; onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void }) {
+/** Plain-English reason a Gemma draft was not shown (the validator's problems, translated). */
+function rejection(problems: string[]): string {
+  const p = problems.join(" ");
+  const why = /digit|number words/.test(p) ? "wrote a number itself instead of using TabPFN's"
+    : /left out/.test(p) ? "left out one of the numbers, which changed the meaning"
+    : /unknown placeholders|malformed/.test(p) ? "referred to a number that does not exist"
+    : "did not pass the checks";
+  return `Gemma's draft ${why}, so this is the checked answer.`;
+}
+
+function BotTurn({ m, n, live, onFollow, onAddPlan }: { m: Bot; n: number; live: boolean; onFollow: (q: string) => void; onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void }) {
   const [added, setAdded] = useState(false);
   const segs = splitPlaceholders(m.text, m.g.facts);
-  if (m.status === "thinking") return <AgentThinking variant="wave" label={`Running ${n} futures`} shimmer className="px-1" />;
   const done = m.status === "done";
   return (
     <div className="flex flex-col gap-3 px-1">
-      <p className="text-body-regular leading-relaxed text-text-primary">
-        {segs.map((s, i) => s.tone ? (
-          <span key={i} className={cx("animate-[page-reveal_360ms_ease-out_both] font-semibold tabular-nums",
-            s.tone === "good" && "text-status-lime-text", s.tone === "bad" && "text-status-rose-text", s.tone === "brand" && "text-accent-600")}>{s.t}</span>
-        ) : <span key={i}>{s.t}</span>)}
-        {!done && <span className="ms-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse rounded-full bg-accent-500 align-baseline" aria-hidden />}
-      </p>
+      {m.status === "thinking" ? (
+        <AgentThinking variant="wave" label={live ? "Gemma is writing" : `Running ${n} futures`} shimmer />
+      ) : (
+        <p className="text-body-regular leading-relaxed text-text-primary">
+          {segs.map((s, i) => s.tone ? (
+            <span key={i} className={cx("animate-[page-reveal_360ms_ease-out_both] font-semibold tabular-nums",
+              s.tone === "good" && "text-status-lime-text", s.tone === "bad" && "text-status-rose-text", s.tone === "brand" && "text-accent-600")}>{s.t}</span>
+          ) : <span key={i}>{s.t}</span>)}
+          {!done && <span className="ms-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse rounded-full bg-accent-500 align-baseline" aria-hidden />}
+        </p>
+      )}
+      {/* TabPFN's numbers are ready the moment the question is asked; the words catch up above them */}
+      {m.a.card && <div className="animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both]"><ScenarioTile c={m.a.card} /></div>}
       {done && (
         <div className="flex animate-[page-reveal_480ms_cubic-bezier(0.22,1,0.36,1)_both] flex-col gap-3">
-          {m.a.card && <ScenarioTile c={m.a.card} />}
           <div className="flex flex-wrap items-center gap-2">
             {m.a.actions?.map((ac) => ac.plan && (
               <Button key={ac.label} variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} disabled={added}

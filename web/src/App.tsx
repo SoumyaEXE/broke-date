@@ -129,7 +129,7 @@ export default function App() {
             <div className="flex flex-wrap items-center justify-end gap-2.5">
               {data && (
                 <span className="hidden text-body-2-medium text-text-secondary md:inline">
-                  {shortDate(data.as_of)} · allowance in {daysBetween(data.as_of, data.next_anchor_date)} days
+                  {shortDate(data.as_of)} · {daysBetween(data.as_of, data.next_anchor_date) === 1 ? "allowance tomorrow" : `allowance in ${daysBetween(data.as_of, data.next_anchor_date)} days`}
                 </span>
               )}
               {route !== "ask" && <Button variant="primary" size="small" leadingIcon={duo(Sparkle)} onClick={() => ask()}>Ask Broke Date</Button>}

@@ -16,7 +16,7 @@ describe("grounding: Gemma never sees a number", () => {
       const a = brain.ask(q);
       const g = ground(a);
       expect(g.template.replace(/\{f\d+\}/g, "")).not.toMatch(/\d/);
-      for (const f of g.facts) expect(f.desc).not.toMatch(/\d/);
+      for (const f of g.facts) expect(f.desc.replace(/\{f\d+\}/g, "")).not.toMatch(/\d/);
       // filling the placeholders back in gives exactly the simulated answer
       const filled = splitPlaceholders(g.template, g.facts).map((s) => s.t).join("");
       expect(filled.replace(/\s+/g, " ").trim()).toBe(a.segs.map((s) => s.t).join("").replace(/\s+/g, " ").trim());
