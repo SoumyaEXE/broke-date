@@ -19,6 +19,7 @@ import { GradePage } from "./app/GradePage";
 import { AskPage } from "./app/AskPage";
 import { ImportPage } from "./app/ImportPage";
 import { SettingsPage } from "./app/SettingsPage";
+import { AboutPage } from "./app/AboutPage";
 import { EvidenceSheet } from "./app/EvidenceSheet";
 import { PocketCard } from "./app/PocketCard";
 
@@ -116,9 +117,10 @@ export default function App() {
         </div>
       )}
 
-      <main id="main" className="relative flex min-h-0 min-w-0 flex-1 justify-center overflow-x-hidden overflow-y-auto bg-background-full [scrollbar-gutter:stable]">
-        <div className={route === "ask" ? "flex h-full w-full max-w-[1300px] flex-col gap-2.5 px-3 sm:px-1" : "flex w-full max-w-[1300px] flex-col gap-2.5 px-3 pt-3 sm:px-1 sm:pt-0"}>
-          <header className="flex w-full flex-wrap items-end justify-between gap-2 pt-1">
+      <main id="main" className="relative flex min-h-0 min-w-0 flex-1 justify-center no-scrollbar overflow-x-hidden overflow-y-auto overscroll-contain scroll-smooth bg-background-full">
+        <div className={route === "ask" ? "flex h-full w-full max-w-[1300px] flex-col gap-2.5 px-3 sm:px-2" : "flex w-full max-w-[1300px] flex-col gap-2.5 px-3 pt-3 sm:px-2 sm:pt-0"}>
+          <header className="sticky top-0 z-20 flex w-full flex-wrap items-end justify-between gap-2 pt-1 pb-2">
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-3 -bottom-4 -z-10 bg-background-full/80 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_55%,transparent)]" />
             <div className="flex min-w-0 items-center gap-1.5">
               <IconButton icon={RiMenuLine} aria-label="Open navigation" onClick={() => setNavOpen(true)} className="lg:hidden" />
               <h1 className="px-1 text-title-2-medium whitespace-nowrap text-text-primary">{TITLES[route]}</h1>
@@ -140,7 +142,7 @@ export default function App() {
             </div>
           )}
 
-          <div className={route === "ask" ? "flex min-h-0 flex-1 flex-col pb-3" : "flex w-full flex-col gap-4 pb-6"}>
+          <div key={route} className={route === "ask" ? "reveal flex min-h-0 flex-1 flex-col pb-3" : "reveal flex w-full flex-col gap-4 pb-6"}>
             {!data && !error && route !== "ask" && <Loading />}
             {data && route === "overview" && <OverviewPage data={data} prev={prev} busy={busy} provider={provider} onUpdate={update} openFact={openFact} onAsk={ask} go={go} />}
             {route === "ask" && <AskPage data={data} question={question} onAddPlan={(p) => void update(() => provider.addPlan(p))} />}
@@ -149,8 +151,8 @@ export default function App() {
             {data && route === "activity" && <ActivityPage data={data} />}
             {route === "grade" && <GradePage provider={provider} />}
             {route === "import" && provider instanceof LiveProvider && <ImportPage provider={provider} subject={subject} onDone={() => { go("overview"); void load(); }} />}
-            {route === "settings" && <SettingsPage provider={provider} onSaved={() => void load()} />}
-            {route === "about" && <AboutPage />}
+            {route === "settings" && <SettingsPage provider={provider} data={data} onSaved={() => void load()} />}
+            {route === "about" && <AboutPage data={data} />}
           </div>
         </div>
       </main>
@@ -169,24 +171,3 @@ function Loading() {
   );
 }
 
-function AboutPage() {
-  const steps = [
-    ["Reads your statement", "Every row is checked against the running balance, to the paisa. If one doesn't match, nothing is imported."],
-    ["Learns how you spend", "TabPFN learns the full spread of what you might spend on any day from your own history: no training loop, no cloud."],
-    ["Simulates 500 futures", "Day by day to your next allowance, including the help that tends to arrive when you run low."],
-    ["Answers what-ifs instantly", "Every question reruns the same 500 futures with your change, so the difference is the change and nothing else."],
-    ["Grades itself", "A walk-forward backtest on your past months, under rules committed before any results were seen."],
-  ];
-  return (
-    <section className="rounded-2xl bg-background-secondary-default p-2">
-      <ol className="divide-y divide-separator-border rounded-2lg bg-background-inner-default shadow-card">
-        {steps.map(([t, d], i) => (
-          <li key={t} className="flex gap-4 px-5 py-4">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-50 text-body-medium text-accent-600 tabular-nums">{i + 1}</span>
-            <div><p className="text-body-medium text-text-primary">{t}</p><p className="text-body-regular text-text-secondary">{d}</p></div>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}

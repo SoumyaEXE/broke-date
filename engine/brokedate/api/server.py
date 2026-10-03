@@ -13,10 +13,12 @@ from typing import Any
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
 from brokedate import __version__
 from brokedate.api.schemas import (
     AnchorsIn,
+    ChatIn,
     Correction,
     ForecastIn,
     ForecastResponse,
@@ -123,6 +125,9 @@ def health() -> dict[str, Any]:
         try:
             models = OllamaClient(cfg.gemma.ollama_url, cfg.gemma.model).available_models()
             out["gemma_available"] = cfg.gemma.model in models or f"{cfg.gemma.model}:latest" in models
+            from brokedate.narrate.chat import pick_chat_model
+
+            out["chat_model"] = pick_chat_model(cfg, models)
         except OllamaError as e:
             out["gemma_available"] = False
             out["gemma_error"] = str(e)
@@ -250,6 +255,19 @@ def get_letter(subject: str, language: str | None = None) -> dict[str, Any]:
     cfg, _ = cfg_db()
     b = _latest(subject)
     return write_letter(b, cfg, language)
+
+
+@app.post("/chat")
+def post_chat(body: ChatIn) -> StreamingResponse:
+    """Stream a Gemma-written reply for an answer the browser already simulated. NDJSON events; see narrate/chat."""
+    from brokedate.narrate.chat import ndjson, stream_reply
+
+    cfg, _ = cfg_db()
+    if not cfg.gemma.enabled:
+        raise HTTPException(409, "Gemma is switched off in settings")
+    facts = [f.model_dump() for f in body.facts]
+    return StreamingResponse(ndjson(stream_reply(cfg, body.question, facts, body.template, body.verdict, body.language)),
+                             media_type="application/x-ndjson")
 
 
 @app.get("/backtest")

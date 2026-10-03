@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarPlus, ChartLineUp, Hourglass, Question, Sparkle, Wallet, Warning } from "@phosphor-icons/react";
+import { CalendarPlus, NotePencil, Sparkle } from "@phosphor-icons/react";
 import { AgentComposer } from "@/components/application/agent-chat/agent-composer";
 import { AgentMessage } from "@/components/application/agent-chat/agent-chat-message";
 import { AgentThinking } from "@/components/application/agent-thinking/agent-thinking";
@@ -8,18 +8,16 @@ import { Chip } from "@/components/base/badges/chip";
 import { cx } from "@/utils/cx";
 import type { ForecastResponse } from "../types";
 import { Brain, type Answer, type ScenarioCard } from "../lib/chat";
-import { inr } from "../lib/format";
 import { duo } from "./kit";
 
 type Msg = { id: number; role: "user"; text: string; at: number } | { id: number; role: "bot"; a: Answer; at: number };
 
 const STARTERS = [
-  { icon: Wallet, q: "How much is safe to spend today?" },
-  { icon: Sparkle, q: "Can I afford ₹400 movie on Saturday?" },
-  { icon: Warning, q: "When would I go broke?" },
-  { icon: Hourglass, q: "How long does my money last?" },
-  { icon: ChartLineUp, q: "Where did my money go this month?" },
-  { icon: Question, q: "How do you work?" },
+  "Can I afford a ₹400 movie on Saturday?",
+  "How much can I spend today?",
+  "When would I run out?",
+  "Where did my money go?",
+  "How does this work?",
 ];
 
 export function AskPage({ data, question, onAddPlan }: {
@@ -30,10 +28,11 @@ export function AskPage({ data, question, onAddPlan }: {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
-  const [scrolled, setScrolled] = useState(0);
+  const [under, setUnder] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const timer = useRef<number | null>(null);
   const seen = useRef<number | null>(null);
+  const n = data?.n_futures ?? 500;
 
   const send = (q: string) => {
     const t = q.trim();
@@ -49,6 +48,7 @@ export function AskPage({ data, question, onAddPlan }: {
     }, 450);
   };
   const stop = () => { if (timer.current) window.clearTimeout(timer.current); setBusy(false); };
+  const reset = () => { stop(); setMsgs([]); setText(""); };
 
   useEffect(() => {
     if (question && brain && seen.current !== question.n) { seen.current = question.n; send(question.q); }
@@ -56,58 +56,59 @@ export function AskPage({ data, question, onAddPlan }: {
   }, [question, brain]);
   useEffect(() => { scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" }); }, [msgs, busy]);
 
-  const fade = Math.min(1, scrolled / 24);
+  const first = msgs.find((m): m is Extract<Msg, { role: "user" }> => m.role === "user");
   return (
     <section className="relative flex min-h-[560px] flex-1 flex-col overflow-hidden rounded-3xl bg-background-secondary-default">
-      {/* progressive blur + surface fade under the top edge once scrolled (BoardUI scroll rule) */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10" aria-hidden>
-        <div className="absolute inset-0 backdrop-blur-[1px] [mask-image:linear-gradient(to_bottom,black,transparent)]" style={{ opacity: fade }} />
-        <div className="absolute inset-x-0 top-0 h-4 backdrop-blur-[4px] [mask-image:linear-gradient(to_bottom,black,transparent)]" style={{ opacity: fade }} />
-        <div className="absolute inset-0 bg-linear-to-b from-background-secondary-default to-transparent" style={{ opacity: fade }} />
-      </div>
+      {/* BoardUI chat header: overlaid, transparent until the transcript scrolls under it, then frosted */}
+      <header className={cx("absolute inset-x-0 top-0 z-10 flex h-12 items-center gap-2 border-b px-4 transition-colors duration-200",
+        under ? "border-separator-border bg-white/40 backdrop-blur-[20px]" : "border-transparent")}>
+        <span className="min-w-0 flex-1 truncate text-headline-medium text-text-primary">{first ? first.text : "New chat"}</span>
+        {msgs.length > 0 && <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={reset}>New chat</Button>}
+      </header>
 
-      <div ref={scroller} onScroll={(e) => setScrolled(e.currentTarget.scrollTop)} className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:thin]">
-        <div className="mx-auto flex w-full max-w-[720px] flex-col gap-6 px-4 pt-8 pb-6">
+      <div ref={scroller} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 0)} className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
+        <div className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-[72px] pb-6", msgs.length === 0 && "min-h-full justify-center")}>
           {msgs.length === 0 ? (
-            <div className="flex flex-col items-center pt-6 text-center sm:pt-14">
-              <span className="flex size-14 items-center justify-center rounded-2xl bg-background-inner-default shadow-card">
-                <Sparkle weight="duotone" className="size-7 text-accent-500" aria-hidden />
+            <div className="reveal flex flex-col items-center gap-5 text-center">
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-background-inner-default shadow-card">
+                <Sparkle weight="duotone" className="size-6 text-accent-500" aria-hidden />
               </span>
-              <h2 className="mt-5 text-title-1-medium text-text-primary">What do you want to know?</h2>
-              <p className="mt-2 max-w-md text-body-regular text-text-secondary">
-                I answer by rerunning the same {data?.n_futures ?? 500} futures TabPFN simulated from your own history. No number here is made up by a language model.
-              </p>
-              <div className="mt-7 grid w-full gap-2 sm:grid-cols-2">
-                {STARTERS.map(({ icon: I, q }) => (
+              <div className="flex flex-col gap-1">
+                <h2 className="text-title-2-medium text-text-primary">Ask about your month</h2>
+                <p className="text-body-regular text-text-secondary">Every answer is worked out from {n} simulated months, not guessed by a chatbot.</p>
+              </div>
+              <div className="flex max-w-xl flex-wrap justify-center gap-2">
+                {STARTERS.map((q) => (
                   <button key={q} type="button" disabled={!brain} onClick={() => send(q)}
-                    className="flex items-center gap-2.5 rounded-2xl bg-background-inner-default px-3.5 py-3 text-start text-body-medium text-text-primary shadow-card outline-none transition hover:bg-background-primary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring disabled:opacity-50">
-                    <I weight="duotone" className="size-5 shrink-0 text-accent-500" aria-hidden />{q}
+                    className="cursor-pointer rounded-full bg-background-primary-default px-3.5 py-2 text-body-regular text-text-secondary shadow-xs transition-colors hover:bg-background-primary-hover hover:text-text-primary disabled:opacity-50">
+                    {q}
                   </button>
                 ))}
               </div>
-              {!brain && <p className="mt-4 text-body-2-medium text-text-tertiary">Waiting for the forecast to load…</p>}
             </div>
           ) : msgs.map((m) => m.role === "user"
             ? <AgentMessage key={m.id} role="user" text={m.text} at={m.at} />
-            : <BotTurn key={m.id} a={m.a} onFollow={send} onAddPlan={onAddPlan} />)}
-          {busy && <AgentThinking variant="wave" label={`Rerunning ${data?.n_futures ?? 500} futures`} shimmer />}
+            : <BotTurn key={m.id} a={m.a} n={n} onFollow={send} onAddPlan={onAddPlan} />)}
+          {busy && <AgentThinking variant="wave" label={`Running ${n} futures`} shimmer className="px-1" />}
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[720px] px-4 pb-4">
-        <AgentComposer value={text} onValueChange={setText} onSubmit={() => send(text)} onStop={stop} busy={busy}
-          provider="Local" model={data ? `TabPFN ${data.model.model_version?.split(" ").pop() ?? ""} · offline`.trim() : "TabPFN · offline"}
-          messageCount={msgs.length} />
+      <div className="shrink-0 px-3 pb-3">
+        <div className="mx-auto w-full max-w-3xl">
+          <AgentComposer value={text} onValueChange={setText} onSubmit={() => send(text)} onStop={stop} busy={busy}
+            model={data ? `TabPFN ${data.model.model_version?.split(" ").pop() ?? ""}`.trim() : "TabPFN"}
+            messageCount={msgs.length} showStatus={false} showAttach={false} placeholder="Can I afford ₹600 on Friday?" />
+        </div>
       </div>
     </section>
   );
 }
 
-function BotTurn({ a, onFollow, onAddPlan }: { a: Answer; onFollow: (q: string) => void; onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void }) {
+function BotTurn({ a, n, onFollow, onAddPlan }: { a: Answer; n: number; onFollow: (q: string) => void; onAddPlan: (p: { name: string; amount_paise: number; date: string }) => void }) {
   const [added, setAdded] = useState(false);
   return (
-    <div className="flex flex-col gap-3 px-1">
-      <p className="text-body-regular text-text-primary [&_b]:font-semibold">
+    <div className="flex animate-[page-reveal_520ms_cubic-bezier(0.22,1,0.36,1)_both] flex-col gap-3 px-1">
+      <p className="text-body-regular leading-relaxed text-text-primary">
         {a.segs.map((s, i) => (
           <span key={i} className={cx(
             s.tone === "num" && "font-semibold tabular-nums",
@@ -120,24 +121,34 @@ function BotTurn({ a, onFollow, onAddPlan }: { a: Answer; onFollow: (q: string) 
       {a.card && <ScenarioTile c={a.card} />}
       <div className="flex flex-wrap items-center gap-2">
         {a.actions?.map((ac) => ac.plan && (
-          <Button key={ac.label} variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} isDisabled={added}
-                  onClick={() => { onAddPlan(ac.plan!); setAdded(true); }}>{added ? "Added to plans" : ac.label}</Button>
+          <Button key={ac.label} variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} disabled={added}
+            onClick={() => { onAddPlan(ac.plan!); setAdded(true); }}>{added ? "Added to plans" : ac.label}</Button>
         ))}
         {a.follow?.map((f) => <Button key={f} variant="secondary" size="xs" onClick={() => onFollow(f)}>{f}</Button>)}
-        <span className="ms-auto text-caption-1-medium text-text-tertiary tabular-nums">{a.ms} ms · simulated, not generated</span>
+        <span className="ms-auto text-caption-1-medium text-text-tertiary">From {n} simulated months</span>
       </div>
     </div>
   );
 }
 
+/** Smooth SVG path through points (midpoint quadratic smoothing). */
+function curve(ys: number[], W: number, H: number, max: number) {
+  const n = Math.max(ys.length, 2);
+  const P = ys.map((v, i) => [(i / (n - 1)) * W, H - (Math.max(v, 0) / max) * H] as const);
+  let d = `M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
+  for (let i = 1; i < P.length - 1; i++) {
+    d += ` Q${P[i][0].toFixed(1)},${P[i][1].toFixed(1)} ${((P[i][0] + P[i + 1][0]) / 2).toFixed(1)},${((P[i][1] + P[i + 1][1]) / 2).toFixed(1)}`;
+  }
+  const L = P[P.length - 1];
+  return `${d} L${L[0].toFixed(1)},${L[1].toFixed(1)}`;
+}
+
 function ScenarioTile({ c }: { c: ScenarioCard }) {
   const W = 600, H = 96;
-  const all = [...c.beforeP50, ...c.afterP50, c.brokeLine];
-  const max = Math.max(...all) * 1.1 || 1;
-  const n = Math.max(c.beforeP50.length, 2);
-  const pts = (arr: number[]) => arr.map((v, i) => `${((i / (n - 1)) * W).toFixed(1)},${(H - (Math.max(v, 0) / max) * H).toFixed(1)}`).join(" ");
+  const max = Math.max(...c.beforeP50, ...c.afterP50, c.brokeLine) * 1.1 || 1;
   const verdict = { yes: ["lime", "Comfortable"], tight: ["orange", "Tight"], no: ["rose", "Risky"] }[c.verdict] as ["lime" | "orange" | "rose", string];
   const lost = c.beforeMade - c.afterMade;
+  const by = H - (c.brokeLine / max) * H;
   return (
     <div className="rounded-2xl bg-background-inner-default p-3 shadow-card">
       <div className="flex items-center justify-between gap-2 px-1">
@@ -145,27 +156,30 @@ function ScenarioTile({ c }: { c: ScenarioCard }) {
         <Chip variant="caption" color={verdict[0]}>{verdict[1]}</Chip>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
-        <Stat label="Make it now" value={`${c.beforeMade}`} sub={`of ${c.n}`} />
-        <Stat label="With this" value={`${c.afterMade}`} sub={lost > 0 ? `${lost} fewer` : "no change"} tone={lost > 0 ? "rose" : "lime"} />
-        <Stat label="Price" value={c.dayCost !== undefined ? c.dayCost.toFixed(1) : "–"} sub="days of runway" tone="orange" />
+        <Stat label="Months that work out now" value={`${c.beforeMade}/${c.n}`} />
+        <Stat label="If you do it" value={`${c.afterMade}/${c.n}`} tone={lost > 0 ? "rose" : "lime"} />
+        <Stat label="Costs you" value={c.dayCost !== undefined ? `${c.dayCost.toFixed(1)} days` : "–"} tone="orange" />
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="mt-3 h-24 w-full" role="img" aria-label="Median balance to payday before and after">
-        <line x1="0" x2={W} y1={H - (c.brokeLine / max) * H} y2={H - (c.brokeLine / max) * H} stroke="var(--color-rose-400)" strokeDasharray="4 4" />
-        <polyline points={pts(c.beforeP50)} fill="none" stroke="var(--color-chart-neutral)" strokeWidth="2" strokeDasharray="5 5" vectorEffect="non-scaling-stroke" />
-        <polyline points={pts(c.afterP50)} fill="none" stroke="var(--color-accent-500)" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="animate-chart-reveal mt-3 h-24 w-full" role="img" aria-label="Typical balance until payday, now and if you do it">
+        <line x1="0" x2={W} y1={by} y2={by} stroke="var(--color-orange-400)" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+        <path d={curve(c.beforeP50, W, H, max)} fill="none" stroke="var(--color-chart-neutral)" strokeWidth="2" strokeDasharray="5 5" vectorEffect="non-scaling-stroke" />
+        <path d={curve(c.afterP50, W, H, max)} fill="none" stroke="var(--color-accent-500)" strokeWidth="2.5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       </svg>
-      <p className="px-1 text-caption-1-medium text-text-tertiary">Median balance to payday · dashed: now · solid: with this · red: broke line {inr(c.brokeLine)}</p>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 text-caption-1-medium text-text-tertiary">
+        <span className="flex items-center gap-1.5"><span className="w-3 border-t-2 border-dashed border-chart-neutral" />Typical balance now</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 border-t-2 border-accent-500" />If you do it</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 border-t-2 border-dashed border-orange-400" />Broke line</span>
+      </div>
     </div>
   );
 }
 
-function Stat({ label, value, sub, tone }: { label: string; value: string; sub: string; tone?: "lime" | "rose" | "orange" }) {
+function Stat({ label, value, tone }: { label: string; value: string; tone?: "lime" | "rose" | "orange" }) {
   const color = tone === "lime" ? "text-status-lime-text" : tone === "rose" ? "text-status-rose-text" : tone === "orange" ? "text-status-orange-text" : "text-text-primary";
   return (
     <div className="rounded-xl bg-background-secondary-default px-3 py-2">
-      <p className="text-caption-1-medium text-text-tertiary">{label}</p>
+      <p className="truncate text-caption-1-medium text-text-tertiary">{label}</p>
       <p className={cx("text-title-3-semibold tabular-nums", color)}>{value}</p>
-      <p className="text-caption-1-medium text-text-tertiary">{sub}</p>
     </div>
   );
 }

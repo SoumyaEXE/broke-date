@@ -17,8 +17,8 @@ function ActiveDot({ cx: x, cy: y }: { cx?: number; cy?: number }) {
   if (x === undefined || y === undefined) return null;
   return (
     <g>
-      <circle cx={x} cy={y} r={7} fill="var(--color-orange-500)" opacity={0.25} />
-      <circle cx={x} cy={y} r={4} fill="var(--color-orange-500)" stroke="var(--color-background-secondary-default)" strokeWidth={2} />
+      <circle cx={x} cy={y} r={7} fill="var(--color-accent-500)" opacity={0.25} />
+      <circle cx={x} cy={y} r={4} fill="var(--color-accent-500)" stroke="var(--color-background-secondary-default)" strokeWidth={2} />
     </g>
   );
 }
@@ -71,12 +71,12 @@ export function BalanceChartCard({ data, className }: { data: ForecastResponse; 
           </p>
         </div>
         <dl className="flex shrink-0 flex-wrap items-center gap-4 text-body-2-medium text-text-secondary">
-          <div className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-orange-500" aria-hidden /><dt>This month</dt></div>
-          <div className="flex items-center gap-1.5"><span className="w-3 border-t-2 border-dashed border-orange-500" aria-hidden /><dt>TabPFN forecast</dt></div>
+          <div className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-accent-600" aria-hidden /><dt>This month</dt></div>
+          <div className="flex items-center gap-1.5"><span className="w-3 border-t-2 border-dashed border-accent-500" aria-hidden /><dt>TabPFN forecast</dt></div>
           {last && <div className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-chart-neutral" aria-hidden /><dt>{last.label}</dt></div>}
         </dl>
       </div>
-      <div className="min-h-0 w-full flex-1" role="img"
+      <div className="animate-chart-reveal min-h-0 w-full flex-1" role="img"
            aria-label={`Balance this month and TabPFN's forecast to payday on ${shortDate(data.next_anchor_date)}. ${data.n_make_it} of ${data.n_futures} futures stay above ${inr(data.broke_line_paise)}.`}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={points} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}
@@ -84,8 +84,8 @@ export function BalanceChartCard({ data, className }: { data: ForecastResponse; 
             onMouseLeave={() => setActive(null)}>
             <defs>
               <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-orange-400)" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="var(--color-orange-400)" stopOpacity={0} />
+                <stop offset="0%" stopColor="var(--color-accent-400)" stopOpacity={0.28} />
+                <stop offset="100%" stopColor="var(--color-accent-400)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <YAxis width={56} domain={[0, Math.ceil(yMax * 1.1)]} tickCount={5} tickLine={false} axisLine={false}
@@ -95,11 +95,10 @@ export function BalanceChartCard({ data, className }: { data: ForecastResponse; 
             <Tooltip content={() => null} cursor={{ stroke: "var(--color-chart-cursor)", strokeWidth: 1, strokeDasharray: "4 4" }} />
             <ReferenceLine y={rupees(data.broke_line_paise)} stroke="var(--color-rose-400)" strokeDasharray="4 4"
                            label={{ value: `broke line ${inr(data.broke_line_paise)}`, position: "insideBottomRight", fontSize: 11, fill: "var(--color-rose-500)" }} />
-            <Area type="monotone" dataKey="band" stroke="none" fill="var(--color-orange-400)" fillOpacity={0.12} isAnimationActive animationDuration={450} />
+            <Area type="monotone" dataKey="band" stroke="none" fill="var(--color-accent-400)" fillOpacity={0.1} isAnimationActive animationDuration={450} />
             <Line type="monotone" dataKey="previous" stroke="var(--color-chart-neutral)" strokeWidth={2} strokeDasharray="5 5" dot={false} activeDot={false} isAnimationActive animationDuration={450} />
-            <Area type="monotone" dataKey="current" stroke="none" fill={`url(#${gid})`} isAnimationActive animationDuration={450} />
-            <Line type="monotone" dataKey="current" stroke="var(--color-orange-500)" strokeWidth={2.5} dot={false} activeDot={<ActiveDot />} isAnimationActive animationDuration={450} />
-            <Line type="monotone" dataKey="forecast" stroke="var(--color-orange-500)" strokeWidth={2} strokeDasharray="6 5" dot={false} activeDot={<ActiveDot />} isAnimationActive animationDuration={450} />
+            <Line type="monotone" dataKey="current" stroke="var(--color-accent-600)" strokeWidth={2.5} dot={false} activeDot={<ActiveDot />} isAnimationActive animationDuration={450} />
+            <Line type="monotone" dataKey="forecast" stroke="var(--color-accent-500)" strokeWidth={2} strokeDasharray="6 5" dot={false} activeDot={<ActiveDot />} isAnimationActive animationDuration={450} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

@@ -26,7 +26,7 @@ export function EvidenceSheet({ fact, data, onClose }: { fact: Fact | null; data
   return (
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-labelledby="ev-title">
       <button className="absolute inset-0 cursor-pointer bg-black/30" aria-label="Close" tabIndex={-1} onClick={onClose} />
-      <div ref={ref} tabIndex={-1} className="relative m-3 flex w-full max-w-md flex-col overflow-y-auto rounded-3xl bg-background-secondary-default p-2 shadow-dropdown outline-none">
+      <div ref={ref} tabIndex={-1} className="relative m-3 flex w-full max-w-md flex-col no-scrollbar overflow-y-auto rounded-3xl bg-background-secondary-default p-2 shadow-dropdown outline-none">
         <div className="flex items-center justify-between px-3 pt-2 pb-3">
           <span className="flex items-center gap-2 text-body-medium text-text-secondary"><Info weight="duotone" className="size-5" aria-hidden />Where this number comes from</span>
           <CloseButton size="sm" aria-label="Close" onClick={onClose} />
@@ -39,7 +39,7 @@ export function EvidenceSheet({ fact, data, onClose }: { fact: Fact | null; data
           <p className="mt-1 text-body-regular text-text-secondary">{fact.how}</p>
           <details className="mt-4">
             <summary className="cursor-pointer text-body-2-medium text-text-tertiary">Technical details</summary>
-            <pre className="mt-2 overflow-x-auto rounded-xl bg-background-secondary-default p-3 font-mono text-caption-1-medium text-text-secondary">{JSON.stringify({ kind: fact.kind, value: fact.value, unit: fact.unit, source: fact.source }, null, 2)}</pre>
+            <pre className="mt-2 no-scrollbar overflow-x-auto whitespace-pre-wrap break-all rounded-xl bg-background-secondary-default p-3 font-mono text-caption-1-medium text-text-secondary">{JSON.stringify({ kind: fact.kind, value: fact.value, unit: fact.unit, source: fact.source }, null, 2)}</pre>
           </details>
         </div>
         {inputs.length > 0 && (

@@ -16,14 +16,14 @@ export function duo(I: PhosphorIcon): IconComponent {
   return C;
 }
 
-/** BoardUI dashboard card: neutral surface, header row, white inner tile. */
+/** BoardUI dashboard card: neutral surface, one-line header, white inner tile. `sub` is a hover hint only. */
 export function Panel({ title, sub, icon: Icon, action, children, className, bodyClassName, flush }: {
   title: ReactNode; sub?: ReactNode; icon?: PhosphorIcon; action?: ReactNode; children: ReactNode;
   className?: string; bodyClassName?: string; flush?: boolean;
 }) {
   return (
     <section className={cx("flex min-w-0 flex-col rounded-2xl bg-background-secondary-default p-2", className)}>
-      <header className="flex items-center gap-2.5 px-2 pt-1.5 pb-3">
+      <header className="flex min-h-11 items-center gap-2.5 px-2 pt-0.5 pb-2" title={typeof sub === "string" ? sub : undefined}>
         {Icon && (
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-inner-default shadow-card">
             <Icon weight="duotone" className="size-[18px] text-foreground-icon-primary" aria-hidden />
@@ -31,7 +31,6 @@ export function Panel({ title, sub, icon: Icon, action, children, className, bod
         )}
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-body-medium text-text-primary">{title}</h2>
-          {sub && <p className="truncate text-body-2-medium text-text-tertiary">{sub}</p>}
         </div>
         {action}
       </header>
@@ -80,16 +79,13 @@ export function Legend({ swatch, label, dashed }: { swatch: string; label: strin
   );
 }
 
-/** Thin progress track in accent, with an optional end knob (goal-row style). */
+/** Thin progress track. */
 export function Track({ value, tone = "accent" }: { value: number; tone?: "accent" | "orange" }) {
   const v = Math.max(0, Math.min(1, value));
   const fill = tone === "accent" ? "bg-accent-500" : "bg-orange-500";
-  const ring = tone === "accent" ? "border-accent-500" : "border-orange-500";
   return (
     <div className="relative h-1.5 w-full rounded-full bg-background-tertiary-default">
       <div className={cx("absolute inset-y-0 start-0 rounded-full transition-[width] duration-700", fill)} style={{ width: `${v * 100}%` }} />
-      <span className={cx("absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] bg-background-inner-default transition-[left] duration-700", ring)}
-            style={{ left: `${v * 100}%` }} aria-hidden />
     </div>
   );
 }

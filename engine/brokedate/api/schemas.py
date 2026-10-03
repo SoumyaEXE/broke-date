@@ -171,3 +171,16 @@ class SettingsIn(BaseModel):
     letter_language: str | None = None
     gemma_enabled: bool | None = None
     letters_enabled: bool | None = None
+
+
+class ChatFact(BaseModel):
+    id: str
+    desc: str
+
+
+class ChatIn(BaseModel):
+    question: str
+    template: str
+    facts: list[ChatFact] = []
+    verdict: str | None = None
+    language: str | None = None

@@ -26,6 +26,11 @@ export function inr(paise: number, decimals?: boolean): string {
   return (neg ? "-" : "") + "₹" + groupIndian(rupees) + (show ? "." + String(p).padStart(2, "0") : "");
 }
 
+/** Whole rupees, for averages and model outputs where paise would be false precision. */
+export function inr0(paise: number): string {
+  return inr(Math.round(paise / 100) * 100);
+}
+
 export function ordinal(n: number): string {
   const v = n % 100;
   if (v >= 10 && v <= 20) return `${n}th`;

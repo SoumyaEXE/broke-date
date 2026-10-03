@@ -43,6 +43,11 @@ export interface AgentComposerProps {
   provider?: string | null;
   messageCount: number;
   className?: string;
+  /** Hide the provider / message-count row under the pill. */
+  showStatus?: boolean;
+  /** Hide the attachment button (apps with nothing to attach). */
+  showAttach?: boolean;
+  placeholder?: string;
 }
 
 export function AgentComposer({
@@ -55,6 +60,9 @@ export function AgentComposer({
   provider,
   messageCount,
   className,
+  showStatus = true,
+  showAttach = true,
+  placeholder = "Ask me anything",
 }: AgentComposerProps) {
   const localize = useTemplateCopy();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,7 +90,7 @@ export function AgentComposer({
         <form
           onSubmit={submit}
           className={cx(
-            "flex h-[52px] w-full items-center gap-2.5 rounded-full p-2",
+            cx("flex h-[52px] w-full items-center gap-2.5 rounded-full p-2", !showAttach && "ps-5"),
             // ComposerLoader paints its own pill surface and runs the light
             // behind its children, so an opaque form would cover the light
             // entirely. While busy the form steps aside and lets it show.
@@ -95,13 +103,13 @@ export function AgentComposer({
               same control. They resolve one step lighter than the pill in dark
               and one step darker in light, which is why a single pair works for
               both themes without a dark: override. */}
-          <button
+          {showAttach && <button
             type="button"
             aria-label="Add attachment"
             className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-ai-chat-composer-add-background text-foreground-icon-primary transition-colors duration-150 ease hover:bg-ai-chat-composer-add-hover-background"
           >
             <RiAttachment2 className="size-5" aria-hidden />
-          </button>
+          </button>}
 
           <label className="sr-only" htmlFor="agent-composer-input">
             Message
@@ -113,7 +121,7 @@ export function AgentComposer({
             value={value}
             onChange={(event) => onValueChange(event.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Ask me anything"
+            placeholder={placeholder}
             autoComplete="off"
             className="h-5 min-w-0 flex-1 bg-transparent text-body-regular text-text-primary caret-text-primary outline-none placeholder:text-text-tertiary"
           />
@@ -154,7 +162,7 @@ export function AgentComposer({
         </form>
       </ComposerLoader>
 
-      <div className="flex h-[26px] w-full items-center justify-between">
+      {showStatus && <div className="flex h-[26px] w-full items-center justify-between">
         <div className="flex items-center gap-3">
           <StatusItem icon={RiInfinityLine} label={provider ?? "Not configured"} />
         </div>
@@ -164,7 +172,7 @@ export function AgentComposer({
             label={messageCount === 0 ? "New chat" : `${messageCount} messages`}
           />
         </div>
-      </div>
+      </div>}
     </div>
   ));
 }

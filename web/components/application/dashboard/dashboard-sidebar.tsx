@@ -263,7 +263,7 @@ export function DashboardSidebar({
   const collapsed = mobile ? false : collapsedState;
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const matches = (label: string) => label.toLocaleLowerCase().includes(normalizedQuery);
-  const secondaryLabels = ["Support", "Settings"];
+  const secondaryLabels = ["How it works", "Settings"];
   const secondaryMatch = secondaryLabels.some(matches);
 
   const activateSearch = useCallback(() => {

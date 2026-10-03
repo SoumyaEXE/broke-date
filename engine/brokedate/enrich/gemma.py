@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
 
@@ -115,6 +116,27 @@ class OllamaClient:
             raise OllamaError(str(e)) from e
         data = r.json()
         return data["message"]["content"], data
+
+    def chat_stream(self, messages: list[dict[str, str]], temperature: float = 0.6, seed: int = 0,
+                    num_predict: int = 200, model: str | None = None) -> Iterator[str]:
+        """Yield content pieces as Ollama generates them (stream=true returns one JSON object per line)."""
+        body: dict[str, Any] = {"model": model or self.model, "messages": messages, "stream": True,
+                                "keep_alive": "30m",
+                                "options": {"temperature": temperature, "seed": seed, "num_predict": num_predict}}
+        try:
+            with httpx.stream("POST", f"{self.url}/api/chat", json=body, timeout=self.timeout) as r:
+                r.raise_for_status()
+                for line in r.iter_lines():
+                    if not line:
+                        continue
+                    msg = json.loads(line)
+                    piece = msg.get("message", {}).get("content", "")
+                    if piece:
+                        yield piece
+                    if msg.get("done"):
+                        return
+        except httpx.HTTPError as e:
+            raise OllamaError(str(e)) from e
 
 
 def _prompt(rows: list[tuple[str, str, int]]) -> list[dict[str, str]]:

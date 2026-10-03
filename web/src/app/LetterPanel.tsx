@@ -24,15 +24,15 @@ export function LetterPanel({ provider, data, openFact }: {
   const recomputed = (data as ForecastResponse & { recomputedInBrowser?: boolean }).recomputedInBrowser;
 
   return (
-    <Panel title="A letter from a future that went broke" sub="Words by Gemma, every number by the engine" icon={EnvelopeSimpleOpen}
+    <Panel title="A letter from a future that went broke" sub="Words by Gemma, every number by the engine" icon={EnvelopeSimpleOpen} bodyClassName="flex flex-col"
       action={
-        <SegmentedControl aria-label="Letter language" selectionMode="single" disallowEmptySelection
+        <SegmentedControl aria-label="Letter language" className="bg-background-tertiary-default/70"
           selectedKeys={new Set([lang])} onSelectionChange={(k) => { const v = [...k][0]; if (v) setLang(String(v)); }}>
           {LANGS.map((l) => <SegmentedControlItem key={l} id={l}>{l}</SegmentedControlItem>)}
         </SegmentedControl>
       }>
-      <div className="min-h-[9rem]" lang={lang === "Bengali" ? "bn" : "en"} aria-live="polite">
-        {loading ? <AgentThinking variant="wave" label="Writing" shimmer /> : letter ? (
+      <div className="mb-4 min-h-[9rem]" lang={lang === "Bengali" ? "bn" : "en"} aria-live="polite">
+        {loading ? <AgentThinking variant="wave" label="Writing" shimmer /> : letter ? (<>
           <p className="text-headline-medium leading-relaxed text-text-primary" style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontWeight: 400 }}>
             {letter.segments.map((s, i) => s.type === "fact" ? (
               <button key={i} type="button" onClick={() => openFact(s.fact_id, letter.facts)}
@@ -41,11 +41,13 @@ export function LetterPanel({ provider, data, openFact }: {
               </button>
             ) : <span key={i}>{s.text}</span>)}
           </p>
+          <p className="mt-4 text-body-medium text-text-tertiary italic" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>— you, from a future where the money ran out</p>
+          </>
         ) : <p className="text-body-regular text-text-tertiary">Letter unavailable right now.</p>}
       </div>
       {letter && (
-        <p className="mt-4 border-t border-separator-border pt-3 text-body-2-medium text-text-tertiary">
-          {letter.fallback_used ? "Template letter (Gemma is offline)." : `Written by ${letter.model}.`} Tap a highlighted number to see where it came from.
+        <p className="mt-auto border-t border-separator-border pt-3 text-body-2-medium text-text-tertiary">
+          {letter.fallback_used ? "Template letter · Gemma offline" : `Written by ${letter.model}`} · tap a number for its source
           {recomputed && " Written for today's starting scenario, before your changes."}
         </p>
       )}

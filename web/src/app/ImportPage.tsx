@@ -62,7 +62,7 @@ export function ImportPage({ provider, subject, onDone }: { provider: LiveProvid
       {report && (
         <div className="flex flex-col gap-4">
           <Panel title="These look like your allowance" sub={`from ${report.anchor_sender || "?"} · correct?`} icon={Wallet} flush
-            action={<Button variant="primary" size="xs" isDisabled={anchorsOk} onClick={async () => { await provider.confirmAnchors(subject, report.anchors_detected.map((a) => a.id)); setAnchorsOk(true); }}>{anchorsOk ? "Confirmed" : "Yes, these"}</Button>}>
+            action={<Button variant="primary" size="xs" disabled={anchorsOk} onClick={async () => { await provider.confirmAnchors(subject, report.anchors_detected.map((a) => a.id)); setAnchorsOk(true); }}>{anchorsOk ? "Confirmed" : "Yes, these"}</Button>}>
             <Rows>
               {report.anchors_detected.slice(0, 6).map((a) => (
                 <Row key={a.id}><Tile icon={Wallet} tone="accent" /><p className="flex-1 text-body-medium tabular-nums">{shortDate(a.date)}</p><p className="text-body-medium tabular-nums">{inr(a.amount_paise)}</p></Row>
@@ -71,7 +71,7 @@ export function ImportPage({ provider, subject, onDone }: { provider: LiveProvid
           </Panel>
           {rep && rep.length > 0 && (
             <Panel title={`${rep.length} rows need a human`} sub="Fix a category once; similar rows learn from it" icon={ListChecks} flush
-              action={<Button variant="secondary" size="xs" isDisabled={!Object.keys(edits).length} onClick={async () => { await provider.saveReview(Object.entries(edits).map(([id, category]) => ({ id, category }))); setEdits({}); setRep(await provider.review(subject)); }}>Save</Button>}>
+              action={<Button variant="secondary" size="xs" disabled={!Object.keys(edits).length} onClick={async () => { await provider.saveReview(Object.entries(edits).map(([id, category]) => ({ id, category }))); setEdits({}); setRep(await provider.review(subject)); }}>Save</Button>}>
               <Rows>
                 {rep.slice(0, 12).map((r) => (
                   <Row key={r.id}>

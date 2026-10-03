@@ -8,12 +8,12 @@ import type { DataProvider } from "../data/provider";
 import { Panel, Row, Rows, Tile, duo } from "./kit";
 
 const NAMES: Record<string, [string, string]> = {
-  M1: ["TabPFN simulation", "anchored + calibrated (the app)"],
-  M1a: ["TabPFN, no anchoring", "ablation"],
-  M1b: ["TabPFN, no calibration", "ablation"],
-  B1: ["Burn rate", "last 14 days' average"],
-  B2: ["Same point last month", "naive baseline"],
-  B3: ["LightGBM quantiles", "same simulator, different model"],
+  M1: ["TabPFN (this app)", "full method"],
+  M1a: ["TabPFN without anchoring", "one part removed, to check it helps"],
+  M1b: ["TabPFN without calibration", "one part removed, to check it helps"],
+  B1: ["Spending pace", "assumes the last 14 days repeat"],
+  B2: ["Copy last month", "assumes this month repeats the last"],
+  B3: ["LightGBM", "a standard ML model in the same simulator"],
 };
 const f = (c: CI | null | undefined, d = 3) => (c && Number.isFinite(c.point) ? c.point.toFixed(d) : "–");
 const ci = (c: CI | null | undefined, d = 3) => (c && Number.isFinite(c.lo) ? `${c.lo.toFixed(d)} – ${c.hi.toFixed(d)}` : "");
@@ -29,26 +29,26 @@ export function GradePage({ provider }: { provider: DataProvider }) {
   const baselines = ["B1", "B2", "B3"].filter((k) => s.models[k]);
   const best = baselines.sort((a, b) => s.models[a].brier.point - s.models[b].brier.point)[0];
   const stats: Stat[] = [
-    { icon: duo(Crosshair), tone: "purple", label: "Brier score (lower is better)", value: f(m1.brier), caption: `best baseline ${best} ${f(s.models[best].brier)}`, delta: m1.brier.point < s.models[best].brier.point ? "lower" : "higher", deltaColor: m1.brier.point < s.models[best].brier.point ? "lime" : "rose", hint: "Mean squared error of the predicted chance of going broke before payday, across every evaluated day." },
-    { icon: duo(Timer), tone: "orange", label: "Warning lead time", value: Number.isFinite(m1.lead_time.mean_lead) ? `${m1.lead_time.mean_lead.toFixed(1)} days` : "–", caption: `${m1.lead_time.n_broke_cycles} broke months`, delta: `${m1.lead_time.n_no_warning} missed`, deltaColor: m1.lead_time.n_no_warning === 0 ? "lime" : "rose", hint: "In months that went broke: days between the first warning (50%+ chance) and the actual broke day." },
-    { icon: duo(Scales), tone: "blue", label: "80% range coverage", value: m1.coverage80 ? `${Math.round(m1.coverage80.point * 100)}%` : "–", caption: "target 80%", delta: m1.coverage80 ? `${Math.round((m1.coverage80.point - 0.8) * 100)} pts` : "–", deltaColor: m1.coverage80 && Math.abs(m1.coverage80.point - 0.8) <= 0.07 ? "lime" : "rose", hint: "How often the real end-of-month balance landed inside the claimed 80% range." },
-    { icon: duo(ChartBar), tone: "emerald", label: "Days evaluated", value: `${s.n_origins}`, caption: `${s.n_cycles} months · ${Math.round(s.base_rate * 100)}% went broke`, delta: "walk-forward", deltaColor: "neutral", hint: "Every 2nd day with 60+ days of history; each model fit only on days before it." },
+    { icon: duo(Crosshair), tone: "purple", label: "Prediction error (Brier)", value: f(m1.brier), caption: `${best} ${f(s.models[best].brier)}`, delta: m1.brier.point < s.models[best].brier.point ? "lower" : "higher", deltaColor: m1.brier.point < s.models[best].brier.point ? "lime" : "rose", hint: "Mean squared error of the predicted chance of going broke before payday, across every evaluated day." },
+    { icon: duo(Timer), tone: "orange", label: "Warned ahead by", value: Number.isFinite(m1.lead_time.mean_lead) ? `${m1.lead_time.mean_lead.toFixed(1)} days` : "–", caption: `${m1.lead_time.n_broke_cycles} broke months`, delta: `${m1.lead_time.n_no_warning} missed`, deltaColor: m1.lead_time.n_no_warning === 0 ? "lime" : "rose", hint: "In months that went broke: days between the first warning (50%+ chance) and the actual broke day." },
+    { icon: duo(Scales), tone: "blue", label: "Ranges that held", value: m1.coverage80 ? `${Math.round(m1.coverage80.point * 100)}%` : "–", caption: "aim: 80%", delta: m1.coverage80 ? `${Math.round((m1.coverage80.point - 0.8) * 100)} pts` : "–", deltaColor: m1.coverage80 && Math.abs(m1.coverage80.point - 0.8) <= 0.07 ? "lime" : "rose", hint: "How often the real end-of-month balance landed inside the claimed 80% range." },
+    { icon: duo(ChartBar), tone: "emerald", label: "Days tested", value: `${s.n_origins}`, caption: `${s.n_cycles} months`, delta: "walk-forward", deltaColor: "neutral", hint: "Every 2nd day with 60+ days of history; each model fit only on days before it." },
   ];
 
   return (
     <>
-      <div className="rounded-2xl bg-accent-50 px-4 py-3 text-body-medium text-accent-800">
-        {sim ? "Simulated persona. " : ""}Rules were committed to the repository before any results on real data: walk-forward, models fit only on earlier days, 90% intervals from a bootstrap over months. TabPFN only “wins” if the whole interval of the difference is below zero.
+      <div className="rounded-2xl bg-accent-50 px-4 py-2.5 text-body-2-medium text-accent-800">
+        {sim ? "Sample student. " : ""}Tested like a real forecast: each day was predicted using only the days before it, under rules written down before any results.
       </div>
       <StatCards variant="footer" stats={stats} />
-      <Panel title="Every model, every metric" sub="Point estimate with 90% interval. Lower is better for Brier and CRPS." icon={SealCheck} flush>
+      <Panel title="TabPFN against simpler methods" sub="Lower error is better. Small grey numbers are the 90% uncertainty range." icon={SealCheck} flush>
         <Table aria-label="Backtest results">
           <TableHeader>
             <Column isRowHeader>Model</Column>
-            <Column>Brier</Column>
-            <Column>CRPS (₹)</Column>
-            <Column>80% coverage</Column>
-            <Column className="text-end">Lead time</Column>
+            <Column>Error</Column>
+            <Column>Off by (₹)</Column>
+            <Column>Ranges held</Column>
+            <Column className="text-end">Warned ahead</Column>
           </TableHeader>
           <TableBody items={Object.entries(s.models).map(([k, v]) => ({ id: k, k, v }))}>
             {({ k, v }) => (
@@ -59,15 +59,15 @@ export function GradePage({ provider }: { provider: DataProvider }) {
                 </Cell>
                 <Cell><p className="text-body-medium tabular-nums">{f(v.brier)}</p><p className="text-caption-1-medium text-text-tertiary tabular-nums">{ci(v.brier)}</p></Cell>
                 <Cell><p className="text-body-medium tabular-nums">{f(v.crps, 0)}</p><p className="text-caption-1-medium text-text-tertiary tabular-nums">{ci(v.crps, 0)}</p></Cell>
-                <Cell><p className="text-body-medium tabular-nums">{v.coverage80 ? `${Math.round(v.coverage80.point * 100)}%` : "point forecast"}</p></Cell>
+                <Cell><p className="text-body-medium tabular-nums">{v.coverage80 ? `${Math.round(v.coverage80.point * 100)}%` : "no range"}</p></Cell>
                 <Cell className="text-end"><p className="text-body-medium tabular-nums">{Number.isFinite(v.lead_time.mean_lead) ? `${v.lead_time.mean_lead.toFixed(1)} d` : "–"}</p></Cell>
               </TRow>
             )}
           </TableBody>
         </Table>
       </Panel>
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Panel title="Did TabPFN beat the baselines?" sub="Pre-registered rule on the Brier difference" icon={Crosshair} flush>
+      <div className="grid gap-4">
+        <Panel title="Did TabPFN do better?" sub="Counts as better only if the whole uncertainty range of the difference favours TabPFN" icon={Crosshair} flush>
           <Rows>
             {Object.entries(s.diff_vs_M1).map(([k, d]) => {
               const v = d.brier.verdict;
@@ -75,22 +75,22 @@ export function GradePage({ provider }: { provider: DataProvider }) {
                 <Row key={k}>
                   <Tile icon={Scales} tone={v === "TabPFN better" ? "lime" : v === "baseline better" ? "rose" : "neutral"} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-body-medium text-text-primary">vs {NAMES[k]?.[0] ?? k}</p>
-                    <p className="text-body-2-medium text-text-tertiary tabular-nums">ΔBrier {f(d.brier)} ({ci(d.brier)})</p>
+                    <p className="truncate text-body-medium text-text-primary">Against {NAMES[k]?.[0] ?? k}</p>
+                    <p className="text-body-2-medium text-text-tertiary tabular-nums">error difference {f(d.brier)} (range {ci(d.brier)})</p>
                   </div>
-                  <Chip variant="caption" color={v === "TabPFN better" ? "lime" : v === "baseline better" ? "rose" : "neutral"}>{v}</Chip>
+                  <Chip variant="caption" color={v === "TabPFN better" ? "lime" : v === "baseline better" ? "rose" : "neutral"}>{v === "TabPFN better" ? "TabPFN better" : v === "baseline better" ? "Simpler method better" : "Too close to call"}</Chip>
                 </Row>
               );
             })}
           </Rows>
         </Panel>
-        <Panel title="Honest limitations" sub="Generated from the results above" icon={WarningCircle} flush>
+        <Panel title="What this does not prove" sub="Written from the results above" icon={WarningCircle} flush>
           <Rows>
-            <Row><p className="text-body-regular text-text-secondary">Only {s.n_cycles} months of history, so intervals are wide (Brier interval {ci(m1.brier)}).</p></Row>
-            <Row><p className="text-body-regular text-text-secondary">One person's model, fit on their own history. It says nothing about anyone else until tested.</p></Row>
-            <Row><p className="text-body-regular text-text-secondary">Coverage before calibration: {s.calibration.coverage80_uncalibrated ? `${Math.round(s.calibration.coverage80_uncalibrated.point * 100)}%` : "–"}; after: {s.calibration.coverage80_calibrated ? `${Math.round(s.calibration.coverage80_calibrated.point * 100)}%` : "–"} (k fit only on earlier months).</p></Row>
+            <Row><p className="text-body-regular text-text-secondary">Only {s.n_cycles} months of history, so the uncertainty is wide (error between {ci(m1.brier)}).</p></Row>
+            <Row><p className="text-body-regular text-text-secondary">It learns one person from their own statement. It has not been tested on anyone else.</p></Row>
+            <Row><p className="text-body-regular text-text-secondary">Ranges that held before calibration: {s.calibration.coverage80_uncalibrated ? `${Math.round(s.calibration.coverage80_uncalibrated.point * 100)}%` : "–"}; after: {s.calibration.coverage80_calibrated ? `${Math.round(s.calibration.coverage80_calibrated.point * 100)}%` : "–"} (calibration learned only from earlier months).</p></Row>
             {Object.entries(s.diff_vs_M1).filter(([, d]) => d.crps.verdict === "baseline better").map(([k]) => (
-              <Row key={k}><p className="text-body-regular text-text-secondary">On end-of-month balance (CRPS), {NAMES[k]?.[0] ?? k} did better than TabPFN.</p></Row>
+              <Row key={k}><p className="text-body-regular text-text-secondary">For the exact payday balance, {NAMES[k]?.[0] ?? k} was closer than TabPFN.</p></Row>
             ))}
           </Rows>
         </Panel>
