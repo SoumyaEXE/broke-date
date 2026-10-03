@@ -90,7 +90,7 @@ class LGBMQuantileDist(DistRegressor):
     def __init__(self, qs: np.ndarray | None = None, n_estimators: int = 200, learning_rate: float = 0.05,
                  num_leaves: int = 15, min_data_in_leaf: int = 10, seed: int = 0) -> None:
         self.grid = np.round(np.arange(0.1, 0.91, 0.1), 2) if qs is None else qs
-        self.params = dict(n_estimators=n_estimators, learning_rate=learning_rate, num_leaves=num_leaves,
+        self.params: dict[str, Any] = dict(n_estimators=n_estimators, learning_rate=learning_rate, num_leaves=num_leaves,
                            min_child_samples=min_data_in_leaf, random_state=seed, verbose=-1)
         self.models: list[Any] = []
 

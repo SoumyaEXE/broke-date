@@ -49,7 +49,7 @@ def detect_anchors(txns: pd.DataFrame, mode: str = "allowance", sender_pattern: 
         groups = {sender_pattern: cr[cr["sender"].str.contains(sender_pattern, flags=re.I, regex=True)]}
     else:
         cr = cr[cr["counterparty"].isin(["person", "unknown", "merchant"])]
-        groups = {s: g for s, g in cr.groupby("sender") if s}
+        groups = {str(s): g for s, g in cr.groupby("sender") if s}
 
     best: tuple[float, str, pd.DataFrame] | None = None
     for sender, g in groups.items():

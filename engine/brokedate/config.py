@@ -117,9 +117,10 @@ def load_config(path: Path | None = None) -> Config:
     _fill(cfg.tabpfn, raw.get("tabpfn", {}))
     _fill(cfg.gemma, raw.get("gemma", {}))
     _fill(cfg.eval, raw.get("eval", {}))
-    if fest := raw.get("calendar", {}).get("festivals_file"):
-        p = Path(fest)
-        cfg.festivals_file = p if p.is_absolute() else REPO_ROOT / p
+    fest = raw.get("calendar", {}).get("festivals_file")
+    if fest:
+        fp = Path(str(fest))
+        cfg.festivals_file = fp if fp.is_absolute() else REPO_ROOT / fp
     for name, vals in raw.get("subject", {}).items():
         sc = SubjectCfg()
         _fill(sc, vals)

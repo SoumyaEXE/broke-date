@@ -15,15 +15,15 @@ NUMBER_WORDS_EN = {
 }
 # Bengali script
 NUMBER_WORDS_BN = {
-    "শূন্য", "এক", "একটা", "একটি", "দুই", "দুটো", "দুটি", "তিন", "তিনটে", "চার", "চারটে", "পাঁচ", "ছয়", "ছয়", "সাত", "আট",
-    "নয়", "নয়", "দশ", "এগারো", "বারো", "কুড়ি", "তিরিশ", "চল্লিশ", "পঞ্চাশ", "ষাট", "সত্তর", "আশি", "নব্বই", "শ", "শো",
+    "শূন্য", "এক", "একটা", "একটি", "দুই", "দুটো", "দুটি", "তিন", "তিনটে", "চার", "চারটে", "পাঁচ", "ছয়", "সাত", "আট",
+    "নয়", "দশ", "এগারো", "বারো", "কুড়ি", "তিরিশ", "চল্লিশ", "পঞ্চাশ", "ষাট", "সত্তর", "আশি", "নব্বই", "শ", "শো",
     "একশো", "হাজার", "লাখ", "কোটি", "অর্ধেক", "আধা", "দ্বিগুণ", "শতাংশ",
 }
 # transliterated Bengali (Benglish). 'noy' is left out on purpose: it is the everyday negation ("bhalo noy").
 NUMBER_WORDS_BENGLISH = {
     "ek", "ekta", "ekti", "dui", "duto", "duti", "tinte", "tinta", "charte", "charta", "panch", "paanch", "panchta",
     "choy", "chhoy", "choyta", "saat", "shaat", "saatta", "aat", "aath", "aatta", "nota", "dosh", "doshta", "egaro",
-    "baro", "kuri", "tirish", "chollish", "ponchash", "shaat", "shottor", "aashi", "nobboi", "sho", "esho", "hajar",
+    "baro", "kuri", "tirish", "chollish", "ponchash", "shottor", "aashi", "nobboi", "sho", "esho", "hajar",
     "hazar", "koti", "adha", "aadha", "ordhek", "dwigun", "shotangsho",
 }
 BLOCKLIST = NUMBER_WORDS_EN | NUMBER_WORDS_BN | NUMBER_WORDS_BENGLISH

@@ -214,7 +214,7 @@ def plot_balance(subject: str = typer.Option(..., "--subject", "-s")) -> None:
     ax.plot(d["date"], d["bal_min_paise"] / 100, lw=0.6, color="#d9480f", alpha=0.7, label="lowest in day")
     ax.axhline(cfg.forecast.broke_line_rupees, ls="--", color="#d9480f", lw=1)
     for a in led.anchors.dates:
-        ax.axvline(a, color="#0f766e", lw=0.6, alpha=0.5)
+        ax.axvline(a, color="#0f766e", lw=0.6, alpha=0.5)  # type: ignore[arg-type]
     ax.set_ylabel("balance (rupees)")
     ax.legend(loc="upper right")
     ax.set_title(f"{subject}: balance, allowance days (green), broke line (dashed)")

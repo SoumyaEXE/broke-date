@@ -84,17 +84,17 @@ def build_ledger(subject: str, txns: pd.DataFrame, anchors: Anchors, calendar: C
     df["bal_before"] = df["bal_after"] - df["signed"]
     start, end = df["date"].min(), df["date"].max()
     days = [start + timedelta(days=i) for i in range((end - start).days + 1)]
-    g = df.groupby("date")
-    spend = g.apply(lambda x: int(x.loc[x["is_spend"], "amount_paise"].sum()), include_groups=False)
-    sched = g.apply(lambda x: int(x.loc[x["is_sched"], "amount_paise"].sum()), include_groups=False)
+    by = df["date"]
+    amt = df["amount_paise"]
     anchor_ids = set(anchors.ids)
-    anchor_in = g.apply(lambda x: int(x.loc[x["id"].isin(anchor_ids), "amount_paise"].sum()), include_groups=False)
-    credit = g.apply(lambda x: int(x.loc[x["direction"] == "CREDIT", "amount_paise"].sum()), include_groups=False)
-    other_out = g.apply(lambda x: int(x.loc[(x["direction"] == "DEBIT") & ~x["is_spend"], "amount_paise"].sum()),
-                        include_groups=False)
-    bal_end = g["bal_after"].last()
+    spend = amt.where(df["is_spend"], 0).groupby(by).sum()
+    sched = amt.where(df["is_sched"], 0).groupby(by).sum()
+    anchor_in = amt.where(df["id"].isin(anchor_ids), 0).groupby(by).sum()
+    credit = amt.where(df["direction"] == "CREDIT", 0).groupby(by).sum()
+    other_out = amt.where((df["direction"] == "DEBIT") & ~df["is_spend"], 0).groupby(by).sum()
+    bal_end = df["bal_after"].groupby(by).last()
     # lowest running balance within the day (statement order), including the start-of-day balance
-    bal_min = g.apply(lambda x: int(min(x["bal_after"].min(), x["bal_before"].iloc[0])), include_groups=False)
+    bal_min = pd.concat([df["bal_after"].groupby(by).min(), df["bal_before"].groupby(by).first()], axis=1).min(axis=1)
     daily = pd.DataFrame({"date": days})
     daily["spend_paise"] = daily["date"].map(spend).fillna(0).astype(np.int64)
     daily["sched_paise"] = daily["date"].map(sched).fillna(0).astype(np.int64)
@@ -153,7 +153,7 @@ def feature_table(led: Ledger, until: date, min_history: int = 14) -> pd.DataFra
         cal = calendar_row(led, d, nxt_for_feat, int(daily["sched_paise"].iloc[i]))
         bal = daily["bal_start_paise"].iloc[i] / 100.0
         st = state_features(np.array([bal]), np.array([spend_r[i - 3:i].sum()]), np.array([spend_r[i - 14:i].sum()]),
-                            led.anchor_amount_at(d) / 100.0, cal["days_to_anchor"])
+                            led.anchor_amount_at(d) / 100.0, int(cal["days_to_anchor"]))
         row = {"date": d, **cal, **{k: float(v[0]) for k, v in st.items()}, "free_spend_rupees": free_r[i]}
         prev = led.prev_anchor(d)
         j0 = max(led.row_of(prev), 0)

@@ -81,7 +81,7 @@ def rollout(si: SimInputs, factor: np.ndarray | None = None, extra: np.ndarray |
         want = draw + si.sched[t] + ex[t]
         spend = np.minimum(want, np.maximum(bal, 0.0))        # UPI cannot spend money you don't have
         daily_free[:, t] = np.minimum(draw, spend)
-        inc = 0.0
+        inc: np.ndarray | float = 0.0
         if inflows and si.inflow is not None and si.V is not None and si.W is not None:
             inc = si.inflow.sample(bal, si.V[:, t], si.W[:, t])
         low = bal - spend                         # lowest point of the day: after spending, before help arrives

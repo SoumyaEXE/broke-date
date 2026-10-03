@@ -12,7 +12,7 @@ brokedate-private/
 # generated
 out/*
 !out/.gitkeep
-web/public/demo/
+# web/public/demo/ is SIMULATED data only and is committed for the static demo
 web/dist/
 web/node_modules/
 engine/.venv/

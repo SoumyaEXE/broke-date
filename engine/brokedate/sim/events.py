@@ -44,13 +44,14 @@ def detect_recurring(txns: pd.DataFrame, before: date | None = None) -> list[Rec
     out: list[Recurring] = []
     if df.empty:
         return out
-    for (merchant, amount), g in df.groupby([df["merchant"].fillna("?"), "amount_paise"]):
+    for key, g in df.groupby([df["merchant"].fillna("?"), "amount_paise"]):
+        merchant, amount = str(key[0]), int(key[1])  # type: ignore[index,call-overload]
         if len(g) < 3 or amount < 5000:
             continue
         dates = sorted(g["date"])
         gaps = np.diff([d.toordinal() for d in dates])
         if len(gaps) and (np.abs(gaps - np.median(gaps)) <= 3).mean() >= 0.75 and 25 <= np.median(gaps) <= 35:
-            out.append(Recurring(str(merchant), int(amount), int(round(float(np.median(gaps)))), dates[-1],
+            out.append(Recurring(merchant, amount, int(round(float(np.median(gaps)))), dates[-1],
                                  g["id"].tolist()))
     return out
 

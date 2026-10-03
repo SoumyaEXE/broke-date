@@ -148,7 +148,7 @@ def write_letter(bundle: ForecastBundle, cfg: Config, language: str | None = Non
                 break
             feedback = "; ".join(problems)
     fallback = text is None
-    if fallback:
+    if text is None:
         text = template_letter(slots, nar, language)
     rendered, segs = render(text, facts)
     return {"language": language, "text_placeholders": text, "text_rendered": rendered, "segments": segs,

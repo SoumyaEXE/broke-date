@@ -25,14 +25,14 @@ def evaluate(db: DB, cfg: Config, subject: str, labels: Path | None, use_gemma: 
     with labels.open(encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             key = r.get("ref") or r.get("narration") or ""
-            truth[key.strip()] = r["category"].strip()
+            truth[str(key).strip()] = str(r["category"]).strip()
     rows = []
-    for _, r in df.iterrows():
-        key = (r["ref_no"] or "") if (r["ref_no"] or "") in truth else r["raw_narration"]
+    for _, tx in df.iterrows():
+        key = (tx["ref_no"] or "") if (tx["ref_no"] or "") in truth else tx["raw_narration"]
         if key in truth:
-            rows.append({"id": r["id"], "raw_narration": r["raw_narration"], "direction": r["direction"],
-                         "amount_paise": int(r["amount_paise"]), "_truth": truth[key],
-                         "_anchor": bool(r["is_anchor_income"])})
+            rows.append({"id": tx["id"], "raw_narration": tx["raw_narration"], "direction": tx["direction"],
+                         "amount_paise": int(tx["amount_paise"]), "_truth": truth[key],
+                         "_anchor": bool(tx["is_anchor_income"])})
     # fresh labelling pass (no cache: measure the pipeline, not earlier corrections)
     tmp_db = DB(":memory:")
     try:

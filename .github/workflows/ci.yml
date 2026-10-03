@@ -1,0 +1,28 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "3.12" }
+      - run: uv --project engine sync
+      - run: uv --project engine run ruff check engine scripts
+      - run: uv --project engine run mypy engine/brokedate
+      - name: offline test (network sockets blocked except localhost)
+        run: uv --project engine run pytest engine/tests -m "not slow and not ollama" --disable-socket --allow-hosts=127.0.0.1,localhost,::1
+        env: { BROKEDATE_GEMMA: "0" }
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm, cache-dependency-path: web/pnpm-lock.yaml }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run test
+      - run: pnpm run build:demo

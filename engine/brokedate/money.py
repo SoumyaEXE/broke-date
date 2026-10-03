@@ -39,7 +39,7 @@ def group_indian(n: int) -> str:
     s = str(abs(n))
     if len(s) > 3:
         head, tail = s[:-3], s[-3:]
-        parts = []
+        parts: list[str] = []
         while len(head) > 2:
             parts.insert(0, head[-2:])
             head = head[:-2]

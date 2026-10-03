@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from brokedate.ingest.base import ParsedStatement
+from brokedate.ingest.base import Adapter, ParsedStatement
 from brokedate.ingest.csv_generic import GenericCsvAdapter
 from brokedate.ingest.pdf_bank import PdfBankAdapter
 
 
 def parse_statement(path: Path, subject: str, password: str | None = None,
                     adapter: str | None = None) -> ParsedStatement:
-    adapters = [GenericCsvAdapter(), PdfBankAdapter(password)]
+    adapters: list[Adapter] = [GenericCsvAdapter(), PdfBankAdapter(password)]
     if adapter:
         chosen = next((a for a in adapters if a.name == adapter), None)
         if chosen is None:
