@@ -137,6 +137,43 @@ def eval_labels(labels: Path = typer.Argument(None), subject: str = typer.Option
     _say(f"wrote {dest}")
 
 
+@app.command("eval-chat")
+def eval_chat(language: str = typer.Option("English")) -> None:
+    """Gemma reliability: how often each model's chat draft passes the number guards, and how fast it is."""
+    from brokedate.narrate.chat_eval import evaluate_chat
+
+    cfg, _ = _ctx()
+    res = evaluate_chat(cfg, language)
+    _say(json.dumps({m: {k: v for k, v in r.items() if k != "replies"} for m, r in res["models"].items()}, indent=2))
+    dest = out_dir("sim") / "chat" / f"chat_eval_{language.lower()}.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
+    _say(f"wrote {dest}")
+
+
+@app.command("eval-anomaly")
+def eval_anomaly(subject: str = typer.Option("sim", "--subject", "-s"), as_of: str = typer.Option(None),
+                 seeds: int = typer.Option(3, help="number of planting seeds")) -> None:
+    """Unusual-spend detector vs simple rules, on planted anomalies (sim only: real data has no labels)."""
+    from datetime import timedelta
+
+    from brokedate.insights.anomaly_eval import evaluate_detectors
+    from brokedate.models.tabpfn_adapter import make_tabpfn
+    from brokedate.service import load_ledger
+
+    if subject != "sim":
+        raise typer.BadParameter("planted-anomaly evaluation runs on the simulated subject only")
+    cfg, db = _ctx()
+    led = load_ledger(db, cfg, subject)
+    d = date.fromisoformat(as_of) if as_of else led.last_day + timedelta(days=1)
+    res = evaluate_detectors(led, d, lambda: make_tabpfn(cfg, seed=cfg.forecast.seed), seeds=tuple(range(1, seeds + 1)))
+    _say(json.dumps(res["summary"], indent=2))
+    dest = out_dir(subject) / "insights" / f"anomaly_eval_{subject}.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(res, indent=2), encoding="utf-8")
+    _say(f"wrote {dest}")
+
+
 @app.command()
 def forecast(subject: str = typer.Option(..., "--subject", "-s"), as_of: str = typer.Option(None),
              n: int = typer.Option(None), seed: int = typer.Option(None),

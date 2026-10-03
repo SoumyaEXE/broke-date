@@ -4,6 +4,7 @@ import {
 } from "@phosphor-icons/react";
 import type { ForecastResponse } from "../types";
 import { Panel, Row, Rows, Tile } from "./kit";
+import { useOfflineProof } from "./OfflineCard";
 
 type Step = { icon: PhosphorIcon; title: string; value: string; unit: string; line: string };
 
@@ -17,11 +18,13 @@ export function AboutPage({ data }: { data: ForecastResponse | null }) {
     { icon: ChatCircleText, title: "Ask", value: "0", unit: "numbers from an LLM", line: "Answers rerun the futures" },
     { icon: SealCheck, title: "Grade", value: m?.calibrated ? `k ${m.spread_k}` : "k 1", unit: "calibrated", line: "Walk-forward, pre-registered" },
   ];
+  const proof = useOfflineProof();
+  // measured by the browser while this page is open, not claimed
   const privacy = [
-    { icon: LockKey, name: "Statements", value: "On this laptop" },
-    { icon: Brain, name: "TabPFN weights", value: "Local file" },
-    { icon: ChatCircleText, name: "Gemma (words only)", value: "Ollama, local" },
-    { icon: WifiSlash, name: "Network at runtime", value: "None" },
+    { icon: WifiSlash, name: "Requests that left this laptop", value: `${proof.outside.length} of ${proof.total}` },
+    { icon: LockKey, name: "Network lock", value: proof.lock ? "On: this app + 127.0.0.1 only" : "Off (dev server)" },
+    { icon: ShieldCheck, name: "Requests the lock blocked", value: String(proof.blocked.length) },
+    { icon: Brain, name: "TabPFN and Gemma", value: "Local weights, CPU" },
   ];
   const rules = [
     { icon: ShieldCheck, name: "Gemma never writes a number", value: "Validated" },
@@ -51,7 +54,7 @@ export function AboutPage({ data }: { data: ForecastResponse | null }) {
         ))}
       </ol>
       <div className="grid gap-4 xl:grid-cols-2">
-        <Facts title="What stays on your laptop" icon={LockKey} rows={privacy} />
+        <Facts title="Proof it's offline (measured live)" icon={LockKey} rows={privacy} />
         <Facts title="Rules it holds itself to" icon={ShieldCheck} rows={rules} />
       </div>
     </>

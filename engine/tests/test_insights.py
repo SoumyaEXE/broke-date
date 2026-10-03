@@ -153,3 +153,19 @@ def test_festival_heads_up_uses_last_years_real_spend(sim_ledger):
     durga = next(u for u in up if "Durga" in u["name"])
     assert durga["days_until"] == 14
     assert durga["last"] is None  # 2025 Puja started before the statement does: no partial, made-up comparison
+
+
+def test_anomaly_eval_scores_every_detector_on_the_same_plants(sim_ledger):
+    from brokedate.insights.anomaly_eval import evaluate_detectors
+
+    _, _, led = sim_ledger
+    as_of = led.last_day + timedelta(days=1)
+    res = evaluate_detectors(led, as_of, CategoryQuantiles, seeds=(1, 2), factors=(5.0,), n_plants=4)
+    assert set(res["summary"]) == {"tabpfn", "merchant_3x", "category_z3"}
+    runs = res["runs"]
+    assert len(runs) == 2 * 3 and all(r["planted"] == 4 for r in runs)
+    # same plants for every detector within a seed
+    by_seed = {s: {r["planted"] for r in runs if r["seed"] == s} for s in (1, 2)}
+    assert all(len(v) == 1 for v in by_seed.values())
+    assert all(0 <= r["recall"] <= 1 for r in runs)
+    assert res["summary"]["merchant_3x"]["x5"]["recall_mean"] > 0  # a 5x spend is easy for the simple rule too

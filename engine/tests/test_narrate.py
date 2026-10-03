@@ -181,3 +181,30 @@ def test_chat_rejects_reply_that_drops_a_fact() -> None:
 def test_chat_rejects_repeated_unit() -> None:
     ev = _run(["You can spend {f1} today; risk is {f2} percent."])
     assert ev[-1]["ok"] is False and "unit word repeated after a placeholder" in ev[-1]["problems"]
+
+
+def test_chat_eval_counts_acceptance_and_reasons(monkeypatch) -> None:  # noqa: ANN001
+    import json as _json
+
+    from brokedate.config import Config
+    from brokedate.narrate import chat_eval
+
+    class Echo:
+        """gemma3:1b repeats the plain answer (always valid); gemma3:4b sneaks in a digit."""
+
+        def available_models(self) -> list[str]:
+            return ["gemma3:1b", "gemma3:4b"]
+
+        def chat_stream(self, messages, temperature=0.6, seed=0, num_predict=200, model=None):  # noqa: ANN001
+            body = messages[1]["content"]
+            plain = body.split("Plain answer: ", 1)[1].split("\n", 1)[0]
+            yield ("Sure. " + plain) if model == "gemma3:1b" else "You have 5 rupees."
+
+    monkeypatch.setattr(chat_eval, "fits", lambda m: True)
+    monkeypatch.setattr("brokedate.narrate.chat.fits", lambda m: True)
+    res = chat_eval.evaluate_chat(Config(), client=Echo())  # type: ignore[arg-type]
+    n = len(_json.loads(chat_eval.FIXTURES.read_text(encoding="utf-8")))
+    one, four = res["models"]["gemma3:1b"], res["models"]["gemma3:4b"]
+    assert one["n"] == four["n"] == n
+    assert one["acceptance_rate"] >= 0.8                      # echoing the checked answer passes (length rules aside)
+    assert four["accepted"] == 0 and four["rejections"] == {"wrote a digit": n}

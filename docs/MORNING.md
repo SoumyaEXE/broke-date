@@ -36,6 +36,8 @@ Live data through yesterday (so the app starts from today's date):
 
 ```powershell
 uv --project engine run --no-sync brokedate eval-labels -s sim          # rules vs +TabPFN vs +Gemma vs all
+uv --project engine run --no-sync brokedate eval-anomaly -s sim         # TabPFN vs 2 rule baselines on planted anomalies
+uv --project engine run --no-sync brokedate eval-chat                   # Gemma 1B/4B: drafts accepted, why rejected, speed
 uv --project engine run --no-sync brokedate export-demo --as-of 2026-09-20   # demo JSON + insights.json + labels.json
 uv --project engine run --no-sync brokedate post-numbers                 # prints every [[f: ...]] value
 ```

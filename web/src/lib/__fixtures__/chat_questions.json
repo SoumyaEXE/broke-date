@@ -1,0 +1,303 @@
+[
+ {
+  "question": "Can I afford a ₹400 movie on Saturday?",
+  "template": "Yes. I reran your {f1} with a {f2} movie on Sat, {f3}. {f4} still make it to payday {f5}, and it costs {f6} of runway on your own money. Chance of going broke before payday would be {f7}.",
+  "verdict": "comfortable: yes, they can afford it",
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "count, in \"I reran your {f1} with a {f2} movie on Sat, {f3}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "amount, in \"I reran your {f1} with a {f2} movie on Sat, {f3}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "date, in \"I reran your {f1} with a {f2} movie on Sat, {f3}.\""
+   },
+   {
+    "id": "f4",
+    "desc": "count, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f5",
+    "desc": "count, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f6",
+    "desc": "number of days, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f7",
+    "desc": "percentage, in \"Chance of going broke before payday would be {f7}.\""
+   }
+  ]
+ },
+ {
+  "question": "Can I afford ₹1200 shoes tomorrow?",
+  "template": "Doable, but tight. I reran your {f1} with {f2} shoes on Sun, {f3}. {f4} still make it to payday {f5}, and it costs {f6} of runway on your own money. Chance of going broke before payday would be {f7}.",
+  "verdict": "doable but tight",
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "count, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "amount, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "date, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+   },
+   {
+    "id": "f4",
+    "desc": "count, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f5",
+    "desc": "count, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f6",
+    "desc": "number of days, in \"{f4} still make it to payday {f5}, and it costs {f6} of runway on your own money.\""
+   },
+   {
+    "id": "f7",
+    "desc": "percentage, in \"Chance of going broke before payday would be {f7}.\""
+   }
+  ]
+ },
+ {
+  "question": "How much can I spend today?",
+  "template": "You can spend up to {f1} today and still keep the chance of going broke before payday at or below {f2}. Right now it's {f3}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"You can spend up to {f1} today and still keep the chance of going broke before payday at or below {f2}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "percentage, in \"You can spend up to {f1} today and still keep the chance of going broke before payday at or below {f2}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "percentage, in \"Right now it's {f3}.\""
+   }
+  ]
+ },
+ {
+  "question": "When would I run out?",
+  "template": "{f1} simulated months run out before payday. When they do, it's most often around {f2} (most of them between {f3} and {f4}).",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "count, in \"{f1} simulated months run out before payday.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
+   },
+   {
+    "id": "f3",
+    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
+   },
+   {
+    "id": "f4",
+    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
+   }
+  ]
+ },
+ {
+  "question": "How long does my money last?",
+  "template": "On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}. Your allowance is due {f3}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "number of days, in \"On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "date, in \"Your allowance is due {f3}.\""
+   }
+  ]
+ },
+ {
+  "question": "Where did my money go?",
+  "template": "Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}). Most of it: {f6}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "date, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+   },
+   {
+    "id": "f2",
+    "desc": "number of days, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+   },
+   {
+    "id": "f3",
+    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+   },
+   {
+    "id": "f4",
+    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+   },
+   {
+    "id": "f5",
+    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+   },
+   {
+    "id": "f6",
+    "desc": "amount, in \"Most of it: {f6}.\""
+   }
+  ]
+ },
+ {
+  "question": "What if I skip the earphones?",
+  "template": "Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).",
+  "verdict": "comfortable: yes, they can afford it",
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   },
+   {
+    "id": "f3",
+    "desc": "number of days, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   },
+   {
+    "id": "f4",
+    "desc": "count, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   },
+   {
+    "id": "f5",
+    "desc": "count, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   },
+   {
+    "id": "f6",
+    "desc": "count, in \"Skipping New earphones ({f1} {f2}) gives back {f3} of runway, and {f4} more of your futures make it to payday ({f5} of {f6}).\""
+   }
+  ]
+ },
+ {
+  "question": "Should I ask home for ₹500?",
+  "template": "With {f1} from home today, {f2} futures make it to payday, instead of {f3}. That's {f4} more months that work out.",
+  "verdict": "doable but tight",
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"With {f1} from home today, {f2} futures make it to payday, instead of {f3}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "count, in \"With {f1} from home today, {f2} futures make it to payday, instead of {f3}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "count, in \"With {f1} from home today, {f2} futures make it to payday, instead of {f3}.\""
+   },
+   {
+    "id": "f4",
+    "desc": "count, in \"That's {f4} more months that work out.\""
+   }
+  ]
+ },
+ {
+  "question": "hi",
+  "template": "Hey! You have {f1} right now, and your allowance is due Fri {f2}, in {f3}. What do you want to check?",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "number of days, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+   }
+  ]
+ },
+ {
+  "question": "what's the date today",
+  "template": "Today is {f1}. Your allowance is due Fri {f2}, in {f3}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "date, in \"Today is {f1}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"Your allowance is due Fri {f2}, in {f3}.\""
+   },
+   {
+    "id": "f3",
+    "desc": "number of days, in \"Your allowance is due Fri {f2}, in {f3}.\""
+   }
+  ]
+ },
+ {
+  "question": "when is my allowance coming",
+  "template": "Your allowance is due {f1}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "number of days, in \"Your allowance is due {f1}.\""
+   }
+  ]
+ },
+ {
+  "question": "how much money do i have",
+  "template": "You have {f1} as of {f2}.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"You have {f1} as of {f2}.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"You have {f1} as of {f2}.\""
+   }
+  ]
+ },
+ {
+  "question": "Add momos ₹150 on Friday to plans",
+  "template": "Added Friday to plans, {f1} on {f2}, to your plans. Every future has been rerun with it.",
+  "verdict": null,
+  "facts": [
+   {
+    "id": "f1",
+    "desc": "amount, in \"Added Friday to plans, {f1} on {f2}, to your plans.\""
+   },
+   {
+    "id": "f2",
+    "desc": "date, in \"Added Friday to plans, {f1} on {f2}, to your plans.\""
+   }
+  ]
+ },
+ {
+  "question": "turn on the movie",
+  "template": "Switched on Saturday movie + popcorn. Every future has been rerun with it.",
+  "verdict": null,
+  "facts": []
+ }
+]

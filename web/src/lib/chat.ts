@@ -155,7 +155,7 @@ export class Brain {
     } else {
       const v = c.verdict;
       segs.push({ t: v === "yes" ? "Yes. " : v === "tight" ? "Doable, but tight. " : "I'd hold off. ", tone: v === "yes" ? "good" : v === "tight" ? "brand" : "bad" },
-        { t: `I reran your ${n} futures with ${what === "this" ? inr(amountPaise) : `a ${inr(amountPaise)} ${what}`} on ${dow(date)}, ${shortDate(date)}. ` },
+        { t: `I reran your ${n} futures with ${what === "this" ? inr(amountPaise) : `${/s$/.test(what) ? "" : "a "}${inr(amountPaise)} ${what}`} on ${dow(date)}, ${shortDate(date)}. ` },
         { t: `${c.afterMade} of ${n}`, tone: "num" }, { t: " still make it to payday" },
         { t: lost > 0 ? ` (${lost} fewer)` : " (no change)", tone: lost > 0 ? "bad" : "good" },
         { t: `, and it costs ` }, { t: days(cost), tone: "num" }, { t: " of runway on your own money. " });

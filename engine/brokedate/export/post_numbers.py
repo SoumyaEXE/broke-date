@@ -48,6 +48,13 @@ def collect() -> dict[str, Any]:
         if lab:
             out[f"labels_{f.stem}"] = {k: lab.get(k) for k in ("n_rows", "rules_coverage", "accuracy_overall",
                                                                "accuracy_by_source", "gemma_model", "compare")}
+    ce = _load(OUT / "chat" / "chat_eval_english.json")
+    if ce:
+        out["chat_eval"] = {m: {k: v for k, v in r.items() if k != "replies"} for m, r in ce["models"].items()}
+    ae = _load(OUT / "insights" / "anomaly_eval_sim.json")
+    if ae:
+        out["anomaly_eval_sim"] = {"summary": ae["summary"], "n_plants": ae["n_plants"], "seeds": ae["seeds"],
+                                   "factors": ae["factors"], "note": ae["note"]}
     ins = _load(REPO_ROOT / "web" / "public" / "demo" / "insights.json")
     if ins:
         u = ins["unusual"]

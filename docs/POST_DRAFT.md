@@ -76,6 +76,17 @@ The TabPFN category asks to *"forecast, predict, classify, or spot anomalies"*. 
 
 **3. Spot anomalies.** For every recent spend, TabPFN, trained only on earlier spends, predicts what a spend *like this one* usually costs (same category, merchant history, weekday, time of month, balance). If the amount sits above the 97th percentile of that prediction and is over ₹100, it's flagged. [[f: on the simulated student, N of M spends in the last 6 weeks were flagged]].
 
+Does it actually catch things? Real statements don't come labelled "this one was weird", so I **planted** some: copied the history, picked 5 ordinary recent spends, multiplied them by 3× or 5×, and asked three detectors to find them. Same plants for everyone, three random seeds:
+
+<!-- source: out/insights/anomaly_eval_sim.json (brokedate eval-anomaly) -->
+| Detector | Found (3× plants) | Found (5× plants) | False alarms per run |
+|---|---|---|---|
+| **TabPFN (the app)** | [[f]] | [[f]] | [[f]] |
+| "More than 3× this merchant's usual" | [[f]] | [[f]] | [[f]] |
+| "3 standard deviations above its category" | [[f]] | [[f]] | [[f]] |
+
+[[One honest sentence on the result, whichever way it goes: e.g. why context (balance, time of month) helps or doesn't.]]
+
 **4. Classify transactions.** Indian UPI narrations are chaos (`UPI-RAJU MAHATO-rajum12@ybl-SBIN0016209-6524...-Payment`: is Raju a friend or the auto driver?). Regex rules handle the obvious ones. **TabPFN learns from the rows the rules were sure about** and labels the leftovers it is confident on. Only what's still unclear goes to Gemma or to a "you decide" list. On the simulated statement, measured against the generator's ground truth:
 
 | Pipeline | Correct |
@@ -93,6 +104,16 @@ Three guards keep it honest:
 - the stream is **cut the instant Gemma types a digit**;
 - the finished reply is rejected if it uses a **number word** ("five hundred", "pachsho"), invents a placeholder, or **drops one of the numbers**, because "16 of 500 months run out" and "you'll run out" mean very different things;
 - when a draft is rejected, the checked plain answer is shown instead, and you can always see which one you got.
+
+How often does Gemma get it right on the first try? I ran the same 14 questions the chat suggests through both sizes, exactly as the app does:
+
+<!-- source: out/chat/chat_eval_english.json (brokedate eval-chat) -->
+| Model | Drafts accepted | Most common reason a draft was rejected | First word after | Whole reply |
+|---|---|---|---|---|
+| Gemma 3 1B | [[f]] / 14 | [[f]] | [[f]] s | [[f]] s |
+| Gemma 3 4B | [[f]] / 14 | [[f]] | [[f]] s | [[f]] s |
+
+Every rejected draft is replaced by the checked answer, so the user never sees a wrong number, only plainer words.
 
 It also never crashes a cheap laptop: the 1B model is the default, the 4B model only loads if **5 GB of RAM is actually free right now**, and if even 1B doesn't fit, the app answers with the checked text and no AI wording.
 
@@ -126,7 +147,7 @@ I also have to say the honest part. By the rules I set myself, **the differences
 
 **Why a lattice.** Predicting 99 quantiles for 500 futures × 30 days on a CPU would be slow, so TabPFN predicts once on a grid of states (balance × recent spending × day), and the simulator interpolates. The browser re-runs the exact same simulation (tested to match the Python engine draw for draw), so even the sample-data preview answers what-ifs instantly with no server.
 
-**Offline proof.** The test suite runs with network sockets blocked except localhost. The app ships a Content-Security-Policy that only allows connections to itself and the engine on `127.0.0.1`, so the browser itself refuses any other request; the build also fails if any external URL sneaks into the bundle.
+**Offline proof.** The test suite runs with network sockets blocked except localhost. The app ships a Content-Security-Policy that only allows connections to itself and the engine on `127.0.0.1`, so the browser itself refuses any other request; the build also fails if any external URL sneaks into the bundle. And the app shows its own receipt: a sidebar card reads the browser's request log and counts how many requests left the laptop (it says 0 of N), live, while you use it.
 
 **Limitations.**
 - One person's history, so the model says nothing about anyone else.
