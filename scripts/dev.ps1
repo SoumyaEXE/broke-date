@@ -16,6 +16,14 @@ switch ($Target) {
         if (Test-Path web/package.json) { Web install }
     }
     "sim" { Uv run python scripts/simulate_statement.py --seed 13 --out data/sim }
+    "sim-today" {
+        # live mode: same persona, statement extended through yesterday so the app starts from today's date.
+        # Written to the private data dir (changes daily, never committed); history before BASE_END is unchanged.
+        $out = Join-Path $env:BROKEDATE_DATA_DIR "sim-live"
+        $y = (Get-Date).AddDays(-1).ToString("yyyy-MM-dd")
+        Uv run python scripts/simulate_statement.py --seed 13 --out $out --end $y
+        Bd import (Join-Path $out "statement.csv") -s sim --confirm-anchors
+    }
     "lint" { Uv run ruff check engine scripts; Uv run ruff format --check engine scripts/hooks }
     "fmt" { Uv run ruff format engine scripts/hooks; Uv run ruff check --fix engine scripts/hooks }
     "types" { Uv run mypy engine/brokedate }

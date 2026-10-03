@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarPlus, Plus, Sparkle, Target } from "@phosphor-icons/react";
+import { CalendarPlus, Plus, ChatCircleText, Target } from "@phosphor-icons/react";
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { Switch } from "@/components/base/switch/switch";
@@ -26,7 +26,7 @@ export function PlansPanel({ data, busy, provider, onUpdate, openFact, onAsk, co
     <Panel title="Plans" sub="Things you are thinking of spending on. Switch one on to count it." icon={Target} flush bodyClassName="flex flex-col"
       action={compact ? (
         <div className="flex gap-1.5">
-          <Button variant="ghost" size="xs" leadingIcon={duo(Sparkle)} onClick={() => onAsk("Can I afford ₹400 on Saturday?")}>Ask</Button>
+          <Button variant="ghost" size="xs" leadingIcon={duo(ChatCircleText)} onClick={() => onAsk("Can I afford ₹400 on Saturday?")}>Ask</Button>
           <Button variant="secondary" size="xs" leadingIcon={duo(Plus)} onClick={() => setAdding((a) => !a)}>{adding ? "Close" : "Add"}</Button>
         </div>
       ) : undefined}>

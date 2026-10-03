@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  CalendarCheck, ChartLineUp, ChatsCircle, Receipt, SealCheck, Sparkle, SquaresFour, UploadSimple,
+  CalendarCheck, ChartLineUp, ChatsCircle, Receipt, SealCheck, ChatCircleText, SquaresFour, UploadSimple,
 } from "@phosphor-icons/react";
 import { RiMenuLine } from "@remixicon/react";
 import { DashboardSidebar, type DashboardNavItem } from "@/components/application/dashboard/dashboard-sidebar";
@@ -132,7 +132,7 @@ export default function App() {
                   {shortDate(data.as_of)} · {daysBetween(data.as_of, data.next_anchor_date) === 1 ? "allowance tomorrow" : `allowance in ${daysBetween(data.as_of, data.next_anchor_date)} days`}
                 </span>
               )}
-              {route !== "ask" && <Button variant="primary" size="small" leadingIcon={duo(Sparkle)} onClick={() => ask()}>Ask Broke Date</Button>}
+              {route !== "ask" && <Button variant="primary" size="small" leadingIcon={duo(ChatCircleText)} onClick={() => ask()}>Ask Broke Date</Button>}
             </div>
           </header>
 

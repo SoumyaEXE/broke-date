@@ -1,5 +1,5 @@
 import {
-  ArrowRight, Brain, CheckCircle, FileText, GitBranch, LockKey, Path, SealCheck, ShieldCheck, Sparkle, WifiSlash,
+  ArrowRight, Brain, CheckCircle, FileText, GitBranch, LockKey, Path, SealCheck, ShieldCheck, ChatCircleText, WifiSlash,
   type Icon as PhosphorIcon,
 } from "@phosphor-icons/react";
 import type { ForecastResponse } from "../types";
@@ -14,13 +14,13 @@ export function AboutPage({ data }: { data: ForecastResponse | null }) {
     { icon: FileText, title: "Read", value: m ? String(m.n_history_days) : "–", unit: "days", line: "Reconciled to the paisa" },
     { icon: Brain, title: "Learn", value: m ? m.lattice_rows.toLocaleString("en-IN") : "–", unit: "states", line: "TabPFN, 99 quantiles each" },
     { icon: Path, title: "Simulate", value: data ? String(data.n_futures) : "–", unit: "futures", line: "Day by day to payday" },
-    { icon: Sparkle, title: "Ask", value: "0", unit: "numbers from an LLM", line: "Answers rerun the futures" },
+    { icon: ChatCircleText, title: "Ask", value: "0", unit: "numbers from an LLM", line: "Answers rerun the futures" },
     { icon: SealCheck, title: "Grade", value: m?.calibrated ? `k ${m.spread_k}` : "k 1", unit: "calibrated", line: "Walk-forward, pre-registered" },
   ];
   const privacy = [
     { icon: LockKey, name: "Statements", value: "On this laptop" },
     { icon: Brain, name: "TabPFN weights", value: "Local file" },
-    { icon: Sparkle, name: "Gemma (words only)", value: "Ollama, local" },
+    { icon: ChatCircleText, name: "Gemma (words only)", value: "Ollama, local" },
     { icon: WifiSlash, name: "Network at runtime", value: "None" },
   ];
   const rules = [

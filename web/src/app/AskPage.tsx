@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowCounterClockwise, CalendarPlus, ChatsCircle, CheckCircle, Cpu, NotePencil, Sparkle, Trash, XCircle } from "@phosphor-icons/react";
+import { ArrowCounterClockwise, CalendarPlus, CheckCircle, ClockCounterClockwise, Lightning, NotePencil, Trash, XCircle } from "@phosphor-icons/react";
+import { Dropdown, DropdownDivider, DropdownItem, DropdownPopover, DropdownTrigger } from "@/components/base/dropdown/dropdown";
 import { AgentComposer } from "@/components/application/agent-chat/agent-composer";
 import { AgentMessage } from "@/components/application/agent-chat/agent-chat-message";
 import { AgentThinking } from "@/components/application/agent-thinking/agent-thinking";
@@ -13,6 +14,7 @@ import { shortDate } from "../lib/format";
 import { duo } from "./kit";
 import { ChatArtifact } from "./ChatArtifact";
 import { ModelPicker, type ModelChoice } from "./ModelPicker";
+import { BrandLogo } from "./BrandLogo";
 import type { Route } from "../App";
 
 type Bot = {
@@ -57,7 +59,7 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
   const [text, setText] = useState("");
   const [under, setUnder] = useState(false);
   const [language, setLanguage] = useState<string | undefined>();
-  const [installed, setInstalled] = useState<string[]>([]);
+  const [installed, setInstalled] = useState<string[] | null>(null);
   const [model, setModel] = useState<ModelChoice>(() => { try { return (localStorage.getItem(MODEL_STORE) as ModelChoice) || "auto"; } catch { return "auto"; } });
   const scroller = useRef<HTMLDivElement>(null);
   const abort = useRef<AbortController | null>(null);
@@ -73,7 +75,7 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
   const busy = msgs.some((m) => m.role === "bot" && m.status !== "done");
 
   useEffect(() => { void provider.settings().then((s) => setLanguage(s.letter_language)).catch(() => undefined); }, [provider]);
-  useEffect(() => { if (provider.health) void provider.health().then((h) => setInstalled((h.models as string[]) ?? [])).catch(() => undefined); }, [provider]);
+  useEffect(() => { if (provider.health) void provider.health().then((h) => setInstalled(Array.isArray(h.models) ? (h.models as string[]) : null)).catch(() => undefined); }, [provider]);
   useEffect(() => { saveThreads(threads); }, [threads]);
   useEffect(() => { try { localStorage.setItem(MODEL_STORE, model); } catch { /* ignore */ } }, [model]);
 
@@ -172,25 +174,26 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
 
   return (
     <section className="relative flex min-h-[560px] flex-1 overflow-hidden rounded-3xl bg-background-secondary-default">
-      <History threads={threads} activeId={activeId} onSelect={(id) => { stop(); setActiveId(id); }} onNew={newChat} onDelete={remove} />
       <div className="relative flex min-w-0 flex-1 flex-col">
         {/* BoardUI chat header: overlaid, transparent until the transcript scrolls under it, then frosted */}
         <header className={cx("absolute inset-x-0 top-0 z-10 flex h-12 items-center gap-2 border-b px-4 transition-colors duration-200",
           under ? "border-separator-border bg-white/40 backdrop-blur-[20px]" : "border-transparent")}>
           <span className="min-w-0 flex-1 truncate text-headline-medium text-text-primary">{thread?.title ?? "New chat"}</span>
-          {msgs.length > 0 && <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={newChat} className="lg:hidden">New chat</Button>}
+          <HistoryMenu threads={threads} activeId={activeId} onSelect={(id) => { stop(); setActiveId(id); }} onDelete={remove} />
+          {msgs.length > 0 && <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={newChat}>New chat</Button>}
         </header>
 
         <div ref={scroller} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 0)} className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
           <div className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-[72px] pb-6", msgs.length === 0 && "min-h-full justify-center")}>
             {msgs.length === 0 ? (
               <div className="reveal flex flex-col items-center gap-5 text-center">
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-background-inner-default shadow-card">
-                  <Sparkle weight="duotone" className="size-6 text-accent-500" aria-hidden />
+                <span className="flex -space-x-2">
+                  <span className="flex size-11 items-center justify-center rounded-full bg-background-inner-default shadow-card ring-4 ring-background-secondary-default"><BrandLogo brand="google" className="size-5" /></span>
+                  <span className="flex size-11 items-center justify-center rounded-full bg-background-inner-default shadow-card ring-4 ring-background-secondary-default"><BrandLogo brand="ollama" mono className="size-5 text-text-primary" /></span>
                 </span>
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-title-2-medium text-text-primary">Ask about your month, or tell me what to change</h2>
-                  <p className="text-body-regular text-text-secondary">TabPFN works out every number from {n} simulated months. {live ? "Gemma, on this laptop, puts it into words." : "In the full app, Gemma on your laptop puts it into words."}</p>
+                  <h2 className="text-title-2-medium text-text-primary">Ask about your month</h2>
+                  <p className="text-body-regular text-text-tertiary">Numbers by TabPFN · words by Gemma, offline</p>
                 </div>
                 <div className="flex max-w-2xl flex-wrap justify-center gap-2">
                   {STARTERS.map((q) => (
@@ -219,38 +222,51 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
   );
 }
 
-function History({ threads, activeId, onSelect, onNew, onDelete }: {
-  threads: Thread[]; activeId: string; onSelect: (id: string) => void; onNew: () => void; onDelete: (id: string) => void;
+/** Recent chats, Claude-style: a header menu instead of a permanent column. Kept in this browser only. */
+function HistoryMenu({ threads, activeId, onSelect, onDelete }: {
+  threads: Thread[]; activeId: string; onSelect: (id: string) => void; onDelete: (id: string) => void;
 }) {
+  const [open, setOpen] = useState(false);
   const ago = (t: number) => {
     const m = Math.round((Date.now() - t) / 60000);
-    return m < 1 ? "now" : m < 60 ? `${m}m` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`;
+    return m < 1 ? "just now" : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
   };
+  const today = threads.filter((t) => Date.now() - t.updatedAt < 86400000);
+  const older = threads.filter((t) => Date.now() - t.updatedAt >= 86400000);
+  const row = (t: Thread) => (
+    <div key={t.id} className="group relative">
+      <DropdownItem selected={t.id === activeId} onSelect={() => { onSelect(t.id); setOpen(false); }} className="px-2.5 py-2 pe-9">
+        <span className="flex min-w-0 flex-1 flex-col text-start">
+          <span className="truncate text-body-medium text-text-primary">{t.title}</span>
+          <span className="text-caption-1-medium text-text-tertiary">{ago(t.updatedAt)} · {t.msgs.filter((m) => m.role === "user").length} questions</span>
+        </span>
+      </DropdownItem>
+      <button type="button" aria-label={`Delete ${t.title}`} onClick={() => onDelete(t.id)}
+        className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1.5 text-text-tertiary opacity-0 transition-opacity hover:bg-background-secondary-default hover:text-status-rose-text focus-visible:opacity-100 group-hover:opacity-100">
+        <Trash className="size-3.5" aria-hidden />
+      </button>
+    </div>
+  );
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-e border-separator-border lg:flex">
-      <div className="flex h-12 items-center gap-2 px-4">
-        <ChatsCircle weight="duotone" className="size-4 text-text-secondary" aria-hidden />
-        <span className="flex-1 text-body-medium text-text-primary">Chats</span>
-        <Button variant="ghost" size="xs" leadingIcon={duo(NotePencil)} onClick={onNew}>New</Button>
-      </div>
-      <ul className="no-scrollbar flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2 pb-3">
-        {threads.length === 0 && <li className="px-2 py-2 text-body-2-medium text-text-tertiary">Your chats stay in this browser.</li>}
-        {threads.map((t) => (
-          <li key={t.id} className="group relative">
-            <button type="button" onClick={() => onSelect(t.id)}
-              className={cx("flex w-full cursor-pointer items-center gap-2 rounded-xl px-2.5 py-2 text-start transition-colors",
-                t.id === activeId ? "bg-background-inner-default shadow-card" : "hover:bg-background-primary-hover")}>
-              <span className="min-w-0 flex-1 truncate text-body-2-medium text-text-primary">{t.title}</span>
-              <span className="text-caption-1-medium text-text-tertiary tabular-nums group-hover:invisible">{ago(t.updatedAt)}</span>
-            </button>
-            <button type="button" aria-label={`Delete ${t.title}`} onClick={() => onDelete(t.id)}
-              className="invisible absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-text-tertiary hover:text-status-rose-text group-hover:visible">
-              <Trash className="size-3.5" aria-hidden />
-            </button>
-          </li>
-        ))}
-      </ul>
-    </aside>
+    <Dropdown isOpen={open} onOpenChange={setOpen}>
+      <DropdownTrigger aria-label="Chat history"
+        className="flex h-7 items-center gap-1.5 rounded-lg px-2 text-body-2-medium text-text-secondary transition-colors hover:bg-background-inner-default hover:text-text-primary">
+        <ClockCounterClockwise weight="duotone" className="size-4" aria-hidden />History
+        {threads.length > 0 && <span className="rounded-md bg-background-inner-default px-1.5 text-caption-1-medium text-text-tertiary tabular-nums">{threads.length}</span>}
+      </DropdownTrigger>
+      <DropdownPopover aria-label="Recent chats" placement="bottom end" className="w-[320px]" dialogClassName="max-h-[60vh] overflow-y-auto no-scrollbar">
+        {threads.length === 0 ? (
+          <p className="px-2 py-3 text-body-2-medium text-text-tertiary">No chats yet. They stay in this browser only.</p>
+        ) : (
+          <>
+            {today.length > 0 && <p className="px-2 pt-1 text-caption-1-medium text-text-tertiary">Today</p>}
+            {today.map(row)}
+            {older.length > 0 && <><DropdownDivider /><p className="px-2 text-caption-1-medium text-text-tertiary">Earlier</p></>}
+            {older.map(row)}
+          </>
+        )}
+      </DropdownPopover>
+    </Dropdown>
   );
 }
 
@@ -274,7 +290,7 @@ function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
   return (
     <div className="flex flex-col gap-3 px-1">
       {m.status === "thinking" ? (
-        <AgentThinking variant="wave" label={live ? "Gemma is writing" : `Running ${n} futures`} shimmer />
+        <AgentThinking variant="wave" label={live ? "Writing" : "Thinking"} shimmer />
       ) : (
         <p className="text-body-regular leading-relaxed text-text-primary">
           {segs.map((s, i) => s.tone ? (
@@ -294,11 +310,11 @@ function BotTurn({ m, n, live, data, go, onFollow, onUndo }: {
             {plan && <Button variant="primary" size="xs" leadingIcon={duo(CalendarPlus)} onClick={() => onFollow(`Add ${plan.name} ₹${Math.round(plan.amount_paise / 100)} on ${shortDate(plan.date)} to plans`)}>Add as a plan</Button>}
             {m.a.follow?.map((f) => <Button key={f} variant="secondary" size="xs" onClick={() => onFollow(f)}>{f}</Button>)}
           </div>
-          <p className="flex items-center gap-1.5 text-caption-1-medium text-text-tertiary">
-            <Cpu weight="duotone" className="size-3.5" aria-hidden />
-            {m.source === "gemma" ? `Words by ${m.model} on this laptop · numbers by TabPFN, ${n} futures` : `Checked answer · numbers by TabPFN, ${n} futures`}
-          </p>
-          {m.note && <p className="text-caption-1-medium text-text-tertiary">{m.note}</p>}
+          <span title={m.note ?? `Numbers from ${n} TabPFN futures`}
+            className="flex w-fit items-center gap-1.5 rounded-full bg-background-inner-default px-2.5 py-1 text-caption-1-medium text-text-tertiary shadow-xs">
+            {m.source === "gemma" ? <BrandLogo brand="google" className="size-3" /> : <Lightning weight="fill" className="size-3" aria-hidden />}
+            {m.source === "gemma" ? `TabPFN · Gemma ${m.model?.split(":")[1]?.toUpperCase() ?? ""}` : "TabPFN · checked"}
+          </span>
         </div>
       )}
     </div>

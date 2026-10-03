@@ -28,11 +28,13 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------------
 # Persona
 # ---------------------------------------------------------------------------------------------
+BASE_END = "2026-09-30"  # history up to here is fixed: backtest, demo and tests depend on it
+
 PERSONA = {
     "city_tier": 2,
     "city_label": "tier-2 city, West Bengal (illustrative)",
     "start": "2025-10-01",
-    "end": "2026-09-30",
+    "end": "2026-09-30",  # BASE_END; --end can extend it (see main)
     "opening_balance": 640,
     "allowance_sender": "SANCHITA DAS",     # fictional parent name
     "allowance_day": 1,
@@ -41,7 +43,7 @@ PERSONA = {
         # start, end, monthly allowance, has college/school commute, label
         ["2025-10-01", "2026-03-20", 2500, True, "class 12 + boards"],
         ["2026-03-21", "2026-07-31", 3000, False, "post-boards break"],
-        ["2026-08-01", "2026-09-30", 4000, True, "first year college"],
+        ["2026-08-01", "2027-06-30", 4000, True, "first year college"],
     ],
     "exams": [["2025-12-01", "2025-12-12"], ["2026-02-16", "2026-03-20"]],
     "festivals": {
@@ -159,7 +161,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=13)
     ap.add_argument("--out", default="data/sim")
+    ap.add_argument("--end", default=PERSONA["end"],
+                    help="last statement day (YYYY-MM-DD); dev runs pass yesterday so live mode starts today")
     args = ap.parse_args()
+    PERSONA["end"] = args.end
     rng = random.Random(args.seed)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -182,12 +187,17 @@ def main():
         st.rows.append(Row(ts, narration, ref, debit, credit, st.balance, merchant, category, counterparty, spend))
 
     start, end = d(PERSONA["start"]), d(PERSONA["end"])
+    # Days after BASE_END come from separately seeded streams, so extending --end never changes the history
+    # before it (the committed backtest, demo and parity fixtures stay valid) and stays deterministic.
+    base_end = min(end, d(BASE_END))
+    ext_rng = random.Random(args.seed * 7919 + 2)
 
     # allowance arrival dates
     allowance_dates = set()
     m = date(start.year, start.month, 1)
     while m <= end:
-        a = m + timedelta(days=PERSONA["allowance_day"] - 1 + rng.randint(0, PERSONA["allowance_jitter_days"]))
+        r = rng if m <= base_end else ext_rng
+        a = m + timedelta(days=PERSONA["allowance_day"] - 1 + r.randint(0, PERSONA["allowance_jitter_days"]))
         if start <= a <= end:
             allowance_dates.add(a)
         m = date(m.year + m.month // 12, m.month % 12 + 1, 1)
@@ -197,6 +207,8 @@ def main():
 
     day = start
     while day <= end:
+        if day == base_end + timedelta(days=1):
+            rng.seed(args.seed * 7919 + 1)  # extension days: own stream (see base_end above)
         allowance, commute, label = phase(day)
         weekend = day.weekday() >= 5
         fest = festival(day)
