@@ -1,4 +1,4 @@
-﻿"""Static demo export: SIMULATED data only (SPEC 22.1). Writes web/public/demo/*.json."""
+"""Static demo export: SIMULATED data only (SPEC 22.1). Writes web/public/demo/*.json."""
 
 from __future__ import annotations
 

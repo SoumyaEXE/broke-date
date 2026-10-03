@@ -47,7 +47,7 @@ export default function PlanList({ data, provider, busy, onUpdate, openFact, fac
       <ul className="mt-3 divide-y rule">
         {data.plans.length === 0 && <li className="py-3 text-sm muted">Nothing planned. Add a Saturday and see what it costs.</li>}
         {data.plans.map((p) => (
-          <li key={p.id} className={`py-3 flex items-center gap-3 rule ${p.active ? "" : "opacity-55"}`}>
+          <li key={p.id} className="py-3 flex items-center gap-3 rule">
             <button role="switch" aria-checked={p.active} aria-label={`${p.active ? "Skip" : "Keep"} ${p.name}`}
                     disabled={busy}
                     onClick={() => onUpdate(() => provider.togglePlan(p.id, !p.active))}
@@ -56,7 +56,7 @@ export default function PlanList({ data, provider, busy, onUpdate, openFact, fac
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all" style={{ left: p.active ? 18 : 2 }} />
             </button>
             <div className="min-w-0 flex-1">
-              <p className={`truncate ${p.active ? "" : "line-through"}`}>{p.name}</p>
+              <p className={`truncate ${p.active ? "font-medium" : "muted"}`}>{p.name}{!p.active && <span className="text-xs"> · considering</span>}</p>
               <p className="text-xs muted num">{inr(p.amount_paise)} · {shortDate(p.date)}{!p.in_horizon && " · after payday"}</p>
             </div>
             <button onClick={() => openFact(factId(`plan:${p.id}`))}

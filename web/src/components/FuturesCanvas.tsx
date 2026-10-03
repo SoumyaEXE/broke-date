@@ -13,7 +13,7 @@ function ease(t: number) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t 
 export default function FuturesCanvas({ data, prev }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const cv = useRef<HTMLCanvasElement>(null);
-  const [w, setW] = useState(640);
+  const [w, setW] = useState(() => Math.min(640, typeof window !== "undefined" ? window.innerWidth - 48 : 640));
   const [hover, setHover] = useState<number | null>(null);
   const progress = useRef(1);
   const H = data.horizon_days;
@@ -74,7 +74,10 @@ export default function FuturesCanvas({ data, prev }: Props) {
       }
       const every = Math.max(1, Math.ceil(H / Math.max(2, Math.floor((w - pad.l) / 70))));
       ctx.textAlign = "center";
-      for (let t = 0; t <= H; t += every) ctx.fillText(t === 0 ? "today" : shortDate(data.paths.days[t]), x(t), h - 8);
+      for (let t = 0; t <= H; t += every) {
+        ctx.textAlign = t === 0 ? "left" : x(t) > w - 50 ? "right" : "center";
+        ctx.fillText(t === 0 ? "today" : shortDate(data.paths.days[t]), t === 0 ? pad.l - 4 : x(t), h - 8);
+      }
 
       // 80% band
       const band = (k: "p10" | "p90", t: number) => {
@@ -139,8 +142,8 @@ export default function FuturesCanvas({ data, prev }: Props) {
     (data.broke_day ? ` Futures that go broke most often do so around ${shortDate(data.broke_day.median)}.` : "");
 
   return (
-    <div ref={wrap} className="relative select-none">
-      <canvas ref={cv} style={{ width: w, height: h, display: "block" }} role="img" aria-label={label}
+    <div ref={wrap} className="relative select-none w-full min-w-0">
+      <canvas ref={cv} style={{ width: "100%", height: h, display: "block" }} role="img" aria-label={label}
         onMouseMove={(e) => {
           const r = (e.target as HTMLCanvasElement).getBoundingClientRect();
           const t = Math.round(((e.clientX - r.left - pad.l) / (w - pad.l - pad.r)) * H);

@@ -2,7 +2,8 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const ALLOW = [/^https?:\/\/github\.com\//, /^http:\/\/127\.0\.0\.1:8787/, /^http:\/\/www\.w3\.org\//, /^https?:\/\/react\.dev/, /^https?:\/\/reactjs\.org/];
+// tailwindcss.com appears only in the MIT licence banner comment of the CSS (not a request)
+const ALLOW = [/^https:\/\/tailwindcss\.com$/, /^https?:\/\/github\.com\//, /^http:\/\/127\.0\.0\.1:8787/, /^http:\/\/www\.w3\.org\//, /^https?:\/\/react\.dev/, /^https?:\/\/reactjs\.org/];
 const bad = [];
 function walk(d) {
   for (const f of readdirSync(d)) {

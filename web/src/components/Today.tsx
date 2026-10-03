@@ -26,9 +26,9 @@ export default function Today({ data, prev, busy, provider, onUpdate, openFact }
   const left = daysBetween(data.as_of, data.next_anchor_date);
 
   return (
-    <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       {/* LEFT: the human numbers */}
-      <section aria-labelledby="hero" className="space-y-6">
+      <section aria-labelledby="hero" className="space-y-6 min-w-0">
         <div className="receipt rounded-t-xl px-5 pt-5 pb-6">
           <p className="text-xs uppercase tracking-[0.18em] muted">Safe to spend today</p>
           <div className="flex items-start gap-2 mt-1">
@@ -88,7 +88,7 @@ export default function Today({ data, prev, busy, provider, onUpdate, openFact }
       </section>
 
       {/* RIGHT: the wonder screen */}
-      <section className="space-y-6" aria-label="simulated futures">
+      <section className="space-y-6 min-w-0" aria-label="simulated futures">
         <div className="rounded-xl border rule p-3 sm:p-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2 px-1 pb-2">
             <h3 className="font-medium">500 versions of the rest of your month</h3>

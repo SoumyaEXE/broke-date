@@ -30,7 +30,7 @@ export default function EatenCalendar({ data }: { data: ForecastResponse }) {
                    style={{ background: broke ? undefined : weekend ? "var(--bg-2)" : "transparent",
                             outline: "1px solid var(--rule)", outlineOffset: "-1px" }}
                    title={d}>
-                <span className="absolute bottom-0.5 left-0 right-0 text-center text-[9px] num muted">{parseISO(d).getUTCDate()}</span>
+                <span className={`absolute bottom-0.5 left-0 right-0 text-center text-[9px] num muted ${i % 5 === 0 ? "" : "hidden sm:block"}`}>{parseISO(d).getUTCDate()}</span>
               </div>
             );
           })}

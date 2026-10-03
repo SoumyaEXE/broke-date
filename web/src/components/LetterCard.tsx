@@ -48,6 +48,7 @@ export default function LetterCard({ provider, data, openFact }: {
         <p className="mt-4 text-[11px] opacity-60">
           {letter.fallback_used ? "Template letter (Gemma offline)." : `Words by ${letter.model}.`} Every number is filled in by the engine; tap one to see where it came from.
           {letter.placeholders.length > 0 && ` ${letter.placeholders.length} numbers referenced.`}
+          {(data as ForecastResponse & { recomputedInBrowser?: boolean }).recomputedInBrowser && " Written for today's starting scenario, before your changes."}
         </p>
       )}
     </article>
