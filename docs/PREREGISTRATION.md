@@ -4,7 +4,6 @@ Status: DRAFT until the commit titled `docs(prereg): freeze evaluation contract`
 After that commit this file is frozen. Changes are allowed only as dated entries in "Deviations" at the
 bottom, explaining what changed and why. Earlier text is never edited.
 
-Fill every `<<...>>` before committing.
 
 ## 1. Question
 On a person's own transaction history, does a TabPFN-driven simulation forecast (a) whether they go
@@ -12,7 +11,8 @@ below the broke line before their next anchor income, and (b) their end-of-cycle
 simple baselines, with honest uncertainty?
 
 ## 2. Subjects
-- S1: Subarna (allowance income). Data: bank statement covering <<from>> to <<to>>.
+- S1: Subarna (allowance income). Data: his own bank statement, full available history at the time of the
+  first real import (the exact date range is recorded in `out/real/backtest/subarna/summary.json` meta).
 - S2: Soumyadeep (irregular income), if available by Sat 6 PM IST. Otherwise reported as not done.
 - S0: simulated persona (sanity check only; never presented as evidence).
 Each subject is modelled only on their own history.
@@ -20,26 +20,34 @@ Each subject is modelled only on their own history.
 ## 3. Definitions
 - Broke line: ₹150 (15,000 paise).
 - Anchor income: as detected and user-confirmed per SPEC 6.4. Cycle = interval between anchors.
-- Event Y (broke): balance falls below the broke line on any day from the origin up to the day before
-  the next anchor.
+- Event Y (broke): the **lowest within-day balance** (minimum running balance on the statement that day,
+  including the opening balance of the day) falls below the broke line on any day from the origin up to the
+  day before the next anchor.
 - End-of-cycle balance B: balance at the end of the day before the next anchor.
 
 ## 4. Forecast origins
-- Every <<stride, e.g. 2>>-th day with at least 60 days of prior history and a known next anchor date
+- Every 2nd day with at least 60 days of prior history and a known next anchor date
   (S2: next anchor = actual next income for evaluation purposes).
 - Models are fit only on data strictly before the origin.
 
 ## 5. Models compared
-- M1 TabPFN simulation: spend-distribution model + rollout, N_eval = <<e.g. 200>> futures, anchored to
-  the direct model, with nested spread calibration.
+- M1 TabPFN simulation: TabPFN spend-distribution model evaluated on the state lattice (NOTES.md), rollout with
+  the empirical inflow model, N_eval = 200 futures, location-anchored to the TabPFN direct remaining-spend model,
+  with nested spread calibration (k on a 0.05 grid in [0.7, 1.6], fit on earlier origins whose outcome window
+  ended before the origin; k = 1 until 10 such origins exist).
 - M1a TabPFN simulation without anchoring (ablation).
 - M1b TabPFN simulation without calibration (ablation).
 - B1 Burn rate (14-day mean daily spend), logistic squash fit on prior origins only.
 - B2 Same point last cycle.
-- B3 LightGBM quantile simulation, same features, same simulator, fixed params:
-  `n_estimators=<<200>>, learning_rate=<<0.05>>, num_leaves=<<15>>, min_data_in_leaf=<<10>>`,
-  quantiles 0.1 to 0.9 step 0.1.
-Seeds: forecast seed per origin = <<base seed, e.g. 20261002>> + origin index.
+- B3 LightGBM quantile simulation, same features, same lattice, same simulator, same anchoring (LightGBM direct
+  model) and the same nested calibration, fixed params:
+  `n_estimators=200, learning_rate=0.05, num_leaves=15, min_data_in_leaf=10`, quantiles 0.1 to 0.9 step 0.1.
+- B1 and B2 squash: logistic regression of Y on margin = (point end balance - broke line) / anchor amount, fit
+  only on earlier origins whose outcome window ended before the origin; (a, b) = (0, -10) until 10 such origins
+  with both outcomes exist. CRPS of a point forecast = absolute error; no interval, so no coverage.
+Seeds: forecast seed per origin = 20261002 + origin index.
+TabPFN: `tabpfn` 9.1.0, model v2 regressor (`tabpfn-v2-regressor.ckpt`), `n_estimators=2`,
+`fit_mode="fit_with_cache"`, CPU. Lattice: 11 balance points x 3 spend_3d points x 4 spend_14d points.
 
 ## 6. Metrics
 - Primary: Brier score for Y.
@@ -58,9 +66,32 @@ difference M1 minus each baseline.
 - No features, hyperparameters, thresholds, or origin rules are tuned after viewing results on S1 or S2.
   Development and debugging use S0 (simulated) only.
 
-## 9. Known limitations, stated in advance
+## 9. Frozen parameters (machine-readable; the backtest reads this block)
+
+```json
+{
+  "stride": 2,
+  "min_history_days": 60,
+  "n_futures_eval": 200,
+  "base_seed": 20261002,
+  "bootstrap_reps": 2000,
+  "ci": 0.90,
+  "broke_line_rupees": 150,
+  "lead_time_threshold": 0.5,
+  "tabpfn_model_version": "v2",
+  "tabpfn_n_estimators": 2,
+  "lattice": [11, 3, 4],
+  "anchoring": "location",
+  "calibration_k_grid": [0.7, 1.6, 0.05],
+  "lgbm": {"n_estimators": 200, "learning_rate": 0.05, "num_leaves": 15, "min_data_in_leaf": 10}
+}
+```
+
+## 10. Known limitations, stated in advance
 Small number of cycles; wide intervals expected. One person per model. Daily spends simulated
 conditionally independent given features. Results do not generalize to other people without testing.
+Inflows are modelled from the subject's own past only and depend on balance alone. Development choices
+(inflow model, within-day broke definition, location anchoring) were made on S0 only; see NOTES.md.
 
 ## Deviations
 (none yet)

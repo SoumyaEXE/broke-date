@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/700.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --color-paper: #f7f5f0;
+  --color-paper-2: #efebe3;
+  --color-ink: #14110f;
+  --color-muted: #6b6460;
+  --color-rule: #d8d2c6;
+  --color-made: #0f766e;
+  --color-broke: #d9480f;
+  --color-night: #121110;
+  --color-night-2: #1c1a18;
+  --color-night-rule: #34302c;
+  --color-night-ink: #ece7df;
+  --color-night-muted: #a39b93;
+}
+
+:root {
+  color-scheme: light;
+  --bg: var(--color-paper);
+  --bg-2: var(--color-paper-2);
+  --fg: var(--color-ink);
+  --mut: var(--color-muted);
+  --rule: var(--color-rule);
+}
+:root.dark {
+  color-scheme: dark;
+  --bg: var(--color-night);
+  --bg-2: var(--color-night-2);
+  --fg: var(--color-night-ink);
+  --mut: var(--color-night-muted);
+  --rule: var(--color-night-rule);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--mut); }
+.rule { border-color: var(--rule); }
+.bg-2 { background: var(--bg-2); }
+.dashed-rule { border-top: 1px dashed var(--rule); }
+
+/* receipt edge */
+.receipt {
+  background: var(--bg-2);
+  position: relative;
+}
+.receipt::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -6px; height: 6px;
+  background: radial-gradient(circle at 6px 0, transparent 5px, var(--bg-2) 5.5px) repeat-x;
+  background-size: 12px 6px;
+}
+
+.hatch {
+  background-image: repeating-linear-gradient(135deg, rgba(217, 72, 15, 0.55) 0 2px, transparent 2px 6px);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-made);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}

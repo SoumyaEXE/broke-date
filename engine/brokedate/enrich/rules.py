@@ -140,7 +140,9 @@ def _classify(p: Parsed, direction: str) -> None:
     mm = match_merchant(hay)
     person = looks_like_person(p.name, p.vpa) if p.kind in ("UPI", "NEFT", "IMPS") else False
     if mm and not person:
-        p.merchant, p.category = mm
+        # keep the name as written ("Momo Corner"); the dictionary decides the category only
+        p.merchant = p.name.title() if p.name and p.kind in ("UPI", "POS", "NEFT", "IMPS") else mm[0]
+        p.category = mm[1]
         p.counterparty = "merchant"
         p.confidence = 0.9
         if direction == "CREDIT":
