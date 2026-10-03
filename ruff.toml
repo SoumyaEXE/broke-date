@@ -1,0 +1,10 @@
+line-length = 120
+target-version = "py311"
+extend-exclude = ["scripts/simulate_statement.py", "web", "out", "data"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501", "SIM108", "B008"]
+
+[lint.isort]
+known-first-party = ["brokedate", "tests"]

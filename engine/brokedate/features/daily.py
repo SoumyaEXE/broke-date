@@ -81,6 +81,7 @@ def build_ledger(subject: str, txns: pd.DataFrame, anchors: Anchors, calendar: C
     df["is_sched"] = df["id"].isin(sched_ids) & df["is_spend"]
     df["signed"] = np.where(df["direction"] == "CREDIT", df["amount_paise"], -df["amount_paise"])
     df["bal_after"] = opening_paise + df["signed"].cumsum()
+    df["bal_before"] = df["bal_after"] - df["signed"]
     start, end = df["date"].min(), df["date"].max()
     days = [start + timedelta(days=i) for i in range((end - start).days + 1)]
     g = df.groupby("date")
@@ -92,6 +93,8 @@ def build_ledger(subject: str, txns: pd.DataFrame, anchors: Anchors, calendar: C
     other_out = g.apply(lambda x: int(x.loc[(x["direction"] == "DEBIT") & ~x["is_spend"], "amount_paise"].sum()),
                         include_groups=False)
     bal_end = g["bal_after"].last()
+    # lowest running balance within the day (statement order), including the start-of-day balance
+    bal_min = g.apply(lambda x: int(min(x["bal_after"].min(), x["bal_before"].iloc[0])), include_groups=False)
     daily = pd.DataFrame({"date": days})
     daily["spend_paise"] = daily["date"].map(spend).fillna(0).astype(np.int64)
     daily["sched_paise"] = daily["date"].map(sched).fillna(0).astype(np.int64)
@@ -103,6 +106,8 @@ def build_ledger(subject: str, txns: pd.DataFrame, anchors: Anchors, calendar: C
     be.iloc[0] = be.iloc[0] if pd.notna(be.iloc[0]) else opening_paise
     daily["bal_end_paise"] = be.ffill().astype(np.int64)
     daily["bal_start_paise"] = daily["bal_end_paise"].shift(1).fillna(opening_paise).astype(np.int64)
+    bm = daily["date"].map(bal_min)
+    daily["bal_min_paise"] = np.minimum(bm.fillna(daily["bal_start_paise"]), daily["bal_start_paise"]).astype(np.int64)
     led = Ledger(subject, df, anchors, recurring, daily, calendar, opening_paise)
     return led
 

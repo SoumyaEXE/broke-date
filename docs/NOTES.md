@@ -59,5 +59,26 @@
 - 2026-10-03. No GNU make on Windows: `scripts/dev.ps1 <target>` mirrors the Makefile targets. The Makefile is
   kept for Linux CI.
 
+### Decisions made on S0 (simulated) before the pre-registration freeze
+- 2026-10-03. **Inflows are simulated** (`sim/inflows.py`). Students get top-ups from family and friends when they
+  run low, and friends pay back. Without inflows, anchoring to the direct model (whose target includes spending
+  financed by those inflows) pushed every low-balance future broke on day 1. Model: P(any inflow today | balance
+  bucket relative to anchor amount) and the empirical amount distribution per bucket, from the subject's own
+  history before the origin. Closure-safe (only the simulated balance is used).
+- 2026-10-03. **"Broke" is the lowest within-day balance**: in the simulator, balance after the day's spending and
+  before that day's inflows; in the actuals, the minimum running balance on the statement that day. End-of-day
+  balances hid real broke days (sim 15 Feb 2026: ₹92 intraday, rescued to ₹592 the same evening).
+- 2026-10-03. **Anchoring is location-only** (`anchor_targets(mode="location")`): futures' horizon totals are
+  scaled so their median equals the direct model's median, and the simulation keeps its own spread. Full
+  quantile mapping (SPEC 10.5 as first written) collapsed the spread when the direct model had few training
+  cycles. S0 check on 8 origins: Brier raw 0.310, location 0.209, quantile 0.247; CRPS 313 / 275 / 258.
+- 2026-10-03. **Calibration k is fitted on end-of-cycle balance samples** of earlier origins (scaled around their
+  median), then applied in the forward run as spread scaling of horizon totals (SPEC 10.6). Fitting directly on
+  totals would need re-simulating every earlier origin for each k.
+- 2026-10-03. **Price in days uses the subject's own money**: runway = days until the within-day balance first dips
+  below the broke line, with no inflows and the allowance not counted, over the horizon plus 21 days. It is the mean
+  over futures (the median is degenerate when most futures outlast the window). P(make it) and safe-to-spend use
+  the realistic simulation with inflows.
+
 ## Title decision
 (filled in M2 after plotting the real balance)

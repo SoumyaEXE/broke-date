@@ -119,9 +119,7 @@ def parse_narration(narration: str, direction: str) -> Parsed:
         return Parsed("ATM", name="ATM", category="cash_withdrawal", counterparty="self", merchant="ATM",
                       confidence=0.95)
     p: Parsed | None = None
-    if m := _UPI_DASH.match(n):
-        p = Parsed("UPI", name=m["name"].strip(), vpa=m["vpa"], note=(m["note"] or "").strip(), ref=m["ref"])
-    elif m := _UPI_SLASH.match(n):
+    if (m := _UPI_DASH.match(n)) or (m := _UPI_SLASH.match(n)):
         p = Parsed("UPI", name=m["name"].strip(), vpa=m["vpa"], note=(m["note"] or "").strip(), ref=m["ref"])
     elif m := _NEFT.match(n):
         p = Parsed("NEFT", name=m["name"].strip(), ref=m["ref"])

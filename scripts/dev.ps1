@@ -16,8 +16,8 @@ switch ($Target) {
         if (Test-Path web/package.json) { Web install }
     }
     "sim" { Uv run python scripts/simulate_statement.py --seed 13 --out data/sim }
-    "lint" { Uv run ruff check engine scripts; Uv run ruff format --check engine scripts }
-    "fmt" { Uv run ruff format engine scripts; Uv run ruff check --fix engine scripts }
+    "lint" { Uv run ruff check engine scripts; Uv run ruff format --check engine scripts/hooks }
+    "fmt" { Uv run ruff format engine scripts/hooks; Uv run ruff check --fix engine scripts/hooks }
     "types" { Uv run mypy engine/brokedate }
     "test" { Uv run pytest engine/tests @Rest }
     "offline" { Uv run pytest engine/tests --disable-socket --allow-hosts=127.0.0.1,localhost,::1 @Rest }

@@ -14,7 +14,7 @@ sim:
 	$(UV) run python scripts/simulate_statement.py --seed 13 --out data/sim
 
 lint:
-	$(UV) run ruff check engine scripts
+	$(UV) run ruff check engine scripts/hooks
 
 types:
 	$(UV) run mypy engine/brokedate

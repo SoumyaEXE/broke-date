@@ -47,3 +47,7 @@ festivals_file = "config/festivals_kolkata.toml"
 stride_days = 2
 n_futures_eval = 200
 bootstrap_reps = 2000
+
+[subject.sim]
+# SIMULATED persona's exam windows (user-entered exam dates are an optional input, SPEC 8.2)
+exams = [["2025-12-01", "2025-12-12"], ["2026-02-16", "2026-03-20"]]

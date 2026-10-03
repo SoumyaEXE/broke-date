@@ -33,8 +33,8 @@ def db(tmp_path):
 @pytest.fixture(scope="session")
 def sim_ledger(tmp_path_factory):
     """Imported + ledger-built simulated subject, shared across tests."""
-    from brokedate.service import load_ledger
     from brokedate.ingest.pipeline import import_statement
+    from brokedate.service import load_ledger
 
     tmp = tmp_path_factory.mktemp("sim")
     c = load_config()

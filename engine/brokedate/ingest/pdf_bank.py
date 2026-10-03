@@ -80,8 +80,8 @@ class PdfBankAdapter:
                 if cols is None:
                     continue
 
-                def cell(key: str, r: list[str] = r) -> str:
-                    i = cols.get(key) if cols else None
+                def cell(key: str, r: list[str] = r, cols: dict[str, int] = cols) -> str:
+                    i = cols.get(key)
                     return r[i] if i is not None and i < len(r) else ""
 
                 narr, dtext = cell("narration"), cell("date")
