@@ -51,7 +51,20 @@ body { font-feature-settings: "cv11", "ss01"; }
   .reveal > *:nth-child(4) { animation-delay: 210ms; }
   .reveal > *:nth-child(5) { animation-delay: 280ms; }
   .reveal > *:nth-child(n + 6) { animation-delay: 340ms; }
+  /* Import in progress: the engine answers in one go, so the bar shows "working", not a percentage. */
+  @keyframes progress-slide {
+    from { transform: translateX(-110%); }
+    to { transform: translateX(310%); }
+  }
+  .progress-indeterminate { animation: progress-slide 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  @keyframes step-wave {
+    0%, 60%, 100% { opacity: 0.45; transform: none; }
+    30% { opacity: 1; transform: translateY(-2px); }
+  }
+  .step-wave { animation: step-wave 1.8s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) {
     .reveal > * { animation: none; }
+    .progress-indeterminate { animation: none; width: 100%; opacity: 0.5; }
+    .step-wave { animation: none; opacity: 1; }
   }
 }
