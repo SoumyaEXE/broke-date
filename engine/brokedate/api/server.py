@@ -29,7 +29,7 @@ from brokedate.api.schemas import (
     PlanPatch,
     SettingsIn,
 )
-from brokedate.config import Config, load_config
+from brokedate.config import Config, is_synthetic, load_config
 from brokedate.db import DB
 from brokedate.enrich.gemma import OllamaClient, OllamaError
 from brokedate.forecast import engine as fe
@@ -182,7 +182,7 @@ async def import_file(file: UploadFile = File(...), subject: str = Form(...), pa
         path = Path(tmp.name)
     try:
         rep = import_statement(path, subject, db, cfg, password=password,
-                               auto_confirm_anchors=confirm_anchors or subject == "sim")
+                               auto_confirm_anchors=confirm_anchors or is_synthetic(subject))
     except ReconciliationError as e:
         r = e.result
         raise HTTPException(422, {"error": "reconciliation_failed", "row": r.mismatch_row,

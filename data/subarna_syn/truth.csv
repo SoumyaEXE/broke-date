@@ -1,0 +1,762 @@
+ref,timestamp,source_merchant_label,source_category,direction
+448403967001,2025-10-02T20:32,Blinkit,grocery,debit
+760973163650,2025-10-05T00:00,Shared accommodation rent,rent,debit
+953541165689,2025-10-05T08:16,Flipkart purchase,shopping,debit
+363887493642,2025-10-05T20:27,Rapido bike,transport_rapido,debit
+220605789809,2025-10-06T11:36,Reliance Smart,grocery,debit
+110521187410,2025-10-07T08:39,Zomato order,food_delivery,debit
+328982887694,2025-10-07T10:08,Zepto,grocery,debit
+986295003154,2025-10-07T11:41,Rapido ride,transport_rapido,debit
+802285510965,2025-10-08T18:31,Family transfer,upi_transfer,debit
+195951264085,2025-10-08T18:48,Petrol pump,fuel,debit
+256583545987,2025-10-09T00:00,Electricity bill,electricity,debit
+881030329225,2025-10-09T15:39,Petrol pump,fuel,debit
+565836759362,2025-10-10T17:31,Momos stall,misc_small,debit
+743776808653,2025-10-10T20:07,Rapido ride,transport_rapido,debit
+655878046310,2025-10-11T00:00,Mobile data top-up,data_topup,debit
+679463048859,2025-10-11T14:48,Laundry,misc_small,debit
+628204799503,2025-10-12T13:13,Rapido ride,transport_rapido,debit
+942777916963,2025-10-13T00:00,Streaming subscription,subscription,debit
+877228986779,2025-10-13T12:56,ATM cash withdrawal,cash_withdrawal,debit
+214548852494,2025-10-15T00:00,Online electronics purchase,electronics,debit
+628892634684,2025-10-16T07:13,Local pharmacy,medical,debit
+871490675305,2025-10-16T11:12,Blinkit,grocery,debit
+883700131435,2025-10-16T11:47,Flipkart purchase,shopping,debit
+836166329431,2025-10-16T16:47,Swiggy order,food_delivery,debit
+812104727276,2025-10-17T00:00,Freelance project payment,income_freelance,credit
+866659821104,2025-10-17T17:36,Zomato order,food_delivery,debit
+320903339992,2025-10-17T22:50,Family transfer,upi_transfer,debit
+134399582332,2025-10-19T17:56,Swiggy order,food_delivery,debit
+756623369192,2025-10-20T10:21,KFC,restaurant,debit
+640852165048,2025-10-20T12:07,Local restaurant,restaurant,debit
+861326377552,2025-10-20T17:37,Rapido ride,transport_rapido,debit
+944009464099,2025-10-21T00:00,Mobile recharge,mobile_recharge,debit
+828245369008,2025-10-21T00:00,Mobile data top-up,data_topup,debit
+603871205543,2025-10-21T15:47,BigBasket,grocery,debit
+888939678427,2025-10-21T16:20,Blinkit,grocery,debit
+627112636252,2025-10-22T14:52,Reliance Smart,grocery,debit
+505867626662,2025-10-22T16:42,Blinkit,grocery,debit
+260680356566,2025-10-23T09:42,Cafe,restaurant,debit
+100395861254,2025-10-23T22:59,Photocopy shop,misc_small,debit
+193786430984,2025-10-24T09:48,Laundry,misc_small,debit
+779123746044,2025-10-24T19:32,ATM cash withdrawal,cash_withdrawal,debit
+924825530099,2025-10-25T21:54,Petrol pump,fuel,debit
+799038832939,2025-10-26T07:25,ATM cash withdrawal,cash_withdrawal,debit
+269038104344,2025-10-26T16:46,Local kirana,grocery,debit
+742804482168,2025-10-27T08:35,Momos stall,misc_small,debit
+697579693139,2025-10-27T13:36,ATM cash withdrawal,cash_withdrawal,debit
+620648509872,2025-10-28T00:00,Salary credit,income_salary,credit
+244259080308,2025-10-29T17:43,Rapido ride,transport_rapido,debit
+836233754476,2025-10-30T08:14,Rapido bike,transport_rapido,debit
+962358299606,2025-10-30T10:05,Friend settlement,upi_transfer,debit
+266679069316,2025-10-30T10:45,KFC,restaurant,debit
+525657604110,2025-10-31T00:00,Mobile data top-up,data_topup,debit
+481538265019,2025-10-31T12:17,Rapido bike,transport_rapido,debit
+658455623568,2025-10-31T14:42,Flipkart purchase,shopping,debit
+433645061736,2025-10-31T16:28,Swiggy order,food_delivery,debit
+237069401220,2025-10-31T17:26,Petrol pump,fuel,debit
+781059914312,2025-10-31T18:54,Rapido bike,transport_rapido,debit
+673770100602,2025-11-02T00:00,Shared accommodation rent,rent,debit
+472044425535,2025-11-03T21:27,Friend settlement,upi_transfer,debit
+176067661898,2025-11-03T22:04,Dominos,restaurant,debit
+809509243896,2025-11-04T10:26,Rapido bike,transport_rapido,debit
+699784584217,2025-11-04T20:33,Friend settlement,upi_transfer,debit
+629090704563,2025-11-05T15:42,Flipkart purchase,shopping,debit
+682593640547,2025-11-05T18:53,Rapido ride,transport_rapido,debit
+276685169598,2025-11-06T00:00,Mobile data top-up,data_topup,debit
+565028164674,2025-11-06T08:09,ATM cash withdrawal,cash_withdrawal,debit
+557555797815,2025-11-06T15:16,BigBasket,grocery,debit
+303173038230,2025-11-06T17:43,Petrol pump,fuel,debit
+607937622959,2025-11-06T17:55,Petrol pump,fuel,debit
+612336642594,2025-11-08T13:54,Amazon purchase,shopping,debit
+630511504721,2025-11-09T00:00,Electricity bill,electricity,debit
+974142890529,2025-11-09T00:00,Streaming subscription,subscription,debit
+335569807674,2025-11-11T00:00,Festival shopping,festival_shopping,debit
+202880245950,2025-11-11T07:35,Reliance Smart,grocery,debit
+548095837031,2025-11-11T19:12,Online pharmacy,medical,debit
+487220331952,2025-11-12T00:00,Mobile data top-up,data_topup,debit
+888645263950,2025-11-12T11:44,Online pharmacy,medical,debit
+725996835964,2025-11-12T15:36,Laundry,misc_small,debit
+719741018004,2025-11-13T20:39,BigBasket,grocery,debit
+244120780800,2025-11-13T22:37,Dominos,restaurant,debit
+286556426567,2025-11-14T16:32,Rapido ride,transport_rapido,debit
+933483183602,2025-11-15T09:38,Rapido bike,transport_rapido,debit
+305309388626,2025-11-15T11:55,Swiggy order,food_delivery,debit
+401994401628,2025-11-16T07:29,Laundry,misc_small,debit
+447599511164,2025-11-16T10:01,Rapido bike,transport_rapido,debit
+169819521292,2025-11-16T18:01,Reliance Smart,grocery,debit
+954290082848,2025-11-17T09:55,Swiggy order,food_delivery,debit
+117031404012,2025-11-18T11:18,Laundry,misc_small,debit
+122485121793,2025-11-19T13:04,Tea stall,misc_small,debit
+852022445999,2025-11-19T21:55,Local restaurant,restaurant,debit
+601565236186,2025-11-19T22:14,Blinkit,grocery,debit
+767077414253,2025-11-20T15:57,Rapido bike,transport_rapido,debit
+570138587133,2025-11-21T00:00,Mobile recharge,mobile_recharge,debit
+849477212476,2025-11-21T12:08,Tea stall,misc_small,debit
+494350220445,2025-11-21T12:15,Flipkart purchase,shopping,debit
+579813013148,2025-11-21T19:28,KFC,restaurant,debit
+463763546328,2025-11-22T18:18,Friend settlement,upi_transfer,debit
+558564610492,2025-11-22T20:47,Laundry,misc_small,debit
+125353022235,2025-11-23T11:04,Petrol pump,fuel,debit
+162538429707,2025-11-23T18:53,Zomato order,food_delivery,debit
+235802443344,2025-11-25T17:37,Rapido ride,transport_rapido,debit
+671770450266,2025-11-25T19:37,Momos stall,misc_small,debit
+433529120652,2025-11-25T20:07,Rapido bike,transport_rapido,debit
+239921990695,2025-11-26T12:55,Flipkart purchase,shopping,debit
+513966582768,2025-11-26T14:08,Momos stall,misc_small,debit
+343363983974,2025-11-26T17:01,Swiggy order,food_delivery,debit
+132396625070,2025-11-26T22:40,ATM cash withdrawal,cash_withdrawal,debit
+888820405259,2025-11-27T22:57,Family transfer,upi_transfer,debit
+262292232656,2025-11-28T00:00,Salary credit,income_salary,credit
+122455187667,2025-11-28T14:26,Zomato order,food_delivery,debit
+626310231579,2025-11-29T00:00,Mobile data top-up,data_topup,debit
+447714019412,2025-11-29T07:54,KFC,restaurant,debit
+197038990038,2025-11-29T13:46,Rapido bike,transport_rapido,debit
+813127817756,2025-11-29T21:52,ATM cash withdrawal,cash_withdrawal,debit
+666178842489,2025-11-30T07:07,Rapido ride,transport_rapido,debit
+673949392812,2025-11-30T14:28,Tea stall,misc_small,debit
+787243770072,2025-12-01T17:14,Petrol pump,fuel,debit
+843982132042,2025-12-03T00:00,Shared accommodation rent,rent,debit
+879103091748,2025-12-04T07:53,Blinkit,grocery,debit
+474846543314,2025-12-05T16:51,ATM cash withdrawal,cash_withdrawal,debit
+322742213933,2025-12-05T20:24,Zomato order,food_delivery,debit
+802052209110,2025-12-05T21:15,Tea stall,misc_small,debit
+623176140408,2025-12-06T17:24,Reliance Smart,grocery,debit
+787874635880,2025-12-06T17:53,ATM cash withdrawal,cash_withdrawal,debit
+269266972790,2025-12-07T08:09,KFC,restaurant,debit
+490629175758,2025-12-08T00:00,Streaming subscription,subscription,debit
+291723544710,2025-12-08T20:57,Zepto,grocery,debit
+698601591596,2025-12-09T00:00,Electricity bill,electricity,debit
+914818505680,2025-12-11T00:00,Freelance project payment,income_freelance,credit
+121060399463,2025-12-11T07:58,Rapido bike,transport_rapido,debit
+437508787674,2025-12-12T19:57,Petrol pump,fuel,debit
+690045106215,2025-12-13T12:45,Flipkart purchase,shopping,debit
+190644947463,2025-12-13T20:54,Flipkart purchase,shopping,debit
+466743872180,2025-12-13T22:05,Petrol pump,fuel,debit
+907632473296,2025-12-15T18:03,Rapido ride,transport_rapido,debit
+421688378361,2025-12-15T19:34,Flipkart purchase,shopping,debit
+492068575511,2025-12-15T20:36,BigBasket,grocery,debit
+794698086759,2025-12-16T10:08,Family transfer,upi_transfer,debit
+626768213456,2025-12-17T07:05,BigBasket,grocery,debit
+949596621866,2025-12-17T07:27,Zepto,grocery,debit
+132281791880,2025-12-17T10:54,Blinkit,grocery,debit
+261229191431,2025-12-18T11:49,Friend settlement,upi_transfer,debit
+832356315005,2025-12-18T20:21,Zepto,grocery,debit
+504000087546,2025-12-19T08:04,ATM cash withdrawal,cash_withdrawal,debit
+337523067908,2025-12-19T21:15,Friend settlement,upi_transfer,debit
+633977354908,2025-12-20T11:52,Local kirana,grocery,debit
+516925923341,2025-12-20T20:31,ATM cash withdrawal,cash_withdrawal,debit
+775437600166,2025-12-20T22:47,ATM cash withdrawal,cash_withdrawal,debit
+809964516197,2025-12-21T00:00,Mobile recharge,mobile_recharge,debit
+230991131243,2025-12-22T00:00,Mobile data top-up,data_topup,debit
+996288953910,2025-12-22T00:00,Rail travel booking,travel,debit
+191676587735,2025-12-22T11:54,Salon,misc_small,debit
+644638012634,2025-12-23T21:24,Petrol pump,fuel,debit
+829084838623,2025-12-25T17:14,Amazon purchase,shopping,debit
+573842275620,2025-12-25T22:50,Swiggy order,food_delivery,debit
+824663411668,2025-12-27T08:20,Photocopy shop,misc_small,debit
+294620784021,2025-12-28T00:00,Salary credit,income_salary,credit
+985607162589,2025-12-28T11:37,Zepto,grocery,debit
+859631190895,2025-12-28T12:27,Laundry,misc_small,debit
+751989950148,2025-12-29T11:10,Local restaurant,restaurant,debit
+585994355258,2025-12-29T11:58,Swiggy order,food_delivery,debit
+461926710677,2025-12-29T16:45,Tea stall,misc_small,debit
+589054104890,2025-12-29T18:56,Local pharmacy,medical,debit
+789536026762,2025-12-29T19:55,Amazon purchase,shopping,debit
+714796500207,2025-12-31T00:00,Savings interest credit,income_interest,credit
+236461513937,2025-12-31T12:47,Rapido ride,transport_rapido,debit
+604978153142,2025-12-31T20:43,Rapido ride,transport_rapido,debit
+701388711606,2025-12-31T20:45,Rapido bike,transport_rapido,debit
+471126664615,2026-01-01T09:51,Rapido bike,transport_rapido,debit
+833756618284,2026-01-01T13:21,Rapido bike,transport_rapido,debit
+810182121419,2026-01-02T17:12,Reliance Smart,grocery,debit
+542050450102,2026-01-03T00:00,Shared accommodation rent,rent,debit
+715327315205,2026-01-03T00:00,Electricity bill,electricity,debit
+737089737666,2026-01-04T08:10,Local kirana,grocery,debit
+471441303257,2026-01-05T10:01,Tea stall,misc_small,debit
+343770618846,2026-01-05T11:17,Blinkit,grocery,debit
+457636103471,2026-01-05T18:29,Momos stall,misc_small,debit
+605907396552,2026-01-05T19:55,Laundry,misc_small,debit
+506433484753,2026-01-05T20:48,Petrol pump,fuel,debit
+309132411086,2026-01-07T19:09,Rapido bike,transport_rapido,debit
+461446524849,2026-01-08T18:13,Family transfer,upi_transfer,debit
+766606287260,2026-01-08T20:28,Reliance Smart,grocery,debit
+191523382779,2026-01-09T14:23,ATM cash withdrawal,cash_withdrawal,debit
+557704466477,2026-01-09T17:39,Local pharmacy,medical,debit
+396474309746,2026-01-09T19:48,Zomato order,food_delivery,debit
+702091099269,2026-01-10T11:56,Blinkit,grocery,debit
+828675067755,2026-01-11T12:10,Rapido ride,transport_rapido,debit
+449384476672,2026-01-13T00:00,Streaming subscription,subscription,debit
+139728886452,2026-01-13T22:02,ATM cash withdrawal,cash_withdrawal,debit
+639635141660,2026-01-13T22:53,Friend settlement,upi_transfer,debit
+502906377012,2026-01-15T11:20,Flipkart purchase,shopping,debit
+504580482286,2026-01-15T15:33,Local pharmacy,medical,debit
+906776308165,2026-01-17T00:00,Freelance project payment,income_freelance,credit
+432430150708,2026-01-17T07:43,Flipkart purchase,shopping,debit
+993585931805,2026-01-17T09:22,ATM cash withdrawal,cash_withdrawal,debit
+894846208350,2026-01-17T19:17,Tea stall,misc_small,debit
+201431708822,2026-01-18T08:40,Petrol pump,fuel,debit
+827214995699,2026-01-18T10:20,Rapido bike,transport_rapido,debit
+182382458429,2026-01-18T15:21,Zomato order,food_delivery,debit
+673498362838,2026-01-18T21:10,Momos stall,misc_small,debit
+130987517659,2026-01-19T09:20,Reliance Smart,grocery,debit
+569051961664,2026-01-19T15:20,Petrol pump,fuel,debit
+968490827028,2026-01-19T19:05,Tea stall,misc_small,debit
+248127338498,2026-01-19T21:45,Laundry,misc_small,debit
+817247476318,2026-01-20T00:00,Mobile data top-up,data_topup,debit
+897211371138,2026-01-21T10:04,Salon,misc_small,debit
+708196455408,2026-01-21T21:58,Swiggy order,food_delivery,debit
+242352301821,2026-01-22T00:00,Mobile accessory purchase,electronics,debit
+138076689524,2026-01-22T09:56,Zomato order,food_delivery,debit
+251092595770,2026-01-22T12:49,ATM cash withdrawal,cash_withdrawal,debit
+862529864672,2026-01-22T22:20,Laundry,misc_small,debit
+286647657308,2026-01-23T19:55,Local restaurant,restaurant,debit
+924864114825,2026-01-23T20:19,BigBasket,grocery,debit
+551632554937,2026-01-25T00:00,Mobile recharge,mobile_recharge,debit
+134176957836,2026-01-25T00:00,Mobile data top-up,data_topup,debit
+501642051862,2026-01-25T08:08,Rapido bike,transport_rapido,debit
+923261024589,2026-01-25T20:21,Flipkart purchase,shopping,debit
+460348320130,2026-01-26T14:04,Tea stall,misc_small,debit
+145132538504,2026-01-26T17:25,Local pharmacy,medical,debit
+203329049932,2026-01-28T00:00,Salary credit,income_salary,credit
+745761329720,2026-01-28T22:40,Cafe,restaurant,debit
+133315018209,2026-01-29T12:28,Amazon purchase,shopping,debit
+202290892899,2026-02-01T09:24,Online pharmacy,medical,debit
+320903619878,2026-02-01T15:48,Amazon purchase,shopping,debit
+826814350323,2026-02-01T17:39,Swiggy order,food_delivery,debit
+273397921732,2026-02-02T00:00,Shared accommodation rent,rent,debit
+604328707261,2026-02-02T07:07,Reliance Smart,grocery,debit
+792815622417,2026-02-02T13:22,Reliance Smart,grocery,debit
+630886342058,2026-02-04T14:56,Amazon purchase,shopping,debit
+317922571915,2026-02-04T17:47,Momos stall,misc_small,debit
+883204188869,2026-02-05T14:51,ATM cash withdrawal,cash_withdrawal,debit
+785816177927,2026-02-05T16:22,Flipkart purchase,shopping,debit
+324077557114,2026-02-05T20:10,Friend settlement,upi_transfer,debit
+701426425777,2026-02-05T22:18,Petrol pump,fuel,debit
+970307592101,2026-02-06T00:00,Electricity bill,electricity,debit
+502606509460,2026-02-06T09:14,Rapido ride,transport_rapido,debit
+673277522098,2026-02-06T10:40,Petrol pump,fuel,debit
+490156842740,2026-02-06T11:16,Petrol pump,fuel,debit
+972339910386,2026-02-07T00:00,Streaming subscription,subscription,debit
+599758076893,2026-02-08T13:15,Local restaurant,restaurant,debit
+751258958874,2026-02-08T17:39,Friend settlement,upi_transfer,debit
+851478990450,2026-02-09T19:41,Rapido bike,transport_rapido,debit
+479969569072,2026-02-10T11:19,Online pharmacy,medical,debit
+139929271557,2026-02-10T11:41,Dominos,restaurant,debit
+173194288244,2026-02-10T13:54,Family transfer,upi_transfer,debit
+521374075599,2026-02-11T18:35,Photocopy shop,misc_small,debit
+694761189712,2026-02-12T00:00,Freelance project payment,income_freelance,credit
+267598069309,2026-02-12T09:33,Dominos,restaurant,debit
+211783324334,2026-02-13T00:00,Mobile data top-up,data_topup,debit
+684837859028,2026-02-13T14:31,Zomato order,food_delivery,debit
+151418782910,2026-02-13T16:20,Rapido bike,transport_rapido,debit
+231085894011,2026-02-13T19:45,Zomato order,food_delivery,debit
+435665579341,2026-02-14T11:05,Zomato order,food_delivery,debit
+887363085210,2026-02-14T19:34,BigBasket,grocery,debit
+539128326745,2026-02-14T21:10,ATM cash withdrawal,cash_withdrawal,debit
+663664772082,2026-02-15T10:29,ATM cash withdrawal,cash_withdrawal,debit
+560904182789,2026-02-15T12:47,Rapido bike,transport_rapido,debit
+753905426588,2026-02-15T13:42,ATM cash withdrawal,cash_withdrawal,debit
+581827840298,2026-02-15T18:50,Salon,misc_small,debit
+622218086967,2026-02-15T20:56,Momos stall,misc_small,debit
+119455832576,2026-02-16T12:02,Tea stall,misc_small,debit
+900516281081,2026-02-16T20:40,Local restaurant,restaurant,debit
+960992428124,2026-02-17T10:27,Salon,misc_small,debit
+445836562812,2026-02-17T17:46,Zomato order,food_delivery,debit
+911163125493,2026-02-19T00:00,Mobile data top-up,data_topup,debit
+282622041275,2026-02-19T19:47,Local kirana,grocery,debit
+986345902223,2026-02-20T08:49,Amazon purchase,shopping,debit
+705916723730,2026-02-20T12:55,Friend settlement,upi_transfer,debit
+223728348527,2026-02-20T14:16,BigBasket,grocery,debit
+366312760024,2026-02-20T17:54,Family transfer,upi_transfer,debit
+925761915296,2026-02-21T12:32,ATM cash withdrawal,cash_withdrawal,debit
+288121291201,2026-02-21T13:15,Rapido bike,transport_rapido,debit
+379536023025,2026-02-21T14:30,Swiggy order,food_delivery,debit
+874032788262,2026-02-21T21:43,Online pharmacy,medical,debit
+832505381807,2026-02-23T17:35,Rapido bike,transport_rapido,debit
+614081232776,2026-02-24T00:00,Mobile recharge,mobile_recharge,debit
+815758158275,2026-02-24T12:18,ATM cash withdrawal,cash_withdrawal,debit
+632451487640,2026-02-25T13:02,Online pharmacy,medical,debit
+285074820753,2026-02-26T15:41,Zomato order,food_delivery,debit
+105173716034,2026-02-26T17:59,Rapido ride,transport_rapido,debit
+150020700053,2026-02-27T08:07,Amazon purchase,shopping,debit
+901873416676,2026-02-27T12:45,Rapido bike,transport_rapido,debit
+669665955607,2026-02-28T00:00,Salary credit,income_salary,credit
+695212501601,2026-02-28T12:21,Salon,misc_small,debit
+159357362789,2026-03-01T09:52,Swiggy order,food_delivery,debit
+531802094535,2026-03-01T14:10,Photocopy shop,misc_small,debit
+135400353811,2026-03-01T17:09,Blinkit,grocery,debit
+711542514399,2026-03-01T19:33,BigBasket,grocery,debit
+785798337283,2026-03-02T22:26,ATM cash withdrawal,cash_withdrawal,debit
+285450118233,2026-03-03T00:00,Shared accommodation rent,rent,debit
+321444966094,2026-03-03T08:26,ATM cash withdrawal,cash_withdrawal,debit
+931096991764,2026-03-04T14:09,Blinkit,grocery,debit
+820034692103,2026-03-04T14:40,Flipkart purchase,shopping,debit
+117576791510,2026-03-05T11:32,Reliance Smart,grocery,debit
+927845626391,2026-03-07T10:16,Online pharmacy,medical,debit
+670640841584,2026-03-08T00:00,Electricity bill,electricity,debit
+863948286785,2026-03-08T14:41,Momos stall,misc_small,debit
+455618560633,2026-03-09T18:10,Rapido bike,transport_rapido,debit
+226916783362,2026-03-10T16:22,Salon,misc_small,debit
+520109674625,2026-03-10T18:32,Petrol pump,fuel,debit
+793628709272,2026-03-11T00:00,Mobile data top-up,data_topup,debit
+471801382250,2026-03-11T08:30,Rapido ride,transport_rapido,debit
+850513676905,2026-03-11T09:44,Amazon purchase,shopping,debit
+358781613305,2026-03-11T17:39,Rapido bike,transport_rapido,debit
+370057533707,2026-03-12T09:45,Zomato order,food_delivery,debit
+734261279160,2026-03-13T00:00,Streaming subscription,subscription,debit
+687321836128,2026-03-14T10:53,Amazon purchase,shopping,debit
+292140707885,2026-03-14T14:21,Swiggy order,food_delivery,debit
+366704951564,2026-03-14T17:35,Petrol pump,fuel,debit
+626829870584,2026-03-14T22:59,Local restaurant,restaurant,debit
+104841176068,2026-03-16T08:10,Flipkart purchase,shopping,debit
+122557396427,2026-03-16T16:01,Swiggy order,food_delivery,debit
+517258499049,2026-03-16T17:04,Local pharmacy,medical,debit
+235666255511,2026-03-16T21:51,Tea stall,misc_small,debit
+460055471215,2026-03-17T21:06,Momos stall,misc_small,debit
+524539378955,2026-03-18T00:00,Gift purchase,gift,debit
+588635529593,2026-03-18T13:04,Swiggy order,food_delivery,debit
+913664149218,2026-03-18T14:29,Amazon purchase,shopping,debit
+998993132470,2026-03-18T17:14,KFC,restaurant,debit
+703925708448,2026-03-18T18:09,Photocopy shop,misc_small,debit
+425124963932,2026-03-18T18:51,Petrol pump,fuel,debit
+863935652618,2026-03-19T11:41,Tea stall,misc_small,debit
+210810561069,2026-03-19T19:49,Friend settlement,upi_transfer,debit
+467655866861,2026-03-22T00:00,Mobile recharge,mobile_recharge,debit
+703942920805,2026-03-22T11:11,Zepto,grocery,debit
+861832865918,2026-03-22T12:55,Local pharmacy,medical,debit
+368229957477,2026-03-23T12:16,BigBasket,grocery,debit
+139951891578,2026-03-24T09:43,BigBasket,grocery,debit
+836288431773,2026-03-27T12:08,Rapido bike,transport_rapido,debit
+516554857291,2026-03-27T20:58,Rapido bike,transport_rapido,debit
+770269049399,2026-03-27T21:24,Local kirana,grocery,debit
+976328642270,2026-03-28T00:00,Salary credit,income_salary,credit
+665203206057,2026-03-28T07:04,Friend settlement,upi_transfer,debit
+794458260606,2026-03-28T08:12,Swiggy order,food_delivery,debit
+656689049550,2026-03-28T11:46,ATM cash withdrawal,cash_withdrawal,debit
+486504071693,2026-03-29T12:26,Flipkart purchase,shopping,debit
+113832166268,2026-03-29T14:40,Swiggy order,food_delivery,debit
+527045430676,2026-03-30T15:17,Tea stall,misc_small,debit
+742351930946,2026-03-30T18:42,Rapido bike,transport_rapido,debit
+919752886880,2026-03-31T00:00,Savings interest credit,income_interest,credit
+216089261512,2026-03-31T16:13,Online pharmacy,medical,debit
+637621763174,2026-03-31T22:46,Laundry,misc_small,debit
+997637431267,2026-04-01T07:05,Family transfer,upi_transfer,debit
+308361958742,2026-04-01T08:39,Rapido bike,transport_rapido,debit
+192536563713,2026-04-01T12:59,Blinkit,grocery,debit
+534725196599,2026-04-01T18:15,Swiggy order,food_delivery,debit
+480540497144,2026-04-02T08:57,Rapido ride,transport_rapido,debit
+453196662043,2026-04-03T00:00,Shared accommodation rent,rent,debit
+937803465666,2026-04-03T22:32,Reliance Smart,grocery,debit
+603158342644,2026-04-04T09:59,Rapido bike,transport_rapido,debit
+218728556024,2026-04-05T13:04,Petrol pump,fuel,debit
+636269026514,2026-04-06T14:28,Swiggy order,food_delivery,debit
+233921884335,2026-04-06T14:52,ATM cash withdrawal,cash_withdrawal,debit
+478329045906,2026-04-07T00:00,Electricity bill,electricity,debit
+613005327135,2026-04-07T00:00,Streaming subscription,subscription,debit
+926453000351,2026-04-07T08:22,Amazon purchase,shopping,debit
+851707721672,2026-04-07T17:35,Rapido ride,transport_rapido,debit
+585600658205,2026-04-08T09:42,Local restaurant,restaurant,debit
+621618711006,2026-04-08T20:41,Salon,misc_small,debit
+546878678087,2026-04-10T16:15,Flipkart purchase,shopping,debit
+175764489122,2026-04-10T18:22,Amazon purchase,shopping,debit
+677866487300,2026-04-11T17:43,Salon,misc_small,debit
+482720136074,2026-04-12T11:54,BigBasket,grocery,debit
+258297702315,2026-04-12T21:22,ATM cash withdrawal,cash_withdrawal,debit
+768307681305,2026-04-14T12:20,Friend settlement,upi_transfer,debit
+215044536197,2026-04-15T19:35,Amazon purchase,shopping,debit
+928639553595,2026-04-15T21:58,Blinkit,grocery,debit
+799547903564,2026-04-16T00:00,Freelance project payment,income_freelance,credit
+731715701687,2026-04-16T17:13,Laundry,misc_small,debit
+441786575230,2026-04-16T22:04,Rapido ride,transport_rapido,debit
+764967441574,2026-04-18T08:52,Family transfer,upi_transfer,debit
+376677757880,2026-04-18T14:04,Local kirana,grocery,debit
+377496109184,2026-04-18T15:28,Laundry,misc_small,debit
+913524396473,2026-04-18T16:15,ATM cash withdrawal,cash_withdrawal,debit
+328752539184,2026-04-19T08:25,Petrol pump,fuel,debit
+994890031238,2026-04-19T20:32,Salon,misc_small,debit
+221596073182,2026-04-20T16:39,Rapido bike,transport_rapido,debit
+318689394696,2026-04-20T18:26,Online pharmacy,medical,debit
+900230683751,2026-04-21T00:00,Mobile recharge,mobile_recharge,debit
+543826628681,2026-04-21T13:26,Cafe,restaurant,debit
+767703208765,2026-04-22T11:11,Flipkart purchase,shopping,debit
+930778036553,2026-04-22T20:21,Rapido bike,transport_rapido,debit
+724163709330,2026-04-23T08:33,Swiggy order,food_delivery,debit
+933285712697,2026-04-24T18:50,ATM cash withdrawal,cash_withdrawal,debit
+522436755511,2026-04-25T10:33,Petrol pump,fuel,debit
+627346104165,2026-04-26T00:00,Mobile data top-up,data_topup,debit
+612876456630,2026-04-27T19:52,Swiggy order,food_delivery,debit
+425167779143,2026-04-28T00:00,Salary credit,income_salary,credit
+974217800027,2026-04-28T10:15,Momos stall,misc_small,debit
+464082864986,2026-04-29T22:27,Cafe,restaurant,debit
+428066488441,2026-04-29T22:43,Reliance Smart,grocery,debit
+337108994116,2026-04-30T07:33,Family transfer,upi_transfer,debit
+294256554274,2026-04-30T09:26,Swiggy order,food_delivery,debit
+695363295176,2026-04-30T18:38,Rapido bike,transport_rapido,debit
+772917621535,2026-05-01T08:58,Reliance Smart,grocery,debit
+216509316255,2026-05-01T12:55,Flipkart purchase,shopping,debit
+860709777447,2026-05-01T19:50,Zomato order,food_delivery,debit
+970994625205,2026-05-02T00:00,Shared accommodation rent,rent,debit
+911209318376,2026-05-03T07:12,Local kirana,grocery,debit
+581624436102,2026-05-03T09:07,ATM cash withdrawal,cash_withdrawal,debit
+909866980165,2026-05-04T13:45,Petrol pump,fuel,debit
+711478817664,2026-05-04T16:22,Blinkit,grocery,debit
+159832293012,2026-05-04T16:37,Laundry,misc_small,debit
+392700167603,2026-05-05T00:00,Mobile data top-up,data_topup,debit
+887684960523,2026-05-05T12:20,Rapido bike,transport_rapido,debit
+553437457983,2026-05-05T20:21,Zepto,grocery,debit
+798514503480,2026-05-06T21:20,Petrol pump,fuel,debit
+955932992649,2026-05-07T11:56,Amazon purchase,shopping,debit
+312299167335,2026-05-07T14:50,Momos stall,misc_small,debit
+677509876780,2026-05-07T21:21,Photocopy shop,misc_small,debit
+273178969934,2026-05-08T09:46,Flipkart purchase,shopping,debit
+215476841673,2026-05-09T00:00,Electricity bill,electricity,debit
+183262801855,2026-05-09T00:00,Streaming subscription,subscription,debit
+185758299493,2026-05-09T13:18,Zepto,grocery,debit
+836917626306,2026-05-09T15:25,Amazon purchase,shopping,debit
+342890963013,2026-05-09T20:56,Rapido bike,transport_rapido,debit
+199884311635,2026-05-09T22:05,ATM cash withdrawal,cash_withdrawal,debit
+689714622609,2026-05-09T22:24,Laundry,misc_small,debit
+856228454469,2026-05-10T11:37,Local pharmacy,medical,debit
+484649688262,2026-05-10T19:46,Friend settlement,upi_transfer,debit
+706424404750,2026-05-11T13:35,Dominos,restaurant,debit
+525715825915,2026-05-11T18:04,Local restaurant,restaurant,debit
+618173720533,2026-05-11T20:12,Dominos,restaurant,debit
+934029669665,2026-05-12T08:04,Petrol pump,fuel,debit
+170754014484,2026-05-12T13:10,Rapido ride,transport_rapido,debit
+417796273404,2026-05-12T13:23,Tea stall,misc_small,debit
+348831123106,2026-05-13T09:30,ATM cash withdrawal,cash_withdrawal,debit
+403734907240,2026-05-15T00:00,Mobile data top-up,data_topup,debit
+138319009221,2026-05-15T08:42,Tea stall,misc_small,debit
+599368312295,2026-05-15T09:35,Rapido bike,transport_rapido,debit
+328077154937,2026-05-15T11:03,Rapido bike,transport_rapido,debit
+179089144470,2026-05-16T09:38,Blinkit,grocery,debit
+427637063257,2026-05-16T10:19,Zomato order,food_delivery,debit
+418119380815,2026-05-17T13:43,BigBasket,grocery,debit
+322806260939,2026-05-18T10:53,Rapido bike,transport_rapido,debit
+130113437603,2026-05-18T20:59,Momos stall,misc_small,debit
+787313857661,2026-05-19T00:00,Mobile recharge,mobile_recharge,debit
+646547561938,2026-05-19T17:04,Laundry,misc_small,debit
+694141511332,2026-05-19T21:20,Tea stall,misc_small,debit
+734264041858,2026-05-20T12:34,Local pharmacy,medical,debit
+858012746781,2026-05-20T16:33,Petrol pump,fuel,debit
+815650455040,2026-05-21T07:00,Rapido ride,transport_rapido,debit
+693572436123,2026-05-21T12:31,Amazon purchase,shopping,debit
+678248558443,2026-05-22T16:52,Photocopy shop,misc_small,debit
+189176953235,2026-05-23T00:00,Freelance project payment,income_freelance,credit
+811403237365,2026-05-24T10:56,Family transfer,upi_transfer,debit
+158764540469,2026-05-24T18:30,Amazon purchase,shopping,debit
+622523653107,2026-05-25T10:19,Friend settlement,upi_transfer,debit
+812601147464,2026-05-25T22:48,Rapido bike,transport_rapido,debit
+229983811465,2026-05-26T15:02,Rapido ride,transport_rapido,debit
+809638368534,2026-05-28T00:00,Salary credit,income_salary,credit
+405834330408,2026-05-29T00:00,Mobile data top-up,data_topup,debit
+855721349538,2026-05-31T13:23,Blinkit,grocery,debit
+911913736688,2026-05-31T17:55,Zomato order,food_delivery,debit
+530238342488,2026-05-31T20:01,Flipkart purchase,shopping,debit
+764436477509,2026-06-02T00:00,Shared accommodation rent,rent,debit
+925955496054,2026-06-03T13:47,BigBasket,grocery,debit
+711758450138,2026-06-04T07:44,Local restaurant,restaurant,debit
+534175762424,2026-06-04T10:26,Local pharmacy,medical,debit
+339977634921,2026-06-04T20:22,ATM cash withdrawal,cash_withdrawal,debit
+699611492927,2026-06-05T00:00,Electricity bill,electricity,debit
+451209187010,2026-06-06T07:31,Zomato order,food_delivery,debit
+988573876526,2026-06-06T09:51,Tea stall,misc_small,debit
+912584345383,2026-06-06T14:07,Zomato order,food_delivery,debit
+602851423461,2026-06-06T21:55,Laundry,misc_small,debit
+953503591093,2026-06-07T07:16,ATM cash withdrawal,cash_withdrawal,debit
+784225973066,2026-06-07T11:25,Local restaurant,restaurant,debit
+601831205697,2026-06-08T12:11,Rapido ride,transport_rapido,debit
+421363451871,2026-06-08T13:27,Online pharmacy,medical,debit
+400846406786,2026-06-08T19:01,Local restaurant,restaurant,debit
+992044798494,2026-06-09T08:24,Flipkart purchase,shopping,debit
+679342897672,2026-06-09T21:52,Local kirana,grocery,debit
+560911948030,2026-06-10T07:59,Tea stall,misc_small,debit
+854621476504,2026-06-10T14:39,Momos stall,misc_small,debit
+163160514526,2026-06-10T17:20,Amazon purchase,shopping,debit
+460555644490,2026-06-10T19:40,Dominos,restaurant,debit
+775449145603,2026-06-10T22:02,Photocopy shop,misc_small,debit
+412156226912,2026-06-11T12:51,Rapido ride,transport_rapido,debit
+404642608325,2026-06-11T20:12,Online pharmacy,medical,debit
+926857595815,2026-06-12T00:00,Streaming subscription,subscription,debit
+392611212937,2026-06-12T00:00,Mobile data top-up,data_topup,debit
+293307462848,2026-06-12T10:51,Amazon purchase,shopping,debit
+506381770393,2026-06-12T14:09,Momos stall,misc_small,debit
+107259402798,2026-06-13T12:10,Rapido bike,transport_rapido,debit
+146025428236,2026-06-13T14:04,Photocopy shop,misc_small,debit
+117742800071,2026-06-13T14:57,Laundry,misc_small,debit
+942034165594,2026-06-14T16:11,Swiggy order,food_delivery,debit
+220017690606,2026-06-15T00:00,Freelance project payment,income_freelance,credit
+943719211076,2026-06-15T08:00,Reliance Smart,grocery,debit
+983698695382,2026-06-15T12:10,Zomato order,food_delivery,debit
+139594673293,2026-06-16T11:26,Petrol pump,fuel,debit
+319184548618,2026-06-16T12:08,Local restaurant,restaurant,debit
+626148704929,2026-06-17T16:06,Swiggy order,food_delivery,debit
+862481540055,2026-06-17T22:57,KFC,restaurant,debit
+881539640914,2026-06-18T00:00,Laptop accessories,electronics,debit
+215526514841,2026-06-18T18:30,Reliance Smart,grocery,debit
+491865492191,2026-06-18T18:34,Flipkart purchase,shopping,debit
+301885012805,2026-06-19T09:13,Flipkart purchase,shopping,debit
+364190786326,2026-06-19T12:12,Photocopy shop,misc_small,debit
+438656557405,2026-06-20T00:00,Mobile data top-up,data_topup,debit
+100885487862,2026-06-21T08:21,ATM cash withdrawal,cash_withdrawal,debit
+108374279493,2026-06-21T16:28,Friend settlement,upi_transfer,debit
+929774129922,2026-06-21T22:41,Zepto,grocery,debit
+576207870838,2026-06-22T07:27,Laundry,misc_small,debit
+294783110149,2026-06-22T14:02,Rapido ride,transport_rapido,debit
+254611466989,2026-06-22T22:27,Flipkart purchase,shopping,debit
+658527214922,2026-06-23T00:00,Mobile recharge,mobile_recharge,debit
+764758288509,2026-06-23T00:00,Mobile data top-up,data_topup,debit
+964745211790,2026-06-24T14:28,ATM cash withdrawal,cash_withdrawal,debit
+763567644942,2026-06-24T19:12,Family transfer,upi_transfer,debit
+781657096717,2026-06-24T19:37,Rapido bike,transport_rapido,debit
+175197745919,2026-06-25T07:22,Swiggy order,food_delivery,debit
+166534548506,2026-06-25T08:15,Rapido ride,transport_rapido,debit
+663073457012,2026-06-25T18:22,ATM cash withdrawal,cash_withdrawal,debit
+234945733154,2026-06-26T10:11,Family transfer,upi_transfer,debit
+232604581513,2026-06-27T14:05,Friend settlement,upi_transfer,debit
+641102018699,2026-06-28T00:00,Salary credit,income_salary,credit
+125448001848,2026-06-28T18:28,Petrol pump,fuel,debit
+477200063568,2026-06-29T09:44,Zepto,grocery,debit
+161478476179,2026-06-29T16:04,Rapido ride,transport_rapido,debit
+994340233032,2026-06-30T00:00,Savings interest credit,income_interest,credit
+204495592666,2026-07-02T13:50,Petrol pump,fuel,debit
+965070427191,2026-07-03T00:00,Electricity bill,electricity,debit
+609304838694,2026-07-03T21:47,Rapido bike,transport_rapido,debit
+896926125610,2026-07-04T00:00,Shared accommodation rent,rent,debit
+229992469053,2026-07-05T22:08,Rapido ride,transport_rapido,debit
+851577877038,2026-07-07T09:04,Salon,misc_small,debit
+345953785287,2026-07-07T14:41,Rapido ride,transport_rapido,debit
+266678398529,2026-07-08T12:08,Rapido ride,transport_rapido,debit
+970210812837,2026-07-08T13:03,ATM cash withdrawal,cash_withdrawal,debit
+293192356865,2026-07-09T07:44,Friend settlement,upi_transfer,debit
+442398840867,2026-07-12T00:00,Streaming subscription,subscription,debit
+126434487386,2026-07-13T08:49,Amazon purchase,shopping,debit
+277826586637,2026-07-13T13:34,KFC,restaurant,debit
+959101886785,2026-07-13T20:11,Laundry,misc_small,debit
+166065631439,2026-07-14T13:11,Blinkit,grocery,debit
+675464380435,2026-07-15T00:00,Freelance project payment,income_freelance,credit
+836964654301,2026-07-15T00:00,Mobile data top-up,data_topup,debit
+234426605846,2026-07-15T08:57,Dominos,restaurant,debit
+158136537514,2026-07-15T12:21,Local kirana,grocery,debit
+921331003287,2026-07-16T14:57,Rapido ride,transport_rapido,debit
+296992986542,2026-07-16T18:40,ATM cash withdrawal,cash_withdrawal,debit
+750189760035,2026-07-17T14:44,Local restaurant,restaurant,debit
+900741183934,2026-07-17T17:19,Amazon purchase,shopping,debit
+677546873324,2026-07-17T20:44,Family transfer,upi_transfer,debit
+861909661729,2026-07-18T08:06,Local kirana,grocery,debit
+248225156756,2026-07-18T21:50,ATM cash withdrawal,cash_withdrawal,debit
+856324443377,2026-07-18T22:38,Petrol pump,fuel,debit
+289447556686,2026-07-20T09:19,Momos stall,misc_small,debit
+539570445215,2026-07-20T12:34,Blinkit,grocery,debit
+121654622585,2026-07-20T20:04,Tea stall,misc_small,debit
+697916448132,2026-07-20T20:22,Swiggy order,food_delivery,debit
+531987702596,2026-07-20T20:34,Tea stall,misc_small,debit
+341635502225,2026-07-21T22:58,Zomato order,food_delivery,debit
+951673209277,2026-07-22T14:55,Amazon purchase,shopping,debit
+455880154550,2026-07-22T18:49,ATM cash withdrawal,cash_withdrawal,debit
+168865529109,2026-07-22T20:50,Flipkart purchase,shopping,debit
+230403435547,2026-07-23T00:00,Mobile recharge,mobile_recharge,debit
+159285013737,2026-07-23T07:08,Zomato order,food_delivery,debit
+635665207672,2026-07-24T11:16,Amazon purchase,shopping,debit
+941280704630,2026-07-24T19:34,Rapido ride,transport_rapido,debit
+812789090220,2026-07-25T07:18,BigBasket,grocery,debit
+400043748211,2026-07-25T09:18,Cafe,restaurant,debit
+502137289567,2026-07-25T10:02,Salon,misc_small,debit
+707045417878,2026-07-26T10:03,Amazon purchase,shopping,debit
+819648314468,2026-07-26T14:23,BigBasket,grocery,debit
+946176990144,2026-07-26T18:28,Local pharmacy,medical,debit
+337312873405,2026-07-27T00:00,Mobile data top-up,data_topup,debit
+143277131130,2026-07-28T00:00,Salary credit,income_salary,credit
+259021323866,2026-07-28T07:44,Friend settlement,upi_transfer,debit
+216636240531,2026-07-28T18:26,Rapido ride,transport_rapido,debit
+503734908135,2026-07-28T18:49,Cafe,restaurant,debit
+685285625484,2026-07-29T10:29,BigBasket,grocery,debit
+377677037405,2026-08-01T15:10,Swiggy order,food_delivery,debit
+336162187854,2026-08-01T22:29,Photocopy shop,misc_small,debit
+119616834215,2026-08-02T14:16,Dominos,restaurant,debit
+662602391073,2026-08-02T16:00,Salon,misc_small,debit
+171453514068,2026-08-02T18:21,Friend settlement,upi_transfer,debit
+227698385587,2026-08-03T15:49,Friend settlement,upi_transfer,debit
+340267256703,2026-08-04T00:00,Shared accommodation rent,rent,debit
+973978254302,2026-08-04T13:10,Rapido ride,transport_rapido,debit
+148943981064,2026-08-06T00:00,Mobile data top-up,data_topup,debit
+495188243394,2026-08-06T12:34,Online pharmacy,medical,debit
+672894769691,2026-08-07T00:00,Electricity bill,electricity,debit
+266126502346,2026-08-07T16:36,Zomato order,food_delivery,debit
+592874619707,2026-08-07T18:43,Friend settlement,upi_transfer,debit
+875821764910,2026-08-08T14:23,Petrol pump,fuel,debit
+790840446773,2026-08-10T00:00,Streaming subscription,subscription,debit
+904254580878,2026-08-12T10:28,Rapido ride,transport_rapido,debit
+144672347500,2026-08-12T12:46,Photocopy shop,misc_small,debit
+196495163436,2026-08-12T20:00,Flipkart purchase,shopping,debit
+530474083905,2026-08-14T00:00,Freelance project payment,income_freelance,credit
+158945438272,2026-08-14T08:06,BigBasket,grocery,debit
+409328551551,2026-08-16T00:00,Mobile data top-up,data_topup,debit
+602289934969,2026-08-17T00:00,Mobile recharge,mobile_recharge,debit
+153313783800,2026-08-17T18:14,ATM cash withdrawal,cash_withdrawal,debit
+569602127160,2026-08-17T19:18,BigBasket,grocery,debit
+350053148579,2026-08-18T00:00,Intercity travel booking,travel,debit
+764315867646,2026-08-19T09:31,Swiggy order,food_delivery,debit
+608885554679,2026-08-19T14:37,KFC,restaurant,debit
+931608115569,2026-08-19T15:23,Tea stall,misc_small,debit
+414626197842,2026-08-19T20:23,Rapido bike,transport_rapido,debit
+986073888849,2026-08-20T16:32,Tea stall,misc_small,debit
+295247376004,2026-08-20T21:55,Amazon purchase,shopping,debit
+694497034992,2026-08-21T08:45,Zomato order,food_delivery,debit
+563111002279,2026-08-21T11:48,Salon,misc_small,debit
+108238414218,2026-08-21T12:33,Rapido bike,transport_rapido,debit
+651425259075,2026-08-21T17:11,Local restaurant,restaurant,debit
+547019274890,2026-08-22T07:26,Cafe,restaurant,debit
+645710479796,2026-08-22T10:30,Zepto,grocery,debit
+374404426667,2026-08-22T14:43,Momos stall,misc_small,debit
+301030036850,2026-08-22T17:54,ATM cash withdrawal,cash_withdrawal,debit
+735800719299,2026-08-22T21:38,Cafe,restaurant,debit
+467536033458,2026-08-23T07:16,Local pharmacy,medical,debit
+777393664636,2026-08-24T18:40,Rapido bike,transport_rapido,debit
+104777708380,2026-08-24T21:30,Amazon purchase,shopping,debit
+759353182258,2026-08-25T08:56,Rapido ride,transport_rapido,debit
+124348530414,2026-08-25T11:21,ATM cash withdrawal,cash_withdrawal,debit
+293400013499,2026-08-26T10:33,Zepto,grocery,debit
+116562420621,2026-08-27T07:21,Salon,misc_small,debit
+198536275098,2026-08-27T12:39,Rapido bike,transport_rapido,debit
+673883914533,2026-08-27T14:36,ATM cash withdrawal,cash_withdrawal,debit
+440424013504,2026-08-27T20:25,Rapido bike,transport_rapido,debit
+256837059936,2026-08-28T00:00,Salary credit,income_salary,credit
+869018995137,2026-08-28T11:01,Flipkart purchase,shopping,debit
+993248271735,2026-08-29T08:00,Reliance Smart,grocery,debit
+395728850116,2026-08-29T10:55,Dominos,restaurant,debit
+614741481530,2026-08-29T11:03,Photocopy shop,misc_small,debit
+524357506728,2026-08-30T07:59,Rapido ride,transport_rapido,debit
+787906044413,2026-08-30T12:41,ATM cash withdrawal,cash_withdrawal,debit
+221151154933,2026-08-31T10:18,ATM cash withdrawal,cash_withdrawal,debit
+866359112538,2026-08-31T15:17,Photocopy shop,misc_small,debit
+754757799968,2026-08-31T16:14,Petrol pump,fuel,debit
+200014863636,2026-08-31T21:16,Reliance Smart,grocery,debit
+427662612910,2026-08-31T21:32,Blinkit,grocery,debit
+764817820885,2026-09-01T14:04,Momos stall,misc_small,debit
+804947103520,2026-09-03T07:29,Family transfer,upi_transfer,debit
+684386603616,2026-09-03T13:30,Blinkit,grocery,debit
+285613268524,2026-09-04T00:00,Shared accommodation rent,rent,debit
+575578788133,2026-09-05T00:00,Electricity bill,electricity,debit
+274333719632,2026-09-05T08:47,KFC,restaurant,debit
+198076737955,2026-09-05T17:43,Family transfer,upi_transfer,debit
+232154942202,2026-09-06T08:38,Local kirana,grocery,debit
+917216810194,2026-09-06T19:44,Swiggy order,food_delivery,debit
+831739663971,2026-09-07T00:00,Streaming subscription,subscription,debit
+800625312947,2026-09-07T11:39,Petrol pump,fuel,debit
+300213369360,2026-09-07T12:58,Rapido bike,transport_rapido,debit
+285946774859,2026-09-07T17:27,Cafe,restaurant,debit
+456298390220,2026-09-08T00:00,Mobile data top-up,data_topup,debit
+308309949652,2026-09-08T08:56,Amazon purchase,shopping,debit
+866598086064,2026-09-08T10:33,Rapido ride,transport_rapido,debit
+457756708782,2026-09-08T14:29,Rapido ride,transport_rapido,debit
+975571775056,2026-09-08T17:52,Laundry,misc_small,debit
+386557394636,2026-09-08T19:55,Rapido ride,transport_rapido,debit
+181908120563,2026-09-08T21:57,Zomato order,food_delivery,debit
+416776980035,2026-09-09T12:18,KFC,restaurant,debit
+574906158911,2026-09-09T16:21,Zepto,grocery,debit
+411527533696,2026-09-09T19:52,ATM cash withdrawal,cash_withdrawal,debit
+913162304125,2026-09-09T20:27,Zomato order,food_delivery,debit
+793458381658,2026-09-10T00:00,Mobile data top-up,data_topup,debit
+454427023276,2026-09-10T07:47,Zomato order,food_delivery,debit
+226887601502,2026-09-10T13:30,Local pharmacy,medical,debit
+981357565677,2026-09-11T07:10,Dominos,restaurant,debit
+962427797144,2026-09-11T16:05,Amazon purchase,shopping,debit
+383650401834,2026-09-11T19:16,Salon,misc_small,debit
+660339751365,2026-09-12T18:23,BigBasket,grocery,debit
+957459877975,2026-09-12T22:50,Zepto,grocery,debit
+177375550847,2026-09-14T10:07,Petrol pump,fuel,debit
+879860971205,2026-09-14T13:26,Amazon purchase,shopping,debit
+440431969363,2026-09-14T19:21,Rapido bike,transport_rapido,debit
+213243525403,2026-09-15T22:18,Blinkit,grocery,debit
+917540644906,2026-09-16T07:00,Local kirana,grocery,debit
+798499627968,2026-09-16T10:12,Momos stall,misc_small,debit
+834652762624,2026-09-16T15:57,ATM cash withdrawal,cash_withdrawal,debit
+482989827879,2026-09-17T11:37,ATM cash withdrawal,cash_withdrawal,debit
+728313916866,2026-09-17T18:56,Rapido bike,transport_rapido,debit
+987384513777,2026-09-18T00:00,Online electronics purchase,electronics,debit
+172335119295,2026-09-18T20:10,Online pharmacy,medical,debit
+763940864908,2026-09-18T22:54,BigBasket,grocery,debit
+185388793728,2026-09-19T13:55,Rapido ride,transport_rapido,debit
+633525316764,2026-09-19T20:25,Cafe,restaurant,debit
+519371847175,2026-09-20T09:58,Rapido bike,transport_rapido,debit
+207350528341,2026-09-21T21:50,Salon,misc_small,debit
+417595705523,2026-09-22T16:54,ATM cash withdrawal,cash_withdrawal,debit
+392664034047,2026-09-23T11:59,Rapido ride,transport_rapido,debit
+661432933258,2026-09-24T00:00,Mobile recharge,mobile_recharge,debit
+394558392731,2026-09-25T18:33,Tea stall,misc_small,debit
+505352672973,2026-09-27T08:01,Petrol pump,fuel,debit
+490198199928,2026-09-27T11:34,Family transfer,upi_transfer,debit
+953873008411,2026-09-27T17:41,Petrol pump,fuel,debit
+684894074026,2026-09-28T00:00,Salary credit,income_salary,credit
+453356711385,2026-09-28T10:23,Amazon purchase,shopping,debit
+675500704072,2026-09-29T00:00,Mobile data top-up,data_topup,debit
+384388492559,2026-09-29T08:58,Blinkit,grocery,debit
+539565009622,2026-09-29T19:51,Online pharmacy,medical,debit
+642760282161,2026-09-29T21:33,Rapido ride,transport_rapido,debit
+741711873082,2026-09-30T00:00,Savings interest credit,income_interest,credit
+416542438561,2026-09-30T08:42,Flipkart purchase,shopping,debit
+523692282152,2026-09-30T14:26,Swiggy order,food_delivery,debit
+822873202069,2026-09-30T17:08,Amazon purchase,shopping,debit
+611420991305,2026-09-30T21:46,Zomato order,food_delivery,debit
+861161634694,2026-10-01T07:29,Salon,misc_small,debit
+603687202107,2026-10-02T13:55,Rapido bike,transport_rapido,debit
+312110741087,2026-10-02T15:18,Rapido bike,transport_rapido,debit
+179744736515,2026-10-03T07:15,Blinkit,grocery,debit
+975061502912,2026-10-03T17:10,ATM cash withdrawal,cash_withdrawal,debit
+868193770488,2026-10-04T07:52,Friend settlement,upi_transfer,debit
+356955849044,2026-10-04T09:31,Rapido ride,transport_rapido,debit
+571726383234,2026-10-05T00:00,Shared accommodation rent,rent,debit
+353161236920,2026-10-05T00:00,Electricity bill,electricity,debit
+854124795193,2026-10-05T18:56,Friend settlement,upi_transfer,debit
+223522201304,2026-10-06T00:00,Festival shopping,festival_shopping,debit
+485529509391,2026-10-06T13:24,Reliance Smart,grocery,debit
+222541730500,2026-10-06T22:47,Online pharmacy,medical,debit
+860043223053,2026-10-08T16:28,Rapido ride,transport_rapido,debit
+539752558683,2026-10-09T14:16,Petrol pump,fuel,debit
+116904407124,2026-10-10T13:55,Tea stall,misc_small,debit
+395646364120,2026-10-10T19:41,Local kirana,grocery,debit
+123850068888,2026-10-11T09:57,KFC,restaurant,debit
+613786651144,2026-10-14T00:00,Streaming subscription,subscription,debit
+514405589486,2026-10-14T15:25,Amazon purchase,shopping,debit
+728154686564,2026-10-14T16:13,BigBasket,grocery,debit
+637386571125,2026-10-15T22:04,Flipkart purchase,shopping,debit
+480738530517,2026-10-16T17:29,Salon,misc_small,debit
+552427002361,2026-10-16T17:47,Petrol pump,fuel,debit
+511234741863,2026-10-17T12:54,Rapido bike,transport_rapido,debit
+682574296763,2026-10-18T16:34,ATM cash withdrawal,cash_withdrawal,debit
+898197482402,2026-10-18T21:23,KFC,restaurant,debit
+692958194517,2026-10-19T00:00,Rail travel booking,travel,debit
+307613960140,2026-10-19T11:17,ATM cash withdrawal,cash_withdrawal,debit
+529795781744,2026-10-19T15:45,Photocopy shop,misc_small,debit
+434050792321,2026-10-19T17:46,Laundry,misc_small,debit
+596021987463,2026-10-19T21:19,Amazon purchase,shopping,debit
+547532452944,2026-10-19T21:54,Rapido bike,transport_rapido,debit
+322568558470,2026-10-20T00:00,Mobile recharge,mobile_recharge,debit
+723077383991,2026-10-20T10:34,Family transfer,upi_transfer,debit
+774901783359,2026-10-20T12:49,Swiggy order,food_delivery,debit
+459776291330,2026-10-20T20:02,BigBasket,grocery,debit
+443731882140,2026-10-21T15:39,Rapido ride,transport_rapido,debit
+640371935201,2026-10-22T13:21,Zepto,grocery,debit
+472797321473,2026-10-22T16:41,Tea stall,misc_small,debit
+746285279261,2026-10-22T19:06,Rapido ride,transport_rapido,debit
+741604369026,2026-10-23T11:31,Friend settlement,upi_transfer,debit
+308438375403,2026-10-25T10:22,Flipkart purchase,shopping,debit
+408867106242,2026-10-25T20:20,Salon,misc_small,debit
+907390911202,2026-10-26T13:47,ATM cash withdrawal,cash_withdrawal,debit
+333109056391,2026-10-26T16:56,Family transfer,upi_transfer,debit
+456991660734,2026-10-27T21:44,Rapido bike,transport_rapido,debit
+665367488692,2026-10-28T00:00,Salary credit,income_salary,credit
+308104104596,2026-10-28T00:00,Mobile data top-up,data_topup,debit
+948172539904,2026-10-28T17:51,Zomato order,food_delivery,debit
+435332354062,2026-10-28T22:55,Reliance Smart,grocery,debit
+345406762204,2026-10-29T20:11,BigBasket,grocery,debit
+933089598476,2026-10-30T16:21,Tea stall,misc_small,debit
+636485082140,2026-10-30T17:50,Swiggy order,food_delivery,debit
+289950807864,2026-10-30T18:02,Salon,misc_small,debit
+975591541717,2026-10-30T20:46,Blinkit,grocery,debit
+727235210016,2026-10-31T00:00,Mobile data top-up,data_topup,debit
+671973552666,2026-10-31T08:45,Rapido ride,transport_rapido,debit
+315657528666,2026-10-31T10:37,Petrol pump,fuel,debit
+666036820881,2026-10-31T15:33,Local pharmacy,medical,debit

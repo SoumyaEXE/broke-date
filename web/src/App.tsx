@@ -101,7 +101,7 @@ export default function App() {
     { key: "grade", label: "How good am I?", icon: duo(SealCheck), href: "#/grade" },
     ...(IS_DEMO ? [] : [{ key: "import", label: "Import statement", icon: duo(UploadSimple), href: "#/import" }]),
   ];
-  const userName = subject === "sim" ? "Sample student" : subject.replace(/^\w/, (c) => c.toUpperCase());
+  const userName = subject === "sim" ? "Sample student" : subject.endsWith("_syn") ? `${subject.slice(0, -4).replace(/^\w/, (c) => c.toUpperCase())} · synthetic` : subject.replace(/^\w/, (c) => c.toUpperCase());
   const sidebar = (mobile: boolean) => (
     <DashboardSidebar items={nav} selected={route} userName={userName} showThemeToggle={false}
       mobile={mobile} onClose={() => setNavOpen(false)}

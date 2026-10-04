@@ -9,7 +9,7 @@ from typing import Any
 
 import numpy as np
 
-from brokedate.config import REPO_ROOT, load_config
+from brokedate.config import REPO_ROOT, is_synthetic, load_config
 from brokedate.db import DB
 
 
@@ -17,7 +17,7 @@ def snapshot(resp: dict[str, Any], letter: dict[str, Any] | None, n_paths: int =
     idx = np.linspace(0, len(resp["paths"]["balances_paise"]) - 1, n_paths).astype(int)
     return {
         "generated_at": datetime.now(UTC).isoformat(timespec="minutes"), "as_of": resp["as_of"],
-        "subject": resp["subject"], "simulated": resp["subject"] == "sim",
+        "subject": resp["subject"], "simulated": is_synthetic(resp["subject"]),
         "next_anchor_date": resp["next_anchor_date"], "horizon_days": resp["horizon_days"],
         "balance_now_paise": resp["balance_now_paise"], "broke_line_paise": resp["broke_line_paise"],
         "safe_to_spend_paise": resp["safe_to_spend_paise"], "nothing_safe": resp["nothing_safe"],

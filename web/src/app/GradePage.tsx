@@ -28,7 +28,7 @@ export function GradePage({ provider }: { provider: DataProvider }) {
   if (s === null) return <Panel title="Not graded yet" icon={SealCheck}><p className="text-body-regular text-text-secondary">No evaluation has run on this data yet.</p></Panel>;
 
   const m1 = s.models.M1;
-  const sim = s.meta?.subject === "sim";
+  const sim = s.meta?.subject === "sim" || String(s.meta?.subject ?? "").endsWith("_syn");
   const baselines = ["B1", "B2", "B3"].filter((k) => s.models[k]);
   const best = baselines.sort((a, b) => s.models[a].brier.point - s.models[b].brier.point)[0];
   // months warned at least a day before running out (a same-day warning is not counted as notice)

@@ -102,6 +102,12 @@ def _fill(obj: Any, values: dict[str, Any]) -> None:
             setattr(obj, k, v)
 
 
+def is_synthetic(subject: str) -> bool:
+    """Subjects that are generated data, never a real person's statement: the simulated student ("sim") and any
+    subject named "<something>_syn". Their outputs live under out/, not out/real/, and may appear in demos."""
+    return subject == "sim" or subject.endswith("_syn")
+
+
 def load_config(path: Path | None = None) -> Config:
     """Load config. Order: explicit path, $BROKEDATE_CONFIG, <data_dir>/config.toml, example config."""
     cfg = Config()

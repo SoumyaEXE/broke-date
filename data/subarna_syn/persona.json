@@ -1,0 +1,41 @@
+{
+  "SYNTHETIC": "This is a synthetic dataset. It is not a bank statement, not proof of funds and not anyone's real money.",
+  "source": "data/subarna_syn/source_transactions.csv",
+  "kept_from_source": "every transaction: date, time order, direction and amount, unchanged",
+  "added_by_script": [
+    "narration text",
+    "reference number",
+    "opening balance",
+    "running balance"
+  ],
+  "seed": 2026,
+  "opening_balance_rule": "smallest multiple of Rs 5,000 that never lets the balance go below zero over the whole source",
+  "opening_balance_rupees": 130000.0,
+  "lowest_balance_if_opening_were_zero_rupees": -129351.0,
+  "statement": {
+    "from": "2025-10-02",
+    "to": "2026-10-03",
+    "rows": 706,
+    "closing_balance_rupees": 48606.0
+  },
+  "heldout": {
+    "rows": 55,
+    "from": "04/10/26",
+    "to": "31/10/26",
+    "lowest_balance_rupees": 649.0,
+    "note": "dated after the statement ends; kept aside as 'what happened next', never imported"
+  },
+  "invented_names": {
+    "employer": "ABC TECH PVT LTD",
+    "client": "PIXELCRAFT STUDIO",
+    "landlord": "TAPAN GHOSH",
+    "family": "PRADIP KUMAR DAS",
+    "friends": [
+      "SAYAN MONDAL",
+      "ANKITA ROY",
+      "RITWIK SEN",
+      "DEBOLINA PAUL"
+    ],
+    "note": "made up for the narrations; real brands (Blinkit, Zomato...) appear only where the source file already named them or their kind"
+  }
+}

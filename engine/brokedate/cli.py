@@ -10,7 +10,7 @@ from pathlib import Path
 
 import typer
 
-from brokedate.config import REPO_ROOT, Config, load_config
+from brokedate.config import REPO_ROOT, Config, is_synthetic, load_config
 from brokedate.db import DB
 from brokedate.money import format_inr
 
@@ -23,7 +23,7 @@ OUT = REPO_ROOT / "out"
 
 def out_dir(subject: str) -> Path:
     """Simulated subject writes to out/ (publishable); real subjects to out/real/ (gitignored)."""
-    return OUT if subject == "sim" else OUT / "real"
+    return OUT if is_synthetic(subject) else OUT / "real"
 
 
 def _ctx() -> tuple[Config, DB]:
@@ -60,7 +60,7 @@ def import_cmd(path: Path, subject: str = typer.Option(..., "--subject", "-s"),
     cfg, db = _ctx()
     try:
         rep = import_statement(path, subject, db, cfg, password=password, adapter=adapter, use_gemma=gemma,
-                               auto_confirm_anchors=confirm_anchors or subject == "sim")
+                               auto_confirm_anchors=confirm_anchors or is_synthetic(subject))
     except ReconciliationError as e:
         r = e.result
         _say(f"RECONCILIATION FAILED at file row {r.mismatch_row} (txn #{r.mismatch_index}): expected balance "
@@ -77,7 +77,7 @@ def import_cmd(path: Path, subject: str = typer.Option(..., "--subject", "-s"),
              f"{en.needs_review}" + (f"  (gemma unavailable: {en.gemma_error})" if en.gemma_error else ""))
     _say(f"history {rep.date_from} -> {rep.date_to}; allowance sender '{rep.anchor_sender}', "
          f"{len(rep.anchors_detected)} anchor credits detected"
-         + ("" if confirm_anchors or subject == "sim" else " (confirm with `brokedate anchors --confirm`)"))
+         + ("" if confirm_anchors or is_synthetic(subject) else " (confirm with `brokedate anchors --confirm`)"))
 
 
 @app.command()
@@ -179,7 +179,7 @@ def eval_anomaly(subject: str = typer.Option("sim", "--subject", "-s"), as_of: s
     from brokedate.models.tabpfn_adapter import make_tabpfn
     from brokedate.service import load_ledger
 
-    if subject != "sim":
+    if not is_synthetic(subject):
         raise typer.BadParameter("planted-anomaly evaluation runs on the simulated subject only")
     cfg, db = _ctx()
     led = load_ledger(db, cfg, subject)

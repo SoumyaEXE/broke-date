@@ -1,0 +1,764 @@
+synthetic_dataset,Synthetic personal-expense dataset for TabPFN; not a bank statement or proof of funds
+
+transaction_datetime,transaction_date,category,merchant_label,direction,amount_inr,month,weekday,is_weekend
+2025-10-02 20:32:00,2025-10-02,grocery,Blinkit,debit,709.00,2025-10,Thursday,0
+2025-10-05 00:00:00,2025-10-05,rent,Shared accommodation rent,debit,6000.00,2025-10,Sunday,1
+2025-10-05 08:16:00,2025-10-05,shopping,Flipkart purchase,debit,3965.00,2025-10,Sunday,1
+2025-10-05 20:27:00,2025-10-05,transport_rapido,Rapido bike,debit,106.00,2025-10,Sunday,1
+2025-10-06 11:36:00,2025-10-06,grocery,Reliance Smart,debit,1379.00,2025-10,Monday,0
+2025-10-07 08:39:00,2025-10-07,food_delivery,Zomato order,debit,465.00,2025-10,Tuesday,0
+2025-10-07 10:08:00,2025-10-07,grocery,Zepto,debit,170.00,2025-10,Tuesday,0
+2025-10-07 11:41:00,2025-10-07,transport_rapido,Rapido ride,debit,109.00,2025-10,Tuesday,0
+2025-10-08 18:31:00,2025-10-08,upi_transfer,Family transfer,debit,1074.00,2025-10,Wednesday,0
+2025-10-08 18:48:00,2025-10-08,fuel,Petrol pump,debit,743.00,2025-10,Wednesday,0
+2025-10-09 00:00:00,2025-10-09,electricity,Electricity bill,debit,775.00,2025-10,Thursday,0
+2025-10-09 15:39:00,2025-10-09,fuel,Petrol pump,debit,1134.00,2025-10,Thursday,0
+2025-10-10 17:31:00,2025-10-10,misc_small,Momos stall,debit,69.00,2025-10,Friday,0
+2025-10-10 20:07:00,2025-10-10,transport_rapido,Rapido ride,debit,105.00,2025-10,Friday,0
+2025-10-11 00:00:00,2025-10-11,data_topup,Mobile data top-up,debit,159.00,2025-10,Saturday,1
+2025-10-11 14:48:00,2025-10-11,misc_small,Laundry,debit,249.00,2025-10,Saturday,1
+2025-10-12 13:13:00,2025-10-12,transport_rapido,Rapido ride,debit,90.00,2025-10,Sunday,1
+2025-10-13 00:00:00,2025-10-13,subscription,Streaming subscription,debit,119.00,2025-10,Monday,0
+2025-10-13 12:56:00,2025-10-13,cash_withdrawal,ATM cash withdrawal,debit,500.00,2025-10,Monday,0
+2025-10-15 00:00:00,2025-10-15,electronics,Online electronics purchase,debit,7499.00,2025-10,Wednesday,0
+2025-10-16 07:13:00,2025-10-16,medical,Local pharmacy,debit,797.00,2025-10,Thursday,0
+2025-10-16 11:12:00,2025-10-16,grocery,Blinkit,debit,345.00,2025-10,Thursday,0
+2025-10-16 11:47:00,2025-10-16,shopping,Flipkart purchase,debit,716.00,2025-10,Thursday,0
+2025-10-16 16:47:00,2025-10-16,food_delivery,Swiggy order,debit,543.00,2025-10,Thursday,0
+2025-10-17 00:00:00,2025-10-17,income_freelance,Freelance project payment,credit,11000.00,2025-10,Friday,0
+2025-10-17 17:36:00,2025-10-17,food_delivery,Zomato order,debit,549.00,2025-10,Friday,0
+2025-10-17 22:50:00,2025-10-17,upi_transfer,Family transfer,debit,1372.00,2025-10,Friday,0
+2025-10-19 17:56:00,2025-10-19,food_delivery,Swiggy order,debit,575.00,2025-10,Sunday,1
+2025-10-20 10:21:00,2025-10-20,restaurant,KFC,debit,181.00,2025-10,Monday,0
+2025-10-20 12:07:00,2025-10-20,restaurant,Local restaurant,debit,902.00,2025-10,Monday,0
+2025-10-20 17:37:00,2025-10-20,transport_rapido,Rapido ride,debit,101.00,2025-10,Monday,0
+2025-10-21 00:00:00,2025-10-21,mobile_recharge,Mobile recharge,debit,399.00,2025-10,Tuesday,0
+2025-10-21 00:00:00,2025-10-21,data_topup,Mobile data top-up,debit,199.00,2025-10,Tuesday,0
+2025-10-21 15:47:00,2025-10-21,grocery,BigBasket,debit,551.00,2025-10,Tuesday,0
+2025-10-21 16:20:00,2025-10-21,grocery,Blinkit,debit,844.00,2025-10,Tuesday,0
+2025-10-22 14:52:00,2025-10-22,grocery,Reliance Smart,debit,1412.00,2025-10,Wednesday,0
+2025-10-22 16:42:00,2025-10-22,grocery,Blinkit,debit,1101.00,2025-10,Wednesday,0
+2025-10-23 09:42:00,2025-10-23,restaurant,Cafe,debit,1407.00,2025-10,Thursday,0
+2025-10-23 22:59:00,2025-10-23,misc_small,Photocopy shop,debit,155.00,2025-10,Thursday,0
+2025-10-24 09:48:00,2025-10-24,misc_small,Laundry,debit,199.00,2025-10,Friday,0
+2025-10-24 19:32:00,2025-10-24,cash_withdrawal,ATM cash withdrawal,debit,500.00,2025-10,Friday,0
+2025-10-25 21:54:00,2025-10-25,fuel,Petrol pump,debit,1222.00,2025-10,Saturday,1
+2025-10-26 07:25:00,2025-10-26,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2025-10,Sunday,1
+2025-10-26 16:46:00,2025-10-26,grocery,Local kirana,debit,1243.00,2025-10,Sunday,1
+2025-10-27 08:35:00,2025-10-27,misc_small,Momos stall,debit,276.00,2025-10,Monday,0
+2025-10-27 13:36:00,2025-10-27,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2025-10,Monday,0
+2025-10-28 00:00:00,2025-10-28,income_salary,Salary credit,credit,39000.00,2025-10,Tuesday,0
+2025-10-29 17:43:00,2025-10-29,transport_rapido,Rapido ride,debit,80.00,2025-10,Wednesday,0
+2025-10-30 08:14:00,2025-10-30,transport_rapido,Rapido bike,debit,113.00,2025-10,Thursday,0
+2025-10-30 10:05:00,2025-10-30,upi_transfer,Friend settlement,debit,1987.00,2025-10,Thursday,0
+2025-10-30 10:45:00,2025-10-30,restaurant,KFC,debit,1123.00,2025-10,Thursday,0
+2025-10-31 00:00:00,2025-10-31,data_topup,Mobile data top-up,debit,129.00,2025-10,Friday,0
+2025-10-31 12:17:00,2025-10-31,transport_rapido,Rapido bike,debit,128.00,2025-10,Friday,0
+2025-10-31 14:42:00,2025-10-31,shopping,Flipkart purchase,debit,387.00,2025-10,Friday,0
+2025-10-31 16:28:00,2025-10-31,food_delivery,Swiggy order,debit,523.00,2025-10,Friday,0
+2025-10-31 17:26:00,2025-10-31,fuel,Petrol pump,debit,464.00,2025-10,Friday,0
+2025-10-31 18:54:00,2025-10-31,transport_rapido,Rapido bike,debit,110.00,2025-10,Friday,0
+2025-11-02 00:00:00,2025-11-02,rent,Shared accommodation rent,debit,5500.00,2025-11,Sunday,1
+2025-11-03 21:27:00,2025-11-03,upi_transfer,Friend settlement,debit,975.00,2025-11,Monday,0
+2025-11-03 22:04:00,2025-11-03,restaurant,Dominos,debit,373.00,2025-11,Monday,0
+2025-11-04 10:26:00,2025-11-04,transport_rapido,Rapido bike,debit,106.00,2025-11,Tuesday,0
+2025-11-04 20:33:00,2025-11-04,upi_transfer,Friend settlement,debit,927.00,2025-11,Tuesday,0
+2025-11-05 15:42:00,2025-11-05,shopping,Flipkart purchase,debit,2896.00,2025-11,Wednesday,0
+2025-11-05 18:53:00,2025-11-05,transport_rapido,Rapido ride,debit,111.00,2025-11,Wednesday,0
+2025-11-06 00:00:00,2025-11-06,data_topup,Mobile data top-up,debit,129.00,2025-11,Thursday,0
+2025-11-06 08:09:00,2025-11-06,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2025-11,Thursday,0
+2025-11-06 15:16:00,2025-11-06,grocery,BigBasket,debit,1402.00,2025-11,Thursday,0
+2025-11-06 17:43:00,2025-11-06,fuel,Petrol pump,debit,852.00,2025-11,Thursday,0
+2025-11-06 17:55:00,2025-11-06,fuel,Petrol pump,debit,928.00,2025-11,Thursday,0
+2025-11-08 13:54:00,2025-11-08,shopping,Amazon purchase,debit,1829.00,2025-11,Saturday,1
+2025-11-09 00:00:00,2025-11-09,electricity,Electricity bill,debit,659.00,2025-11,Sunday,1
+2025-11-09 00:00:00,2025-11-09,subscription,Streaming subscription,debit,119.00,2025-11,Sunday,1
+2025-11-11 00:00:00,2025-11-11,festival_shopping,Festival shopping,debit,6499.00,2025-11,Tuesday,0
+2025-11-11 07:35:00,2025-11-11,grocery,Reliance Smart,debit,1284.00,2025-11,Tuesday,0
+2025-11-11 19:12:00,2025-11-11,medical,Online pharmacy,debit,1074.00,2025-11,Tuesday,0
+2025-11-12 00:00:00,2025-11-12,data_topup,Mobile data top-up,debit,129.00,2025-11,Wednesday,0
+2025-11-12 11:44:00,2025-11-12,medical,Online pharmacy,debit,701.00,2025-11,Wednesday,0
+2025-11-12 15:36:00,2025-11-12,misc_small,Laundry,debit,154.00,2025-11,Wednesday,0
+2025-11-13 20:39:00,2025-11-13,grocery,BigBasket,debit,1268.00,2025-11,Thursday,0
+2025-11-13 22:37:00,2025-11-13,restaurant,Dominos,debit,1228.00,2025-11,Thursday,0
+2025-11-14 16:32:00,2025-11-14,transport_rapido,Rapido ride,debit,118.00,2025-11,Friday,0
+2025-11-15 09:38:00,2025-11-15,transport_rapido,Rapido bike,debit,96.00,2025-11,Saturday,1
+2025-11-15 11:55:00,2025-11-15,food_delivery,Swiggy order,debit,471.00,2025-11,Saturday,1
+2025-11-16 07:29:00,2025-11-16,misc_small,Laundry,debit,215.00,2025-11,Sunday,1
+2025-11-16 10:01:00,2025-11-16,transport_rapido,Rapido bike,debit,130.00,2025-11,Sunday,1
+2025-11-16 18:01:00,2025-11-16,grocery,Reliance Smart,debit,301.00,2025-11,Sunday,1
+2025-11-17 09:55:00,2025-11-17,food_delivery,Swiggy order,debit,326.00,2025-11,Monday,0
+2025-11-18 11:18:00,2025-11-18,misc_small,Laundry,debit,468.00,2025-11,Tuesday,0
+2025-11-19 13:04:00,2025-11-19,misc_small,Tea stall,debit,447.00,2025-11,Wednesday,0
+2025-11-19 21:55:00,2025-11-19,restaurant,Local restaurant,debit,664.00,2025-11,Wednesday,0
+2025-11-19 22:14:00,2025-11-19,grocery,Blinkit,debit,1138.00,2025-11,Wednesday,0
+2025-11-20 15:57:00,2025-11-20,transport_rapido,Rapido bike,debit,84.00,2025-11,Thursday,0
+2025-11-21 00:00:00,2025-11-21,mobile_recharge,Mobile recharge,debit,699.00,2025-11,Friday,0
+2025-11-21 12:08:00,2025-11-21,misc_small,Tea stall,debit,302.00,2025-11,Friday,0
+2025-11-21 12:15:00,2025-11-21,shopping,Flipkart purchase,debit,1222.00,2025-11,Friday,0
+2025-11-21 19:28:00,2025-11-21,restaurant,KFC,debit,1180.00,2025-11,Friday,0
+2025-11-22 18:18:00,2025-11-22,upi_transfer,Friend settlement,debit,1070.00,2025-11,Saturday,1
+2025-11-22 20:47:00,2025-11-22,misc_small,Laundry,debit,165.00,2025-11,Saturday,1
+2025-11-23 11:04:00,2025-11-23,fuel,Petrol pump,debit,467.00,2025-11,Sunday,1
+2025-11-23 18:53:00,2025-11-23,food_delivery,Zomato order,debit,168.00,2025-11,Sunday,1
+2025-11-25 17:37:00,2025-11-25,transport_rapido,Rapido ride,debit,135.00,2025-11,Tuesday,0
+2025-11-25 19:37:00,2025-11-25,misc_small,Momos stall,debit,97.00,2025-11,Tuesday,0
+2025-11-25 20:07:00,2025-11-25,transport_rapido,Rapido bike,debit,120.00,2025-11,Tuesday,0
+2025-11-26 12:55:00,2025-11-26,shopping,Flipkart purchase,debit,258.00,2025-11,Wednesday,0
+2025-11-26 14:08:00,2025-11-26,misc_small,Momos stall,debit,161.00,2025-11,Wednesday,0
+2025-11-26 17:01:00,2025-11-26,food_delivery,Swiggy order,debit,396.00,2025-11,Wednesday,0
+2025-11-26 22:40:00,2025-11-26,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2025-11,Wednesday,0
+2025-11-27 22:57:00,2025-11-27,upi_transfer,Family transfer,debit,442.00,2025-11,Thursday,0
+2025-11-28 00:00:00,2025-11-28,income_salary,Salary credit,credit,38000.00,2025-11,Friday,0
+2025-11-28 14:26:00,2025-11-28,food_delivery,Zomato order,debit,615.00,2025-11,Friday,0
+2025-11-29 00:00:00,2025-11-29,data_topup,Mobile data top-up,debit,129.00,2025-11,Saturday,1
+2025-11-29 07:54:00,2025-11-29,restaurant,KFC,debit,870.00,2025-11,Saturday,1
+2025-11-29 13:46:00,2025-11-29,transport_rapido,Rapido bike,debit,118.00,2025-11,Saturday,1
+2025-11-29 21:52:00,2025-11-29,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2025-11,Saturday,1
+2025-11-30 07:07:00,2025-11-30,transport_rapido,Rapido ride,debit,96.00,2025-11,Sunday,1
+2025-11-30 14:28:00,2025-11-30,misc_small,Tea stall,debit,318.00,2025-11,Sunday,1
+2025-12-01 17:14:00,2025-12-01,fuel,Petrol pump,debit,468.00,2025-12,Monday,0
+2025-12-03 00:00:00,2025-12-03,rent,Shared accommodation rent,debit,6500.00,2025-12,Wednesday,0
+2025-12-04 07:53:00,2025-12-04,grocery,Blinkit,debit,517.00,2025-12,Thursday,0
+2025-12-05 16:51:00,2025-12-05,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2025-12,Friday,0
+2025-12-05 20:24:00,2025-12-05,food_delivery,Zomato order,debit,529.00,2025-12,Friday,0
+2025-12-05 21:15:00,2025-12-05,misc_small,Tea stall,debit,336.00,2025-12,Friday,0
+2025-12-06 17:24:00,2025-12-06,grocery,Reliance Smart,debit,637.00,2025-12,Saturday,1
+2025-12-06 17:53:00,2025-12-06,cash_withdrawal,ATM cash withdrawal,debit,500.00,2025-12,Saturday,1
+2025-12-07 08:09:00,2025-12-07,restaurant,KFC,debit,949.00,2025-12,Sunday,1
+2025-12-08 00:00:00,2025-12-08,subscription,Streaming subscription,debit,129.00,2025-12,Monday,0
+2025-12-08 20:57:00,2025-12-08,grocery,Zepto,debit,1248.00,2025-12,Monday,0
+2025-12-09 00:00:00,2025-12-09,electricity,Electricity bill,debit,1180.00,2025-12,Tuesday,0
+2025-12-11 00:00:00,2025-12-11,income_freelance,Freelance project payment,credit,7500.00,2025-12,Thursday,0
+2025-12-11 07:58:00,2025-12-11,transport_rapido,Rapido bike,debit,87.00,2025-12,Thursday,0
+2025-12-12 19:57:00,2025-12-12,fuel,Petrol pump,debit,1050.00,2025-12,Friday,0
+2025-12-13 12:45:00,2025-12-13,shopping,Flipkart purchase,debit,2196.00,2025-12,Saturday,1
+2025-12-13 20:54:00,2025-12-13,shopping,Flipkart purchase,debit,569.00,2025-12,Saturday,1
+2025-12-13 22:05:00,2025-12-13,fuel,Petrol pump,debit,1131.00,2025-12,Saturday,1
+2025-12-15 18:03:00,2025-12-15,transport_rapido,Rapido ride,debit,140.00,2025-12,Monday,0
+2025-12-15 19:34:00,2025-12-15,shopping,Flipkart purchase,debit,3058.00,2025-12,Monday,0
+2025-12-15 20:36:00,2025-12-15,grocery,BigBasket,debit,808.00,2025-12,Monday,0
+2025-12-16 10:08:00,2025-12-16,upi_transfer,Family transfer,debit,2145.00,2025-12,Tuesday,0
+2025-12-17 07:05:00,2025-12-17,grocery,BigBasket,debit,528.00,2025-12,Wednesday,0
+2025-12-17 07:27:00,2025-12-17,grocery,Zepto,debit,434.00,2025-12,Wednesday,0
+2025-12-17 10:54:00,2025-12-17,grocery,Blinkit,debit,1272.00,2025-12,Wednesday,0
+2025-12-18 11:49:00,2025-12-18,upi_transfer,Friend settlement,debit,1676.00,2025-12,Thursday,0
+2025-12-18 20:21:00,2025-12-18,grocery,Zepto,debit,566.00,2025-12,Thursday,0
+2025-12-19 08:04:00,2025-12-19,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2025-12,Friday,0
+2025-12-19 21:15:00,2025-12-19,upi_transfer,Friend settlement,debit,579.00,2025-12,Friday,0
+2025-12-20 11:52:00,2025-12-20,grocery,Local kirana,debit,1192.00,2025-12,Saturday,1
+2025-12-20 20:31:00,2025-12-20,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2025-12,Saturday,1
+2025-12-20 22:47:00,2025-12-20,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2025-12,Saturday,1
+2025-12-21 00:00:00,2025-12-21,mobile_recharge,Mobile recharge,debit,599.00,2025-12,Sunday,1
+2025-12-22 00:00:00,2025-12-22,data_topup,Mobile data top-up,debit,69.00,2025-12,Monday,0
+2025-12-22 00:00:00,2025-12-22,travel,Rail travel booking,debit,3500.00,2025-12,Monday,0
+2025-12-22 11:54:00,2025-12-22,misc_small,Salon,debit,366.00,2025-12,Monday,0
+2025-12-23 21:24:00,2025-12-23,fuel,Petrol pump,debit,870.00,2025-12,Tuesday,0
+2025-12-25 17:14:00,2025-12-25,shopping,Amazon purchase,debit,1216.00,2025-12,Thursday,0
+2025-12-25 22:50:00,2025-12-25,food_delivery,Swiggy order,debit,144.00,2025-12,Thursday,0
+2025-12-27 08:20:00,2025-12-27,misc_small,Photocopy shop,debit,116.00,2025-12,Saturday,1
+2025-12-28 00:00:00,2025-12-28,income_salary,Salary credit,credit,42000.00,2025-12,Sunday,1
+2025-12-28 11:37:00,2025-12-28,grocery,Zepto,debit,1047.00,2025-12,Sunday,1
+2025-12-28 12:27:00,2025-12-28,misc_small,Laundry,debit,435.00,2025-12,Sunday,1
+2025-12-29 11:10:00,2025-12-29,restaurant,Local restaurant,debit,651.00,2025-12,Monday,0
+2025-12-29 11:58:00,2025-12-29,food_delivery,Swiggy order,debit,208.00,2025-12,Monday,0
+2025-12-29 16:45:00,2025-12-29,misc_small,Tea stall,debit,413.00,2025-12,Monday,0
+2025-12-29 18:56:00,2025-12-29,medical,Local pharmacy,debit,980.00,2025-12,Monday,0
+2025-12-29 19:55:00,2025-12-29,shopping,Amazon purchase,debit,741.00,2025-12,Monday,0
+2025-12-31 00:00:00,2025-12-31,income_interest,Savings interest credit,credit,543.00,2025-12,Wednesday,0
+2025-12-31 12:47:00,2025-12-31,transport_rapido,Rapido ride,debit,133.00,2025-12,Wednesday,0
+2025-12-31 20:43:00,2025-12-31,transport_rapido,Rapido ride,debit,86.00,2025-12,Wednesday,0
+2025-12-31 20:45:00,2025-12-31,transport_rapido,Rapido bike,debit,87.00,2025-12,Wednesday,0
+2026-01-01 09:51:00,2026-01-01,transport_rapido,Rapido bike,debit,102.00,2026-01,Thursday,0
+2026-01-01 13:21:00,2026-01-01,transport_rapido,Rapido bike,debit,121.00,2026-01,Thursday,0
+2026-01-02 17:12:00,2026-01-02,grocery,Reliance Smart,debit,1440.00,2026-01,Friday,0
+2026-01-03 00:00:00,2026-01-03,rent,Shared accommodation rent,debit,6000.00,2026-01,Saturday,1
+2026-01-03 00:00:00,2026-01-03,electricity,Electricity bill,debit,1109.00,2026-01,Saturday,1
+2026-01-04 08:10:00,2026-01-04,grocery,Local kirana,debit,148.00,2026-01,Sunday,1
+2026-01-05 10:01:00,2026-01-05,misc_small,Tea stall,debit,57.00,2026-01,Monday,0
+2026-01-05 11:17:00,2026-01-05,grocery,Blinkit,debit,459.00,2026-01,Monday,0
+2026-01-05 18:29:00,2026-01-05,misc_small,Momos stall,debit,389.00,2026-01,Monday,0
+2026-01-05 19:55:00,2026-01-05,misc_small,Laundry,debit,316.00,2026-01,Monday,0
+2026-01-05 20:48:00,2026-01-05,fuel,Petrol pump,debit,1110.00,2026-01,Monday,0
+2026-01-07 19:09:00,2026-01-07,transport_rapido,Rapido bike,debit,124.00,2026-01,Wednesday,0
+2026-01-08 18:13:00,2026-01-08,upi_transfer,Family transfer,debit,823.00,2026-01,Thursday,0
+2026-01-08 20:28:00,2026-01-08,grocery,Reliance Smart,debit,507.00,2026-01,Thursday,0
+2026-01-09 14:23:00,2026-01-09,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-01,Friday,0
+2026-01-09 17:39:00,2026-01-09,medical,Local pharmacy,debit,1013.00,2026-01,Friday,0
+2026-01-09 19:48:00,2026-01-09,food_delivery,Zomato order,debit,493.00,2026-01,Friday,0
+2026-01-10 11:56:00,2026-01-10,grocery,Blinkit,debit,881.00,2026-01,Saturday,1
+2026-01-11 12:10:00,2026-01-11,transport_rapido,Rapido ride,debit,107.00,2026-01,Sunday,1
+2026-01-13 00:00:00,2026-01-13,subscription,Streaming subscription,debit,149.00,2026-01,Tuesday,0
+2026-01-13 22:02:00,2026-01-13,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-01,Tuesday,0
+2026-01-13 22:53:00,2026-01-13,upi_transfer,Friend settlement,debit,550.00,2026-01,Tuesday,0
+2026-01-15 11:20:00,2026-01-15,shopping,Flipkart purchase,debit,3507.00,2026-01,Thursday,0
+2026-01-15 15:33:00,2026-01-15,medical,Local pharmacy,debit,1039.00,2026-01,Thursday,0
+2026-01-17 00:00:00,2026-01-17,income_freelance,Freelance project payment,credit,9000.00,2026-01,Saturday,1
+2026-01-17 07:43:00,2026-01-17,shopping,Flipkart purchase,debit,3341.00,2026-01,Saturday,1
+2026-01-17 09:22:00,2026-01-17,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-01,Saturday,1
+2026-01-17 19:17:00,2026-01-17,misc_small,Tea stall,debit,104.00,2026-01,Saturday,1
+2026-01-18 08:40:00,2026-01-18,fuel,Petrol pump,debit,623.00,2026-01,Sunday,1
+2026-01-18 10:20:00,2026-01-18,transport_rapido,Rapido bike,debit,89.00,2026-01,Sunday,1
+2026-01-18 15:21:00,2026-01-18,food_delivery,Zomato order,debit,392.00,2026-01,Sunday,1
+2026-01-18 21:10:00,2026-01-18,misc_small,Momos stall,debit,20.00,2026-01,Sunday,1
+2026-01-19 09:20:00,2026-01-19,grocery,Reliance Smart,debit,991.00,2026-01,Monday,0
+2026-01-19 15:20:00,2026-01-19,fuel,Petrol pump,debit,1002.00,2026-01,Monday,0
+2026-01-19 19:05:00,2026-01-19,misc_small,Tea stall,debit,322.00,2026-01,Monday,0
+2026-01-19 21:45:00,2026-01-19,misc_small,Laundry,debit,113.00,2026-01,Monday,0
+2026-01-20 00:00:00,2026-01-20,data_topup,Mobile data top-up,debit,199.00,2026-01,Tuesday,0
+2026-01-21 10:04:00,2026-01-21,misc_small,Salon,debit,159.00,2026-01,Wednesday,0
+2026-01-21 21:58:00,2026-01-21,food_delivery,Swiggy order,debit,682.00,2026-01,Wednesday,0
+2026-01-22 00:00:00,2026-01-22,electronics,Mobile accessory purchase,debit,7900.00,2026-01,Thursday,0
+2026-01-22 09:56:00,2026-01-22,food_delivery,Zomato order,debit,144.00,2026-01,Thursday,0
+2026-01-22 12:49:00,2026-01-22,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-01,Thursday,0
+2026-01-22 22:20:00,2026-01-22,misc_small,Laundry,debit,291.00,2026-01,Thursday,0
+2026-01-23 19:55:00,2026-01-23,restaurant,Local restaurant,debit,1177.00,2026-01,Friday,0
+2026-01-23 20:19:00,2026-01-23,grocery,BigBasket,debit,353.00,2026-01,Friday,0
+2026-01-25 00:00:00,2026-01-25,mobile_recharge,Mobile recharge,debit,299.00,2026-01,Sunday,1
+2026-01-25 00:00:00,2026-01-25,data_topup,Mobile data top-up,debit,69.00,2026-01,Sunday,1
+2026-01-25 08:08:00,2026-01-25,transport_rapido,Rapido bike,debit,86.00,2026-01,Sunday,1
+2026-01-25 20:21:00,2026-01-25,shopping,Flipkart purchase,debit,1358.00,2026-01,Sunday,1
+2026-01-26 14:04:00,2026-01-26,misc_small,Tea stall,debit,406.00,2026-01,Monday,0
+2026-01-26 17:25:00,2026-01-26,medical,Local pharmacy,debit,266.00,2026-01,Monday,0
+2026-01-28 00:00:00,2026-01-28,income_salary,Salary credit,credit,42000.00,2026-01,Wednesday,0
+2026-01-28 22:40:00,2026-01-28,restaurant,Cafe,debit,748.00,2026-01,Wednesday,0
+2026-01-29 12:28:00,2026-01-29,shopping,Amazon purchase,debit,411.00,2026-01,Thursday,0
+2026-02-01 09:24:00,2026-02-01,medical,Online pharmacy,debit,294.00,2026-02,Sunday,1
+2026-02-01 15:48:00,2026-02-01,shopping,Amazon purchase,debit,1621.00,2026-02,Sunday,1
+2026-02-01 17:39:00,2026-02-01,food_delivery,Swiggy order,debit,321.00,2026-02,Sunday,1
+2026-02-02 00:00:00,2026-02-02,rent,Shared accommodation rent,debit,5500.00,2026-02,Monday,0
+2026-02-02 07:07:00,2026-02-02,grocery,Reliance Smart,debit,612.00,2026-02,Monday,0
+2026-02-02 13:22:00,2026-02-02,grocery,Reliance Smart,debit,193.00,2026-02,Monday,0
+2026-02-04 14:56:00,2026-02-04,shopping,Amazon purchase,debit,3245.00,2026-02,Wednesday,0
+2026-02-04 17:47:00,2026-02-04,misc_small,Momos stall,debit,52.00,2026-02,Wednesday,0
+2026-02-05 14:51:00,2026-02-05,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-02,Thursday,0
+2026-02-05 16:22:00,2026-02-05,shopping,Flipkart purchase,debit,622.00,2026-02,Thursday,0
+2026-02-05 20:10:00,2026-02-05,upi_transfer,Friend settlement,debit,1590.00,2026-02,Thursday,0
+2026-02-05 22:18:00,2026-02-05,fuel,Petrol pump,debit,692.00,2026-02,Thursday,0
+2026-02-06 00:00:00,2026-02-06,electricity,Electricity bill,debit,1239.00,2026-02,Friday,0
+2026-02-06 09:14:00,2026-02-06,transport_rapido,Rapido ride,debit,90.00,2026-02,Friday,0
+2026-02-06 10:40:00,2026-02-06,fuel,Petrol pump,debit,794.00,2026-02,Friday,0
+2026-02-06 11:16:00,2026-02-06,fuel,Petrol pump,debit,1208.00,2026-02,Friday,0
+2026-02-07 00:00:00,2026-02-07,subscription,Streaming subscription,debit,149.00,2026-02,Saturday,1
+2026-02-08 13:15:00,2026-02-08,restaurant,Local restaurant,debit,831.00,2026-02,Sunday,1
+2026-02-08 17:39:00,2026-02-08,upi_transfer,Friend settlement,debit,2340.00,2026-02,Sunday,1
+2026-02-09 19:41:00,2026-02-09,transport_rapido,Rapido bike,debit,128.00,2026-02,Monday,0
+2026-02-10 11:19:00,2026-02-10,medical,Online pharmacy,debit,392.00,2026-02,Tuesday,0
+2026-02-10 11:41:00,2026-02-10,restaurant,Dominos,debit,1171.00,2026-02,Tuesday,0
+2026-02-10 13:54:00,2026-02-10,upi_transfer,Family transfer,debit,456.00,2026-02,Tuesday,0
+2026-02-11 18:35:00,2026-02-11,misc_small,Photocopy shop,debit,430.00,2026-02,Wednesday,0
+2026-02-12 00:00:00,2026-02-12,income_freelance,Freelance project payment,credit,6000.00,2026-02,Thursday,0
+2026-02-12 09:33:00,2026-02-12,restaurant,Dominos,debit,1250.00,2026-02,Thursday,0
+2026-02-13 00:00:00,2026-02-13,data_topup,Mobile data top-up,debit,199.00,2026-02,Friday,0
+2026-02-13 14:31:00,2026-02-13,food_delivery,Zomato order,debit,675.00,2026-02,Friday,0
+2026-02-13 16:20:00,2026-02-13,transport_rapido,Rapido bike,debit,90.00,2026-02,Friday,0
+2026-02-13 19:45:00,2026-02-13,food_delivery,Zomato order,debit,381.00,2026-02,Friday,0
+2026-02-14 11:05:00,2026-02-14,food_delivery,Zomato order,debit,624.00,2026-02,Saturday,1
+2026-02-14 19:34:00,2026-02-14,grocery,BigBasket,debit,580.00,2026-02,Saturday,1
+2026-02-14 21:10:00,2026-02-14,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-02,Saturday,1
+2026-02-15 10:29:00,2026-02-15,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-02,Sunday,1
+2026-02-15 12:47:00,2026-02-15,transport_rapido,Rapido bike,debit,92.00,2026-02,Sunday,1
+2026-02-15 13:42:00,2026-02-15,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-02,Sunday,1
+2026-02-15 18:50:00,2026-02-15,misc_small,Salon,debit,325.00,2026-02,Sunday,1
+2026-02-15 20:56:00,2026-02-15,misc_small,Momos stall,debit,96.00,2026-02,Sunday,1
+2026-02-16 12:02:00,2026-02-16,misc_small,Tea stall,debit,59.00,2026-02,Monday,0
+2026-02-16 20:40:00,2026-02-16,restaurant,Local restaurant,debit,1011.00,2026-02,Monday,0
+2026-02-17 10:27:00,2026-02-17,misc_small,Salon,debit,60.00,2026-02,Tuesday,0
+2026-02-17 17:46:00,2026-02-17,food_delivery,Zomato order,debit,174.00,2026-02,Tuesday,0
+2026-02-19 00:00:00,2026-02-19,data_topup,Mobile data top-up,debit,199.00,2026-02,Thursday,0
+2026-02-19 19:47:00,2026-02-19,grocery,Local kirana,debit,1209.00,2026-02,Thursday,0
+2026-02-20 08:49:00,2026-02-20,shopping,Amazon purchase,debit,1074.00,2026-02,Friday,0
+2026-02-20 12:55:00,2026-02-20,upi_transfer,Friend settlement,debit,1584.00,2026-02,Friday,0
+2026-02-20 14:16:00,2026-02-20,grocery,BigBasket,debit,864.00,2026-02,Friday,0
+2026-02-20 17:54:00,2026-02-20,upi_transfer,Family transfer,debit,1784.00,2026-02,Friday,0
+2026-02-21 12:32:00,2026-02-21,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-02,Saturday,1
+2026-02-21 13:15:00,2026-02-21,transport_rapido,Rapido bike,debit,122.00,2026-02,Saturday,1
+2026-02-21 14:30:00,2026-02-21,food_delivery,Swiggy order,debit,548.00,2026-02,Saturday,1
+2026-02-21 21:43:00,2026-02-21,medical,Online pharmacy,debit,1064.00,2026-02,Saturday,1
+2026-02-23 17:35:00,2026-02-23,transport_rapido,Rapido bike,debit,91.00,2026-02,Monday,0
+2026-02-24 00:00:00,2026-02-24,mobile_recharge,Mobile recharge,debit,699.00,2026-02,Tuesday,0
+2026-02-24 12:18:00,2026-02-24,cash_withdrawal,ATM cash withdrawal,debit,500.00,2026-02,Tuesday,0
+2026-02-25 13:02:00,2026-02-25,medical,Online pharmacy,debit,1000.00,2026-02,Wednesday,0
+2026-02-26 15:41:00,2026-02-26,food_delivery,Zomato order,debit,550.00,2026-02,Thursday,0
+2026-02-26 17:59:00,2026-02-26,transport_rapido,Rapido ride,debit,92.00,2026-02,Thursday,0
+2026-02-27 08:07:00,2026-02-27,shopping,Amazon purchase,debit,3082.00,2026-02,Friday,0
+2026-02-27 12:45:00,2026-02-27,transport_rapido,Rapido bike,debit,78.00,2026-02,Friday,0
+2026-02-28 00:00:00,2026-02-28,income_salary,Salary credit,credit,41000.00,2026-02,Saturday,1
+2026-02-28 12:21:00,2026-02-28,misc_small,Salon,debit,162.00,2026-02,Saturday,1
+2026-03-01 09:52:00,2026-03-01,food_delivery,Swiggy order,debit,478.00,2026-03,Sunday,1
+2026-03-01 14:10:00,2026-03-01,misc_small,Photocopy shop,debit,247.00,2026-03,Sunday,1
+2026-03-01 17:09:00,2026-03-01,grocery,Blinkit,debit,1382.00,2026-03,Sunday,1
+2026-03-01 19:33:00,2026-03-01,grocery,BigBasket,debit,913.00,2026-03,Sunday,1
+2026-03-02 22:26:00,2026-03-02,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-03,Monday,0
+2026-03-03 00:00:00,2026-03-03,rent,Shared accommodation rent,debit,6000.00,2026-03,Tuesday,0
+2026-03-03 08:26:00,2026-03-03,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-03,Tuesday,0
+2026-03-04 14:09:00,2026-03-04,grocery,Blinkit,debit,505.00,2026-03,Wednesday,0
+2026-03-04 14:40:00,2026-03-04,shopping,Flipkart purchase,debit,2644.00,2026-03,Wednesday,0
+2026-03-05 11:32:00,2026-03-05,grocery,Reliance Smart,debit,771.00,2026-03,Thursday,0
+2026-03-07 10:16:00,2026-03-07,medical,Online pharmacy,debit,1330.00,2026-03,Saturday,1
+2026-03-08 00:00:00,2026-03-08,electricity,Electricity bill,debit,1081.00,2026-03,Sunday,1
+2026-03-08 14:41:00,2026-03-08,misc_small,Momos stall,debit,463.00,2026-03,Sunday,1
+2026-03-09 18:10:00,2026-03-09,transport_rapido,Rapido bike,debit,108.00,2026-03,Monday,0
+2026-03-10 16:22:00,2026-03-10,misc_small,Salon,debit,140.00,2026-03,Tuesday,0
+2026-03-10 18:32:00,2026-03-10,fuel,Petrol pump,debit,713.00,2026-03,Tuesday,0
+2026-03-11 00:00:00,2026-03-11,data_topup,Mobile data top-up,debit,99.00,2026-03,Wednesday,0
+2026-03-11 08:30:00,2026-03-11,transport_rapido,Rapido ride,debit,134.00,2026-03,Wednesday,0
+2026-03-11 09:44:00,2026-03-11,shopping,Amazon purchase,debit,3672.00,2026-03,Wednesday,0
+2026-03-11 17:39:00,2026-03-11,transport_rapido,Rapido bike,debit,88.00,2026-03,Wednesday,0
+2026-03-12 09:45:00,2026-03-12,food_delivery,Zomato order,debit,578.00,2026-03,Thursday,0
+2026-03-13 00:00:00,2026-03-13,subscription,Streaming subscription,debit,149.00,2026-03,Friday,0
+2026-03-14 10:53:00,2026-03-14,shopping,Amazon purchase,debit,1418.00,2026-03,Saturday,1
+2026-03-14 14:21:00,2026-03-14,food_delivery,Swiggy order,debit,559.00,2026-03,Saturday,1
+2026-03-14 17:35:00,2026-03-14,fuel,Petrol pump,debit,1000.00,2026-03,Saturday,1
+2026-03-14 22:59:00,2026-03-14,restaurant,Local restaurant,debit,130.00,2026-03,Saturday,1
+2026-03-16 08:10:00,2026-03-16,shopping,Flipkart purchase,debit,2554.00,2026-03,Monday,0
+2026-03-16 16:01:00,2026-03-16,food_delivery,Swiggy order,debit,290.00,2026-03,Monday,0
+2026-03-16 17:04:00,2026-03-16,medical,Local pharmacy,debit,184.00,2026-03,Monday,0
+2026-03-16 21:51:00,2026-03-16,misc_small,Tea stall,debit,478.00,2026-03,Monday,0
+2026-03-17 21:06:00,2026-03-17,misc_small,Momos stall,debit,161.00,2026-03,Tuesday,0
+2026-03-18 00:00:00,2026-03-18,gift,Gift purchase,debit,4800.00,2026-03,Wednesday,0
+2026-03-18 13:04:00,2026-03-18,food_delivery,Swiggy order,debit,149.00,2026-03,Wednesday,0
+2026-03-18 14:29:00,2026-03-18,shopping,Amazon purchase,debit,3529.00,2026-03,Wednesday,0
+2026-03-18 17:14:00,2026-03-18,restaurant,KFC,debit,439.00,2026-03,Wednesday,0
+2026-03-18 18:09:00,2026-03-18,misc_small,Photocopy shop,debit,404.00,2026-03,Wednesday,0
+2026-03-18 18:51:00,2026-03-18,fuel,Petrol pump,debit,862.00,2026-03,Wednesday,0
+2026-03-19 11:41:00,2026-03-19,misc_small,Tea stall,debit,187.00,2026-03,Thursday,0
+2026-03-19 19:49:00,2026-03-19,upi_transfer,Friend settlement,debit,829.00,2026-03,Thursday,0
+2026-03-22 00:00:00,2026-03-22,mobile_recharge,Mobile recharge,debit,399.00,2026-03,Sunday,1
+2026-03-22 11:11:00,2026-03-22,grocery,Zepto,debit,1412.00,2026-03,Sunday,1
+2026-03-22 12:55:00,2026-03-22,medical,Local pharmacy,debit,1289.00,2026-03,Sunday,1
+2026-03-23 12:16:00,2026-03-23,grocery,BigBasket,debit,1034.00,2026-03,Monday,0
+2026-03-24 09:43:00,2026-03-24,grocery,BigBasket,debit,900.00,2026-03,Tuesday,0
+2026-03-27 12:08:00,2026-03-27,transport_rapido,Rapido bike,debit,96.00,2026-03,Friday,0
+2026-03-27 20:58:00,2026-03-27,transport_rapido,Rapido bike,debit,127.00,2026-03,Friday,0
+2026-03-27 21:24:00,2026-03-27,grocery,Local kirana,debit,1135.00,2026-03,Friday,0
+2026-03-28 00:00:00,2026-03-28,income_salary,Salary credit,credit,42000.00,2026-03,Saturday,1
+2026-03-28 07:04:00,2026-03-28,upi_transfer,Friend settlement,debit,2673.00,2026-03,Saturday,1
+2026-03-28 08:12:00,2026-03-28,food_delivery,Swiggy order,debit,378.00,2026-03,Saturday,1
+2026-03-28 11:46:00,2026-03-28,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-03,Saturday,1
+2026-03-29 12:26:00,2026-03-29,shopping,Flipkart purchase,debit,516.00,2026-03,Sunday,1
+2026-03-29 14:40:00,2026-03-29,food_delivery,Swiggy order,debit,210.00,2026-03,Sunday,1
+2026-03-30 15:17:00,2026-03-30,misc_small,Tea stall,debit,376.00,2026-03,Monday,0
+2026-03-30 18:42:00,2026-03-30,transport_rapido,Rapido bike,debit,86.00,2026-03,Monday,0
+2026-03-31 00:00:00,2026-03-31,income_interest,Savings interest credit,credit,379.00,2026-03,Tuesday,0
+2026-03-31 16:13:00,2026-03-31,medical,Online pharmacy,debit,1024.00,2026-03,Tuesday,0
+2026-03-31 22:46:00,2026-03-31,misc_small,Laundry,debit,236.00,2026-03,Tuesday,0
+2026-04-01 07:05:00,2026-04-01,upi_transfer,Family transfer,debit,2359.00,2026-04,Wednesday,0
+2026-04-01 08:39:00,2026-04-01,transport_rapido,Rapido bike,debit,114.00,2026-04,Wednesday,0
+2026-04-01 12:59:00,2026-04-01,grocery,Blinkit,debit,1347.00,2026-04,Wednesday,0
+2026-04-01 18:15:00,2026-04-01,food_delivery,Swiggy order,debit,309.00,2026-04,Wednesday,0
+2026-04-02 08:57:00,2026-04-02,transport_rapido,Rapido ride,debit,86.00,2026-04,Thursday,0
+2026-04-03 00:00:00,2026-04-03,rent,Shared accommodation rent,debit,5500.00,2026-04,Friday,0
+2026-04-03 22:32:00,2026-04-03,grocery,Reliance Smart,debit,139.00,2026-04,Friday,0
+2026-04-04 09:59:00,2026-04-04,transport_rapido,Rapido bike,debit,92.00,2026-04,Saturday,1
+2026-04-05 13:04:00,2026-04-05,fuel,Petrol pump,debit,446.00,2026-04,Sunday,1
+2026-04-06 14:28:00,2026-04-06,food_delivery,Swiggy order,debit,200.00,2026-04,Monday,0
+2026-04-06 14:52:00,2026-04-06,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-04,Monday,0
+2026-04-07 00:00:00,2026-04-07,electricity,Electricity bill,debit,1062.00,2026-04,Tuesday,0
+2026-04-07 00:00:00,2026-04-07,subscription,Streaming subscription,debit,129.00,2026-04,Tuesday,0
+2026-04-07 08:22:00,2026-04-07,shopping,Amazon purchase,debit,1065.00,2026-04,Tuesday,0
+2026-04-07 17:35:00,2026-04-07,transport_rapido,Rapido ride,debit,110.00,2026-04,Tuesday,0
+2026-04-08 09:42:00,2026-04-08,restaurant,Local restaurant,debit,238.00,2026-04,Wednesday,0
+2026-04-08 20:41:00,2026-04-08,misc_small,Salon,debit,435.00,2026-04,Wednesday,0
+2026-04-10 16:15:00,2026-04-10,shopping,Flipkart purchase,debit,2582.00,2026-04,Friday,0
+2026-04-10 18:22:00,2026-04-10,shopping,Amazon purchase,debit,3313.00,2026-04,Friday,0
+2026-04-11 17:43:00,2026-04-11,misc_small,Salon,debit,258.00,2026-04,Saturday,1
+2026-04-12 11:54:00,2026-04-12,grocery,BigBasket,debit,535.00,2026-04,Sunday,1
+2026-04-12 21:22:00,2026-04-12,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-04,Sunday,1
+2026-04-14 12:20:00,2026-04-14,upi_transfer,Friend settlement,debit,508.00,2026-04,Tuesday,0
+2026-04-15 19:35:00,2026-04-15,shopping,Amazon purchase,debit,2535.00,2026-04,Wednesday,0
+2026-04-15 21:58:00,2026-04-15,grocery,Blinkit,debit,841.00,2026-04,Wednesday,0
+2026-04-16 00:00:00,2026-04-16,income_freelance,Freelance project payment,credit,6000.00,2026-04,Thursday,0
+2026-04-16 17:13:00,2026-04-16,misc_small,Laundry,debit,98.00,2026-04,Thursday,0
+2026-04-16 22:04:00,2026-04-16,transport_rapido,Rapido ride,debit,115.00,2026-04,Thursday,0
+2026-04-18 08:52:00,2026-04-18,upi_transfer,Family transfer,debit,2615.00,2026-04,Saturday,1
+2026-04-18 14:04:00,2026-04-18,grocery,Local kirana,debit,1162.00,2026-04,Saturday,1
+2026-04-18 15:28:00,2026-04-18,misc_small,Laundry,debit,168.00,2026-04,Saturday,1
+2026-04-18 16:15:00,2026-04-18,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-04,Saturday,1
+2026-04-19 08:25:00,2026-04-19,fuel,Petrol pump,debit,869.00,2026-04,Sunday,1
+2026-04-19 20:32:00,2026-04-19,misc_small,Salon,debit,90.00,2026-04,Sunday,1
+2026-04-20 16:39:00,2026-04-20,transport_rapido,Rapido bike,debit,90.00,2026-04,Monday,0
+2026-04-20 18:26:00,2026-04-20,medical,Online pharmacy,debit,839.00,2026-04,Monday,0
+2026-04-21 00:00:00,2026-04-21,mobile_recharge,Mobile recharge,debit,299.00,2026-04,Tuesday,0
+2026-04-21 13:26:00,2026-04-21,restaurant,Cafe,debit,287.00,2026-04,Tuesday,0
+2026-04-22 11:11:00,2026-04-22,shopping,Flipkart purchase,debit,3476.00,2026-04,Wednesday,0
+2026-04-22 20:21:00,2026-04-22,transport_rapido,Rapido bike,debit,95.00,2026-04,Wednesday,0
+2026-04-23 08:33:00,2026-04-23,food_delivery,Swiggy order,debit,457.00,2026-04,Thursday,0
+2026-04-24 18:50:00,2026-04-24,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-04,Friday,0
+2026-04-25 10:33:00,2026-04-25,fuel,Petrol pump,debit,621.00,2026-04,Saturday,1
+2026-04-26 00:00:00,2026-04-26,data_topup,Mobile data top-up,debit,129.00,2026-04,Sunday,1
+2026-04-27 19:52:00,2026-04-27,food_delivery,Swiggy order,debit,183.00,2026-04,Monday,0
+2026-04-28 00:00:00,2026-04-28,income_salary,Salary credit,credit,40000.00,2026-04,Tuesday,0
+2026-04-28 10:15:00,2026-04-28,misc_small,Momos stall,debit,245.00,2026-04,Tuesday,0
+2026-04-29 22:27:00,2026-04-29,restaurant,Cafe,debit,807.00,2026-04,Wednesday,0
+2026-04-29 22:43:00,2026-04-29,grocery,Reliance Smart,debit,1419.00,2026-04,Wednesday,0
+2026-04-30 07:33:00,2026-04-30,upi_transfer,Family transfer,debit,2659.00,2026-04,Thursday,0
+2026-04-30 09:26:00,2026-04-30,food_delivery,Swiggy order,debit,257.00,2026-04,Thursday,0
+2026-04-30 18:38:00,2026-04-30,transport_rapido,Rapido bike,debit,99.00,2026-04,Thursday,0
+2026-05-01 08:58:00,2026-05-01,grocery,Reliance Smart,debit,836.00,2026-05,Friday,0
+2026-05-01 12:55:00,2026-05-01,shopping,Flipkart purchase,debit,3346.00,2026-05,Friday,0
+2026-05-01 19:50:00,2026-05-01,food_delivery,Zomato order,debit,394.00,2026-05,Friday,0
+2026-05-02 00:00:00,2026-05-02,rent,Shared accommodation rent,debit,6500.00,2026-05,Saturday,1
+2026-05-03 07:12:00,2026-05-03,grocery,Local kirana,debit,504.00,2026-05,Sunday,1
+2026-05-03 09:07:00,2026-05-03,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-05,Sunday,1
+2026-05-04 13:45:00,2026-05-04,fuel,Petrol pump,debit,853.00,2026-05,Monday,0
+2026-05-04 16:22:00,2026-05-04,grocery,Blinkit,debit,733.00,2026-05,Monday,0
+2026-05-04 16:37:00,2026-05-04,misc_small,Laundry,debit,44.00,2026-05,Monday,0
+2026-05-05 00:00:00,2026-05-05,data_topup,Mobile data top-up,debit,159.00,2026-05,Tuesday,0
+2026-05-05 12:20:00,2026-05-05,transport_rapido,Rapido bike,debit,98.00,2026-05,Tuesday,0
+2026-05-05 20:21:00,2026-05-05,grocery,Zepto,debit,593.00,2026-05,Tuesday,0
+2026-05-06 21:20:00,2026-05-06,fuel,Petrol pump,debit,946.00,2026-05,Wednesday,0
+2026-05-07 11:56:00,2026-05-07,shopping,Amazon purchase,debit,314.00,2026-05,Thursday,0
+2026-05-07 14:50:00,2026-05-07,misc_small,Momos stall,debit,228.00,2026-05,Thursday,0
+2026-05-07 21:21:00,2026-05-07,misc_small,Photocopy shop,debit,174.00,2026-05,Thursday,0
+2026-05-08 09:46:00,2026-05-08,shopping,Flipkart purchase,debit,537.00,2026-05,Friday,0
+2026-05-09 00:00:00,2026-05-09,electricity,Electricity bill,debit,586.00,2026-05,Saturday,1
+2026-05-09 00:00:00,2026-05-09,subscription,Streaming subscription,debit,129.00,2026-05,Saturday,1
+2026-05-09 13:18:00,2026-05-09,grocery,Zepto,debit,138.00,2026-05,Saturday,1
+2026-05-09 15:25:00,2026-05-09,shopping,Amazon purchase,debit,1873.00,2026-05,Saturday,1
+2026-05-09 20:56:00,2026-05-09,transport_rapido,Rapido bike,debit,97.00,2026-05,Saturday,1
+2026-05-09 22:05:00,2026-05-09,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-05,Saturday,1
+2026-05-09 22:24:00,2026-05-09,misc_small,Laundry,debit,31.00,2026-05,Saturday,1
+2026-05-10 11:37:00,2026-05-10,medical,Local pharmacy,debit,1330.00,2026-05,Sunday,1
+2026-05-10 19:46:00,2026-05-10,upi_transfer,Friend settlement,debit,1775.00,2026-05,Sunday,1
+2026-05-11 13:35:00,2026-05-11,restaurant,Dominos,debit,1216.00,2026-05,Monday,0
+2026-05-11 18:04:00,2026-05-11,restaurant,Local restaurant,debit,500.00,2026-05,Monday,0
+2026-05-11 20:12:00,2026-05-11,restaurant,Dominos,debit,1417.00,2026-05,Monday,0
+2026-05-12 08:04:00,2026-05-12,fuel,Petrol pump,debit,480.00,2026-05,Tuesday,0
+2026-05-12 13:10:00,2026-05-12,transport_rapido,Rapido ride,debit,82.00,2026-05,Tuesday,0
+2026-05-12 13:23:00,2026-05-12,misc_small,Tea stall,debit,327.00,2026-05,Tuesday,0
+2026-05-13 09:30:00,2026-05-13,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-05,Wednesday,0
+2026-05-15 00:00:00,2026-05-15,data_topup,Mobile data top-up,debit,159.00,2026-05,Friday,0
+2026-05-15 08:42:00,2026-05-15,misc_small,Tea stall,debit,343.00,2026-05,Friday,0
+2026-05-15 09:35:00,2026-05-15,transport_rapido,Rapido bike,debit,132.00,2026-05,Friday,0
+2026-05-15 11:03:00,2026-05-15,transport_rapido,Rapido bike,debit,129.00,2026-05,Friday,0
+2026-05-16 09:38:00,2026-05-16,grocery,Blinkit,debit,408.00,2026-05,Saturday,1
+2026-05-16 10:19:00,2026-05-16,food_delivery,Zomato order,debit,210.00,2026-05,Saturday,1
+2026-05-17 13:43:00,2026-05-17,grocery,BigBasket,debit,577.00,2026-05,Sunday,1
+2026-05-18 10:53:00,2026-05-18,transport_rapido,Rapido bike,debit,86.00,2026-05,Monday,0
+2026-05-18 20:59:00,2026-05-18,misc_small,Momos stall,debit,311.00,2026-05,Monday,0
+2026-05-19 00:00:00,2026-05-19,mobile_recharge,Mobile recharge,debit,499.00,2026-05,Tuesday,0
+2026-05-19 17:04:00,2026-05-19,misc_small,Laundry,debit,424.00,2026-05,Tuesday,0
+2026-05-19 21:20:00,2026-05-19,misc_small,Tea stall,debit,384.00,2026-05,Tuesday,0
+2026-05-20 12:34:00,2026-05-20,medical,Local pharmacy,debit,930.00,2026-05,Wednesday,0
+2026-05-20 16:33:00,2026-05-20,fuel,Petrol pump,debit,540.00,2026-05,Wednesday,0
+2026-05-21 07:00:00,2026-05-21,transport_rapido,Rapido ride,debit,112.00,2026-05,Thursday,0
+2026-05-21 12:31:00,2026-05-21,shopping,Amazon purchase,debit,3535.00,2026-05,Thursday,0
+2026-05-22 16:52:00,2026-05-22,misc_small,Photocopy shop,debit,106.00,2026-05,Friday,0
+2026-05-23 00:00:00,2026-05-23,income_freelance,Freelance project payment,credit,9000.00,2026-05,Saturday,1
+2026-05-24 10:56:00,2026-05-24,upi_transfer,Family transfer,debit,1435.00,2026-05,Sunday,1
+2026-05-24 18:30:00,2026-05-24,shopping,Amazon purchase,debit,3386.00,2026-05,Sunday,1
+2026-05-25 10:19:00,2026-05-25,upi_transfer,Friend settlement,debit,822.00,2026-05,Monday,0
+2026-05-25 22:48:00,2026-05-25,transport_rapido,Rapido bike,debit,92.00,2026-05,Monday,0
+2026-05-26 15:02:00,2026-05-26,transport_rapido,Rapido ride,debit,111.00,2026-05,Tuesday,0
+2026-05-28 00:00:00,2026-05-28,income_salary,Salary credit,credit,42000.00,2026-05,Thursday,0
+2026-05-29 00:00:00,2026-05-29,data_topup,Mobile data top-up,debit,159.00,2026-05,Friday,0
+2026-05-31 13:23:00,2026-05-31,grocery,Blinkit,debit,802.00,2026-05,Sunday,1
+2026-05-31 17:55:00,2026-05-31,food_delivery,Zomato order,debit,461.00,2026-05,Sunday,1
+2026-05-31 20:01:00,2026-05-31,shopping,Flipkart purchase,debit,2620.00,2026-05,Sunday,1
+2026-06-02 00:00:00,2026-06-02,rent,Shared accommodation rent,debit,6500.00,2026-06,Tuesday,0
+2026-06-03 13:47:00,2026-06-03,grocery,BigBasket,debit,1026.00,2026-06,Wednesday,0
+2026-06-04 07:44:00,2026-06-04,restaurant,Local restaurant,debit,349.00,2026-06,Thursday,0
+2026-06-04 10:26:00,2026-06-04,medical,Local pharmacy,debit,151.00,2026-06,Thursday,0
+2026-06-04 20:22:00,2026-06-04,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-06,Thursday,0
+2026-06-05 00:00:00,2026-06-05,electricity,Electricity bill,debit,800.00,2026-06,Friday,0
+2026-06-06 07:31:00,2026-06-06,food_delivery,Zomato order,debit,405.00,2026-06,Saturday,1
+2026-06-06 09:51:00,2026-06-06,misc_small,Tea stall,debit,391.00,2026-06,Saturday,1
+2026-06-06 14:07:00,2026-06-06,food_delivery,Zomato order,debit,359.00,2026-06,Saturday,1
+2026-06-06 21:55:00,2026-06-06,misc_small,Laundry,debit,29.00,2026-06,Saturday,1
+2026-06-07 07:16:00,2026-06-07,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-06,Sunday,1
+2026-06-07 11:25:00,2026-06-07,restaurant,Local restaurant,debit,1051.00,2026-06,Sunday,1
+2026-06-08 12:11:00,2026-06-08,transport_rapido,Rapido ride,debit,127.00,2026-06,Monday,0
+2026-06-08 13:27:00,2026-06-08,medical,Online pharmacy,debit,126.00,2026-06,Monday,0
+2026-06-08 19:01:00,2026-06-08,restaurant,Local restaurant,debit,136.00,2026-06,Monday,0
+2026-06-09 08:24:00,2026-06-09,shopping,Flipkart purchase,debit,3786.00,2026-06,Tuesday,0
+2026-06-09 21:52:00,2026-06-09,grocery,Local kirana,debit,988.00,2026-06,Tuesday,0
+2026-06-10 07:59:00,2026-06-10,misc_small,Tea stall,debit,376.00,2026-06,Wednesday,0
+2026-06-10 14:39:00,2026-06-10,misc_small,Momos stall,debit,97.00,2026-06,Wednesday,0
+2026-06-10 17:20:00,2026-06-10,shopping,Amazon purchase,debit,1868.00,2026-06,Wednesday,0
+2026-06-10 19:40:00,2026-06-10,restaurant,Dominos,debit,245.00,2026-06,Wednesday,0
+2026-06-10 22:02:00,2026-06-10,misc_small,Photocopy shop,debit,79.00,2026-06,Wednesday,0
+2026-06-11 12:51:00,2026-06-11,transport_rapido,Rapido ride,debit,135.00,2026-06,Thursday,0
+2026-06-11 20:12:00,2026-06-11,medical,Online pharmacy,debit,765.00,2026-06,Thursday,0
+2026-06-12 00:00:00,2026-06-12,subscription,Streaming subscription,debit,129.00,2026-06,Friday,0
+2026-06-12 00:00:00,2026-06-12,data_topup,Mobile data top-up,debit,159.00,2026-06,Friday,0
+2026-06-12 10:51:00,2026-06-12,shopping,Amazon purchase,debit,1251.00,2026-06,Friday,0
+2026-06-12 14:09:00,2026-06-12,misc_small,Momos stall,debit,149.00,2026-06,Friday,0
+2026-06-13 12:10:00,2026-06-13,transport_rapido,Rapido bike,debit,130.00,2026-06,Saturday,1
+2026-06-13 14:04:00,2026-06-13,misc_small,Photocopy shop,debit,402.00,2026-06,Saturday,1
+2026-06-13 14:57:00,2026-06-13,misc_small,Laundry,debit,446.00,2026-06,Saturday,1
+2026-06-14 16:11:00,2026-06-14,food_delivery,Swiggy order,debit,204.00,2026-06,Sunday,1
+2026-06-15 00:00:00,2026-06-15,income_freelance,Freelance project payment,credit,6000.00,2026-06,Monday,0
+2026-06-15 08:00:00,2026-06-15,grocery,Reliance Smart,debit,760.00,2026-06,Monday,0
+2026-06-15 12:10:00,2026-06-15,food_delivery,Zomato order,debit,470.00,2026-06,Monday,0
+2026-06-16 11:26:00,2026-06-16,fuel,Petrol pump,debit,1104.00,2026-06,Tuesday,0
+2026-06-16 12:08:00,2026-06-16,restaurant,Local restaurant,debit,780.00,2026-06,Tuesday,0
+2026-06-17 16:06:00,2026-06-17,food_delivery,Swiggy order,debit,282.00,2026-06,Wednesday,0
+2026-06-17 22:57:00,2026-06-17,restaurant,KFC,debit,1038.00,2026-06,Wednesday,0
+2026-06-18 00:00:00,2026-06-18,electronics,Laptop accessories,debit,10999.00,2026-06,Thursday,0
+2026-06-18 18:30:00,2026-06-18,grocery,Reliance Smart,debit,865.00,2026-06,Thursday,0
+2026-06-18 18:34:00,2026-06-18,shopping,Flipkart purchase,debit,1625.00,2026-06,Thursday,0
+2026-06-19 09:13:00,2026-06-19,shopping,Flipkart purchase,debit,3469.00,2026-06,Friday,0
+2026-06-19 12:12:00,2026-06-19,misc_small,Photocopy shop,debit,437.00,2026-06,Friday,0
+2026-06-20 00:00:00,2026-06-20,data_topup,Mobile data top-up,debit,69.00,2026-06,Saturday,1
+2026-06-21 08:21:00,2026-06-21,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-06,Sunday,1
+2026-06-21 16:28:00,2026-06-21,upi_transfer,Friend settlement,debit,874.00,2026-06,Sunday,1
+2026-06-21 22:41:00,2026-06-21,grocery,Zepto,debit,457.00,2026-06,Sunday,1
+2026-06-22 07:27:00,2026-06-22,misc_small,Laundry,debit,224.00,2026-06,Monday,0
+2026-06-22 14:02:00,2026-06-22,transport_rapido,Rapido ride,debit,121.00,2026-06,Monday,0
+2026-06-22 22:27:00,2026-06-22,shopping,Flipkart purchase,debit,1264.00,2026-06,Monday,0
+2026-06-23 00:00:00,2026-06-23,mobile_recharge,Mobile recharge,debit,299.00,2026-06,Tuesday,0
+2026-06-23 00:00:00,2026-06-23,data_topup,Mobile data top-up,debit,69.00,2026-06,Tuesday,0
+2026-06-24 14:28:00,2026-06-24,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-06,Wednesday,0
+2026-06-24 19:12:00,2026-06-24,upi_transfer,Family transfer,debit,2280.00,2026-06,Wednesday,0
+2026-06-24 19:37:00,2026-06-24,transport_rapido,Rapido bike,debit,117.00,2026-06,Wednesday,0
+2026-06-25 07:22:00,2026-06-25,food_delivery,Swiggy order,debit,366.00,2026-06,Thursday,0
+2026-06-25 08:15:00,2026-06-25,transport_rapido,Rapido ride,debit,114.00,2026-06,Thursday,0
+2026-06-25 18:22:00,2026-06-25,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-06,Thursday,0
+2026-06-26 10:11:00,2026-06-26,upi_transfer,Family transfer,debit,2794.00,2026-06,Friday,0
+2026-06-27 14:05:00,2026-06-27,upi_transfer,Friend settlement,debit,789.00,2026-06,Saturday,1
+2026-06-28 00:00:00,2026-06-28,income_salary,Salary credit,credit,38000.00,2026-06,Sunday,1
+2026-06-28 18:28:00,2026-06-28,fuel,Petrol pump,debit,878.00,2026-06,Sunday,1
+2026-06-29 09:44:00,2026-06-29,grocery,Zepto,debit,969.00,2026-06,Monday,0
+2026-06-29 16:04:00,2026-06-29,transport_rapido,Rapido ride,debit,126.00,2026-06,Monday,0
+2026-06-30 00:00:00,2026-06-30,income_interest,Savings interest credit,credit,436.00,2026-06,Tuesday,0
+2026-07-02 13:50:00,2026-07-02,fuel,Petrol pump,debit,701.00,2026-07,Thursday,0
+2026-07-03 00:00:00,2026-07-03,electricity,Electricity bill,debit,1035.00,2026-07,Friday,0
+2026-07-03 21:47:00,2026-07-03,transport_rapido,Rapido bike,debit,136.00,2026-07,Friday,0
+2026-07-04 00:00:00,2026-07-04,rent,Shared accommodation rent,debit,6000.00,2026-07,Saturday,1
+2026-07-05 22:08:00,2026-07-05,transport_rapido,Rapido ride,debit,135.00,2026-07,Sunday,1
+2026-07-07 09:04:00,2026-07-07,misc_small,Salon,debit,229.00,2026-07,Tuesday,0
+2026-07-07 14:41:00,2026-07-07,transport_rapido,Rapido ride,debit,79.00,2026-07,Tuesday,0
+2026-07-08 12:08:00,2026-07-08,transport_rapido,Rapido ride,debit,105.00,2026-07,Wednesday,0
+2026-07-08 13:03:00,2026-07-08,cash_withdrawal,ATM cash withdrawal,debit,500.00,2026-07,Wednesday,0
+2026-07-09 07:44:00,2026-07-09,upi_transfer,Friend settlement,debit,2352.00,2026-07,Thursday,0
+2026-07-12 00:00:00,2026-07-12,subscription,Streaming subscription,debit,149.00,2026-07,Sunday,1
+2026-07-13 08:49:00,2026-07-13,shopping,Amazon purchase,debit,3094.00,2026-07,Monday,0
+2026-07-13 13:34:00,2026-07-13,restaurant,KFC,debit,772.00,2026-07,Monday,0
+2026-07-13 20:11:00,2026-07-13,misc_small,Laundry,debit,157.00,2026-07,Monday,0
+2026-07-14 13:11:00,2026-07-14,grocery,Blinkit,debit,1430.00,2026-07,Tuesday,0
+2026-07-15 00:00:00,2026-07-15,income_freelance,Freelance project payment,credit,7500.00,2026-07,Wednesday,0
+2026-07-15 00:00:00,2026-07-15,data_topup,Mobile data top-up,debit,69.00,2026-07,Wednesday,0
+2026-07-15 08:57:00,2026-07-15,restaurant,Dominos,debit,631.00,2026-07,Wednesday,0
+2026-07-15 12:21:00,2026-07-15,grocery,Local kirana,debit,229.00,2026-07,Wednesday,0
+2026-07-16 14:57:00,2026-07-16,transport_rapido,Rapido ride,debit,83.00,2026-07,Thursday,0
+2026-07-16 18:40:00,2026-07-16,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-07,Thursday,0
+2026-07-17 14:44:00,2026-07-17,restaurant,Local restaurant,debit,551.00,2026-07,Friday,0
+2026-07-17 17:19:00,2026-07-17,shopping,Amazon purchase,debit,3403.00,2026-07,Friday,0
+2026-07-17 20:44:00,2026-07-17,upi_transfer,Family transfer,debit,1195.00,2026-07,Friday,0
+2026-07-18 08:06:00,2026-07-18,grocery,Local kirana,debit,955.00,2026-07,Saturday,1
+2026-07-18 21:50:00,2026-07-18,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-07,Saturday,1
+2026-07-18 22:38:00,2026-07-18,fuel,Petrol pump,debit,645.00,2026-07,Saturday,1
+2026-07-20 09:19:00,2026-07-20,misc_small,Momos stall,debit,137.00,2026-07,Monday,0
+2026-07-20 12:34:00,2026-07-20,grocery,Blinkit,debit,309.00,2026-07,Monday,0
+2026-07-20 20:04:00,2026-07-20,misc_small,Tea stall,debit,134.00,2026-07,Monday,0
+2026-07-20 20:22:00,2026-07-20,food_delivery,Swiggy order,debit,192.00,2026-07,Monday,0
+2026-07-20 20:34:00,2026-07-20,misc_small,Tea stall,debit,150.00,2026-07,Monday,0
+2026-07-21 22:58:00,2026-07-21,food_delivery,Zomato order,debit,356.00,2026-07,Tuesday,0
+2026-07-22 14:55:00,2026-07-22,shopping,Amazon purchase,debit,1363.00,2026-07,Wednesday,0
+2026-07-22 18:49:00,2026-07-22,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-07,Wednesday,0
+2026-07-22 20:50:00,2026-07-22,shopping,Flipkart purchase,debit,1140.00,2026-07,Wednesday,0
+2026-07-23 00:00:00,2026-07-23,mobile_recharge,Mobile recharge,debit,399.00,2026-07,Thursday,0
+2026-07-23 07:08:00,2026-07-23,food_delivery,Zomato order,debit,474.00,2026-07,Thursday,0
+2026-07-24 11:16:00,2026-07-24,shopping,Amazon purchase,debit,4195.00,2026-07,Friday,0
+2026-07-24 19:34:00,2026-07-24,transport_rapido,Rapido ride,debit,97.00,2026-07,Friday,0
+2026-07-25 07:18:00,2026-07-25,grocery,BigBasket,debit,1424.00,2026-07,Saturday,1
+2026-07-25 09:18:00,2026-07-25,restaurant,Cafe,debit,680.00,2026-07,Saturday,1
+2026-07-25 10:02:00,2026-07-25,misc_small,Salon,debit,410.00,2026-07,Saturday,1
+2026-07-26 10:03:00,2026-07-26,shopping,Amazon purchase,debit,3418.00,2026-07,Sunday,1
+2026-07-26 14:23:00,2026-07-26,grocery,BigBasket,debit,655.00,2026-07,Sunday,1
+2026-07-26 18:28:00,2026-07-26,medical,Local pharmacy,debit,193.00,2026-07,Sunday,1
+2026-07-27 00:00:00,2026-07-27,data_topup,Mobile data top-up,debit,69.00,2026-07,Monday,0
+2026-07-28 00:00:00,2026-07-28,income_salary,Salary credit,credit,40000.00,2026-07,Tuesday,0
+2026-07-28 07:44:00,2026-07-28,upi_transfer,Friend settlement,debit,1363.00,2026-07,Tuesday,0
+2026-07-28 18:26:00,2026-07-28,transport_rapido,Rapido ride,debit,99.00,2026-07,Tuesday,0
+2026-07-28 18:49:00,2026-07-28,restaurant,Cafe,debit,635.00,2026-07,Tuesday,0
+2026-07-29 10:29:00,2026-07-29,grocery,BigBasket,debit,1182.00,2026-07,Wednesday,0
+2026-08-01 15:10:00,2026-08-01,food_delivery,Swiggy order,debit,507.00,2026-08,Saturday,1
+2026-08-01 22:29:00,2026-08-01,misc_small,Photocopy shop,debit,35.00,2026-08,Saturday,1
+2026-08-02 14:16:00,2026-08-02,restaurant,Dominos,debit,825.00,2026-08,Sunday,1
+2026-08-02 16:00:00,2026-08-02,misc_small,Salon,debit,448.00,2026-08,Sunday,1
+2026-08-02 18:21:00,2026-08-02,upi_transfer,Friend settlement,debit,621.00,2026-08,Sunday,1
+2026-08-03 15:49:00,2026-08-03,upi_transfer,Friend settlement,debit,409.00,2026-08,Monday,0
+2026-08-04 00:00:00,2026-08-04,rent,Shared accommodation rent,debit,5500.00,2026-08,Tuesday,0
+2026-08-04 13:10:00,2026-08-04,transport_rapido,Rapido ride,debit,83.00,2026-08,Tuesday,0
+2026-08-06 00:00:00,2026-08-06,data_topup,Mobile data top-up,debit,99.00,2026-08,Thursday,0
+2026-08-06 12:34:00,2026-08-06,medical,Online pharmacy,debit,1257.00,2026-08,Thursday,0
+2026-08-07 00:00:00,2026-08-07,electricity,Electricity bill,debit,654.00,2026-08,Friday,0
+2026-08-07 16:36:00,2026-08-07,food_delivery,Zomato order,debit,337.00,2026-08,Friday,0
+2026-08-07 18:43:00,2026-08-07,upi_transfer,Friend settlement,debit,1808.00,2026-08,Friday,0
+2026-08-08 14:23:00,2026-08-08,fuel,Petrol pump,debit,703.00,2026-08,Saturday,1
+2026-08-10 00:00:00,2026-08-10,subscription,Streaming subscription,debit,129.00,2026-08,Monday,0
+2026-08-12 10:28:00,2026-08-12,transport_rapido,Rapido ride,debit,102.00,2026-08,Wednesday,0
+2026-08-12 12:46:00,2026-08-12,misc_small,Photocopy shop,debit,222.00,2026-08,Wednesday,0
+2026-08-12 20:00:00,2026-08-12,shopping,Flipkart purchase,debit,3242.00,2026-08,Wednesday,0
+2026-08-14 00:00:00,2026-08-14,income_freelance,Freelance project payment,credit,7500.00,2026-08,Friday,0
+2026-08-14 08:06:00,2026-08-14,grocery,BigBasket,debit,1118.00,2026-08,Friday,0
+2026-08-16 00:00:00,2026-08-16,data_topup,Mobile data top-up,debit,199.00,2026-08,Sunday,1
+2026-08-17 00:00:00,2026-08-17,mobile_recharge,Mobile recharge,debit,299.00,2026-08,Monday,0
+2026-08-17 18:14:00,2026-08-17,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-08,Monday,0
+2026-08-17 19:18:00,2026-08-17,grocery,BigBasket,debit,483.00,2026-08,Monday,0
+2026-08-18 00:00:00,2026-08-18,travel,Intercity travel booking,debit,5200.00,2026-08,Tuesday,0
+2026-08-19 09:31:00,2026-08-19,food_delivery,Swiggy order,debit,333.00,2026-08,Wednesday,0
+2026-08-19 14:37:00,2026-08-19,restaurant,KFC,debit,583.00,2026-08,Wednesday,0
+2026-08-19 15:23:00,2026-08-19,misc_small,Tea stall,debit,340.00,2026-08,Wednesday,0
+2026-08-19 20:23:00,2026-08-19,transport_rapido,Rapido bike,debit,78.00,2026-08,Wednesday,0
+2026-08-20 16:32:00,2026-08-20,misc_small,Tea stall,debit,339.00,2026-08,Thursday,0
+2026-08-20 21:55:00,2026-08-20,shopping,Amazon purchase,debit,3885.00,2026-08,Thursday,0
+2026-08-21 08:45:00,2026-08-21,food_delivery,Zomato order,debit,447.00,2026-08,Friday,0
+2026-08-21 11:48:00,2026-08-21,misc_small,Salon,debit,109.00,2026-08,Friday,0
+2026-08-21 12:33:00,2026-08-21,transport_rapido,Rapido bike,debit,131.00,2026-08,Friday,0
+2026-08-21 17:11:00,2026-08-21,restaurant,Local restaurant,debit,221.00,2026-08,Friday,0
+2026-08-22 07:26:00,2026-08-22,restaurant,Cafe,debit,1198.00,2026-08,Saturday,1
+2026-08-22 10:30:00,2026-08-22,grocery,Zepto,debit,741.00,2026-08,Saturday,1
+2026-08-22 14:43:00,2026-08-22,misc_small,Momos stall,debit,149.00,2026-08,Saturday,1
+2026-08-22 17:54:00,2026-08-22,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-08,Saturday,1
+2026-08-22 21:38:00,2026-08-22,restaurant,Cafe,debit,1310.00,2026-08,Saturday,1
+2026-08-23 07:16:00,2026-08-23,medical,Local pharmacy,debit,1212.00,2026-08,Sunday,1
+2026-08-24 18:40:00,2026-08-24,transport_rapido,Rapido bike,debit,101.00,2026-08,Monday,0
+2026-08-24 21:30:00,2026-08-24,shopping,Amazon purchase,debit,2851.00,2026-08,Monday,0
+2026-08-25 08:56:00,2026-08-25,transport_rapido,Rapido ride,debit,121.00,2026-08,Tuesday,0
+2026-08-25 11:21:00,2026-08-25,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-08,Tuesday,0
+2026-08-26 10:33:00,2026-08-26,grocery,Zepto,debit,1046.00,2026-08,Wednesday,0
+2026-08-27 07:21:00,2026-08-27,misc_small,Salon,debit,404.00,2026-08,Thursday,0
+2026-08-27 12:39:00,2026-08-27,transport_rapido,Rapido bike,debit,130.00,2026-08,Thursday,0
+2026-08-27 14:36:00,2026-08-27,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-08,Thursday,0
+2026-08-27 20:25:00,2026-08-27,transport_rapido,Rapido bike,debit,130.00,2026-08,Thursday,0
+2026-08-28 00:00:00,2026-08-28,income_salary,Salary credit,credit,42000.00,2026-08,Friday,0
+2026-08-28 11:01:00,2026-08-28,shopping,Flipkart purchase,debit,1503.00,2026-08,Friday,0
+2026-08-29 08:00:00,2026-08-29,grocery,Reliance Smart,debit,245.00,2026-08,Saturday,1
+2026-08-29 10:55:00,2026-08-29,restaurant,Dominos,debit,721.00,2026-08,Saturday,1
+2026-08-29 11:03:00,2026-08-29,misc_small,Photocopy shop,debit,283.00,2026-08,Saturday,1
+2026-08-30 07:59:00,2026-08-30,transport_rapido,Rapido ride,debit,103.00,2026-08,Sunday,1
+2026-08-30 12:41:00,2026-08-30,cash_withdrawal,ATM cash withdrawal,debit,500.00,2026-08,Sunday,1
+2026-08-31 10:18:00,2026-08-31,cash_withdrawal,ATM cash withdrawal,debit,500.00,2026-08,Monday,0
+2026-08-31 15:17:00,2026-08-31,misc_small,Photocopy shop,debit,366.00,2026-08,Monday,0
+2026-08-31 16:14:00,2026-08-31,fuel,Petrol pump,debit,991.00,2026-08,Monday,0
+2026-08-31 21:16:00,2026-08-31,grocery,Reliance Smart,debit,1084.00,2026-08,Monday,0
+2026-08-31 21:32:00,2026-08-31,grocery,Blinkit,debit,789.00,2026-08,Monday,0
+2026-09-01 14:04:00,2026-09-01,misc_small,Momos stall,debit,242.00,2026-09,Tuesday,0
+2026-09-03 07:29:00,2026-09-03,upi_transfer,Family transfer,debit,1301.00,2026-09,Thursday,0
+2026-09-03 13:30:00,2026-09-03,grocery,Blinkit,debit,853.00,2026-09,Thursday,0
+2026-09-04 00:00:00,2026-09-04,rent,Shared accommodation rent,debit,5500.00,2026-09,Friday,0
+2026-09-05 00:00:00,2026-09-05,electricity,Electricity bill,debit,876.00,2026-09,Saturday,1
+2026-09-05 08:47:00,2026-09-05,restaurant,KFC,debit,190.00,2026-09,Saturday,1
+2026-09-05 17:43:00,2026-09-05,upi_transfer,Family transfer,debit,2296.00,2026-09,Saturday,1
+2026-09-06 08:38:00,2026-09-06,grocery,Local kirana,debit,1190.00,2026-09,Sunday,1
+2026-09-06 19:44:00,2026-09-06,food_delivery,Swiggy order,debit,493.00,2026-09,Sunday,1
+2026-09-07 00:00:00,2026-09-07,subscription,Streaming subscription,debit,119.00,2026-09,Monday,0
+2026-09-07 11:39:00,2026-09-07,fuel,Petrol pump,debit,665.00,2026-09,Monday,0
+2026-09-07 12:58:00,2026-09-07,transport_rapido,Rapido bike,debit,88.00,2026-09,Monday,0
+2026-09-07 17:27:00,2026-09-07,restaurant,Cafe,debit,201.00,2026-09,Monday,0
+2026-09-08 00:00:00,2026-09-08,data_topup,Mobile data top-up,debit,129.00,2026-09,Tuesday,0
+2026-09-08 08:56:00,2026-09-08,shopping,Amazon purchase,debit,1524.00,2026-09,Tuesday,0
+2026-09-08 10:33:00,2026-09-08,transport_rapido,Rapido ride,debit,125.00,2026-09,Tuesday,0
+2026-09-08 14:29:00,2026-09-08,transport_rapido,Rapido ride,debit,119.00,2026-09,Tuesday,0
+2026-09-08 17:52:00,2026-09-08,misc_small,Laundry,debit,156.00,2026-09,Tuesday,0
+2026-09-08 19:55:00,2026-09-08,transport_rapido,Rapido ride,debit,113.00,2026-09,Tuesday,0
+2026-09-08 21:57:00,2026-09-08,food_delivery,Zomato order,debit,568.00,2026-09,Tuesday,0
+2026-09-09 12:18:00,2026-09-09,restaurant,KFC,debit,333.00,2026-09,Wednesday,0
+2026-09-09 16:21:00,2026-09-09,grocery,Zepto,debit,921.00,2026-09,Wednesday,0
+2026-09-09 19:52:00,2026-09-09,cash_withdrawal,ATM cash withdrawal,debit,2500.00,2026-09,Wednesday,0
+2026-09-09 20:27:00,2026-09-09,food_delivery,Zomato order,debit,481.00,2026-09,Wednesday,0
+2026-09-10 00:00:00,2026-09-10,data_topup,Mobile data top-up,debit,199.00,2026-09,Thursday,0
+2026-09-10 07:47:00,2026-09-10,food_delivery,Zomato order,debit,202.00,2026-09,Thursday,0
+2026-09-10 13:30:00,2026-09-10,medical,Local pharmacy,debit,286.00,2026-09,Thursday,0
+2026-09-11 07:10:00,2026-09-11,restaurant,Dominos,debit,996.00,2026-09,Friday,0
+2026-09-11 16:05:00,2026-09-11,shopping,Amazon purchase,debit,2798.00,2026-09,Friday,0
+2026-09-11 19:16:00,2026-09-11,misc_small,Salon,debit,456.00,2026-09,Friday,0
+2026-09-12 18:23:00,2026-09-12,grocery,BigBasket,debit,741.00,2026-09,Saturday,1
+2026-09-12 22:50:00,2026-09-12,grocery,Zepto,debit,346.00,2026-09,Saturday,1
+2026-09-14 10:07:00,2026-09-14,fuel,Petrol pump,debit,388.00,2026-09,Monday,0
+2026-09-14 13:26:00,2026-09-14,shopping,Amazon purchase,debit,2730.00,2026-09,Monday,0
+2026-09-14 19:21:00,2026-09-14,transport_rapido,Rapido bike,debit,84.00,2026-09,Monday,0
+2026-09-15 22:18:00,2026-09-15,grocery,Blinkit,debit,673.00,2026-09,Tuesday,0
+2026-09-16 07:00:00,2026-09-16,grocery,Local kirana,debit,686.00,2026-09,Wednesday,0
+2026-09-16 10:12:00,2026-09-16,misc_small,Momos stall,debit,466.00,2026-09,Wednesday,0
+2026-09-16 15:57:00,2026-09-16,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-09,Wednesday,0
+2026-09-17 11:37:00,2026-09-17,cash_withdrawal,ATM cash withdrawal,debit,1500.00,2026-09,Thursday,0
+2026-09-17 18:56:00,2026-09-17,transport_rapido,Rapido bike,debit,140.00,2026-09,Thursday,0
+2026-09-18 00:00:00,2026-09-18,electronics,Online electronics purchase,debit,9999.00,2026-09,Friday,0
+2026-09-18 20:10:00,2026-09-18,medical,Online pharmacy,debit,427.00,2026-09,Friday,0
+2026-09-18 22:54:00,2026-09-18,grocery,BigBasket,debit,920.00,2026-09,Friday,0
+2026-09-19 13:55:00,2026-09-19,transport_rapido,Rapido ride,debit,106.00,2026-09,Saturday,1
+2026-09-19 20:25:00,2026-09-19,restaurant,Cafe,debit,1083.00,2026-09,Saturday,1
+2026-09-20 09:58:00,2026-09-20,transport_rapido,Rapido bike,debit,102.00,2026-09,Sunday,1
+2026-09-21 21:50:00,2026-09-21,misc_small,Salon,debit,220.00,2026-09,Monday,0
+2026-09-22 16:54:00,2026-09-22,cash_withdrawal,ATM cash withdrawal,debit,500.00,2026-09,Tuesday,0
+2026-09-23 11:59:00,2026-09-23,transport_rapido,Rapido ride,debit,82.00,2026-09,Wednesday,0
+2026-09-24 00:00:00,2026-09-24,mobile_recharge,Mobile recharge,debit,699.00,2026-09,Thursday,0
+2026-09-25 18:33:00,2026-09-25,misc_small,Tea stall,debit,84.00,2026-09,Friday,0
+2026-09-27 08:01:00,2026-09-27,fuel,Petrol pump,debit,1105.00,2026-09,Sunday,1
+2026-09-27 11:34:00,2026-09-27,upi_transfer,Family transfer,debit,2270.00,2026-09,Sunday,1
+2026-09-27 17:41:00,2026-09-27,fuel,Petrol pump,debit,813.00,2026-09,Sunday,1
+2026-09-28 00:00:00,2026-09-28,income_salary,Salary credit,credit,38000.00,2026-09,Monday,0
+2026-09-28 10:23:00,2026-09-28,shopping,Amazon purchase,debit,635.00,2026-09,Monday,0
+2026-09-29 00:00:00,2026-09-29,data_topup,Mobile data top-up,debit,159.00,2026-09,Tuesday,0
+2026-09-29 08:58:00,2026-09-29,grocery,Blinkit,debit,1282.00,2026-09,Tuesday,0
+2026-09-29 19:51:00,2026-09-29,medical,Online pharmacy,debit,593.00,2026-09,Tuesday,0
+2026-09-29 21:33:00,2026-09-29,transport_rapido,Rapido ride,debit,119.00,2026-09,Tuesday,0
+2026-09-30 00:00:00,2026-09-30,income_interest,Savings interest credit,credit,387.00,2026-09,Wednesday,0
+2026-09-30 08:42:00,2026-09-30,shopping,Flipkart purchase,debit,1778.00,2026-09,Wednesday,0
+2026-09-30 14:26:00,2026-09-30,food_delivery,Swiggy order,debit,441.00,2026-09,Wednesday,0
+2026-09-30 17:08:00,2026-09-30,shopping,Amazon purchase,debit,2542.00,2026-09,Wednesday,0
+2026-09-30 21:46:00,2026-09-30,food_delivery,Zomato order,debit,149.00,2026-09,Wednesday,0
+2026-10-01 07:29:00,2026-10-01,misc_small,Salon,debit,308.00,2026-10,Thursday,0
+2026-10-02 13:55:00,2026-10-02,transport_rapido,Rapido bike,debit,122.00,2026-10,Friday,0
+2026-10-02 15:18:00,2026-10-02,transport_rapido,Rapido bike,debit,86.00,2026-10,Friday,0
+2026-10-03 07:15:00,2026-10-03,grocery,Blinkit,debit,413.00,2026-10,Saturday,1
+2026-10-03 17:10:00,2026-10-03,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-10,Saturday,1
+2026-10-04 07:52:00,2026-10-04,upi_transfer,Friend settlement,debit,1886.00,2026-10,Sunday,1
+2026-10-04 09:31:00,2026-10-04,transport_rapido,Rapido ride,debit,83.00,2026-10,Sunday,1
+2026-10-05 00:00:00,2026-10-05,rent,Shared accommodation rent,debit,5500.00,2026-10,Monday,0
+2026-10-05 00:00:00,2026-10-05,electricity,Electricity bill,debit,958.00,2026-10,Monday,0
+2026-10-05 18:56:00,2026-10-05,upi_transfer,Friend settlement,debit,1881.00,2026-10,Monday,0
+2026-10-06 00:00:00,2026-10-06,festival_shopping,Festival shopping,debit,7250.00,2026-10,Tuesday,0
+2026-10-06 13:24:00,2026-10-06,grocery,Reliance Smart,debit,510.00,2026-10,Tuesday,0
+2026-10-06 22:47:00,2026-10-06,medical,Online pharmacy,debit,736.00,2026-10,Tuesday,0
+2026-10-08 16:28:00,2026-10-08,transport_rapido,Rapido ride,debit,139.00,2026-10,Thursday,0
+2026-10-09 14:16:00,2026-10-09,fuel,Petrol pump,debit,692.00,2026-10,Friday,0
+2026-10-10 13:55:00,2026-10-10,misc_small,Tea stall,debit,41.00,2026-10,Saturday,1
+2026-10-10 19:41:00,2026-10-10,grocery,Local kirana,debit,333.00,2026-10,Saturday,1
+2026-10-11 09:57:00,2026-10-11,restaurant,KFC,debit,463.00,2026-10,Sunday,1
+2026-10-14 00:00:00,2026-10-14,subscription,Streaming subscription,debit,119.00,2026-10,Wednesday,0
+2026-10-14 15:25:00,2026-10-14,shopping,Amazon purchase,debit,728.00,2026-10,Wednesday,0
+2026-10-14 16:13:00,2026-10-14,grocery,BigBasket,debit,849.00,2026-10,Wednesday,0
+2026-10-15 22:04:00,2026-10-15,shopping,Flipkart purchase,debit,208.00,2026-10,Thursday,0
+2026-10-16 17:29:00,2026-10-16,misc_small,Salon,debit,464.00,2026-10,Friday,0
+2026-10-16 17:47:00,2026-10-16,fuel,Petrol pump,debit,820.00,2026-10,Friday,0
+2026-10-17 12:54:00,2026-10-17,transport_rapido,Rapido bike,debit,125.00,2026-10,Saturday,1
+2026-10-18 16:34:00,2026-10-18,cash_withdrawal,ATM cash withdrawal,debit,1000.00,2026-10,Sunday,1
+2026-10-18 21:23:00,2026-10-18,restaurant,KFC,debit,804.00,2026-10,Sunday,1
+2026-10-19 00:00:00,2026-10-19,travel,Rail travel booking,debit,4140.00,2026-10,Monday,0
+2026-10-19 11:17:00,2026-10-19,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-10,Monday,0
+2026-10-19 15:45:00,2026-10-19,misc_small,Photocopy shop,debit,211.00,2026-10,Monday,0
+2026-10-19 17:46:00,2026-10-19,misc_small,Laundry,debit,430.00,2026-10,Monday,0
+2026-10-19 21:19:00,2026-10-19,shopping,Amazon purchase,debit,1016.00,2026-10,Monday,0
+2026-10-19 21:54:00,2026-10-19,transport_rapido,Rapido bike,debit,120.00,2026-10,Monday,0
+2026-10-20 00:00:00,2026-10-20,mobile_recharge,Mobile recharge,debit,499.00,2026-10,Tuesday,0
+2026-10-20 10:34:00,2026-10-20,upi_transfer,Family transfer,debit,395.00,2026-10,Tuesday,0
+2026-10-20 12:49:00,2026-10-20,food_delivery,Swiggy order,debit,168.00,2026-10,Tuesday,0
+2026-10-20 20:02:00,2026-10-20,grocery,BigBasket,debit,943.00,2026-10,Tuesday,0
+2026-10-21 15:39:00,2026-10-21,transport_rapido,Rapido ride,debit,116.00,2026-10,Wednesday,0
+2026-10-22 13:21:00,2026-10-22,grocery,Zepto,debit,1252.00,2026-10,Thursday,0
+2026-10-22 16:41:00,2026-10-22,misc_small,Tea stall,debit,115.00,2026-10,Thursday,0
+2026-10-22 19:06:00,2026-10-22,transport_rapido,Rapido ride,debit,116.00,2026-10,Thursday,0
+2026-10-23 11:31:00,2026-10-23,upi_transfer,Friend settlement,debit,2242.00,2026-10,Friday,0
+2026-10-25 10:22:00,2026-10-25,shopping,Flipkart purchase,debit,3690.00,2026-10,Sunday,1
+2026-10-25 20:20:00,2026-10-25,misc_small,Salon,debit,234.00,2026-10,Sunday,1
+2026-10-26 13:47:00,2026-10-26,cash_withdrawal,ATM cash withdrawal,debit,2000.00,2026-10,Monday,0
+2026-10-26 16:56:00,2026-10-26,upi_transfer,Family transfer,debit,2556.00,2026-10,Monday,0
+2026-10-27 21:44:00,2026-10-27,transport_rapido,Rapido bike,debit,125.00,2026-10,Tuesday,0
+2026-10-28 00:00:00,2026-10-28,income_salary,Salary credit,credit,41000.00,2026-10,Wednesday,0
+2026-10-28 00:00:00,2026-10-28,data_topup,Mobile data top-up,debit,99.00,2026-10,Wednesday,0
+2026-10-28 17:51:00,2026-10-28,food_delivery,Zomato order,debit,145.00,2026-10,Wednesday,0
+2026-10-28 22:55:00,2026-10-28,grocery,Reliance Smart,debit,1350.00,2026-10,Wednesday,0
+2026-10-29 20:11:00,2026-10-29,grocery,BigBasket,debit,1045.00,2026-10,Thursday,0
+2026-10-30 16:21:00,2026-10-30,misc_small,Tea stall,debit,394.00,2026-10,Friday,0
+2026-10-30 17:50:00,2026-10-30,food_delivery,Swiggy order,debit,316.00,2026-10,Friday,0
+2026-10-30 18:02:00,2026-10-30,misc_small,Salon,debit,228.00,2026-10,Friday,0
+2026-10-30 20:46:00,2026-10-30,grocery,Blinkit,debit,1322.00,2026-10,Friday,0
+2026-10-31 00:00:00,2026-10-31,data_topup,Mobile data top-up,debit,69.00,2026-10,Saturday,1
+2026-10-31 08:45:00,2026-10-31,transport_rapido,Rapido ride,debit,129.00,2026-10,Saturday,1
+2026-10-31 10:37:00,2026-10-31,fuel,Petrol pump,debit,967.00,2026-10,Saturday,1
+2026-10-31 15:33:00,2026-10-31,medical,Local pharmacy,debit,941.00,2026-10,Saturday,1
