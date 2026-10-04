@@ -5,13 +5,7 @@ tags: devchallenge, weekendchallenge, hf26challenge, opensource
 cover_image: https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/cover.png
 ---
 
-<!--
-DRAFT for the author. Rules (from CLAUDE.md):
-- Every number below comes from a file the code wrote (cited in a comment) or is a [[placeholder]].
-  Numbers about the student are from the SIMULATED persona, never Subarna's real statement.
-- Subarna's own numbers only after his statement is imported locally, relative only (share-card), with his OK.
-- Replace every [[...]] before publishing. Read it aloud once.
--->
+*This is a submission for the [Hacktoberfest Weekend Challenge: Build for a Friend](https://dev.to/challenges/hacktoberfest-weekend-2026-10-01)*
 
 Subarna gets his allowance on the 1st. By the 20-somethings he's doing maths in his head at the canteen counter: *if I get the momos today, do I still make it to payday?* He guesses. He usually guesses wrong.
 
@@ -28,7 +22,7 @@ Then I did the part most budget apps skip: I made it **grade itself**. I replaye
 - **It's honest about how sure it is, and where it isn't.** It's accurate at the extremes (said 94%, happened 90%) and **too timid in the middle** (said 33%, happened 79%). There's a chart for that inside the app.
 - **A TabPFN feature almost nobody uses:** `predict(output_type="full")`. Instead of "above the 97th percentile", odd spends get real odds, *"about 1 in 400 spends like this"*. And the odds check out: of 193 ordinary spends, TabPFN expected 5.8 to look that rare and **4 did**.
 - **I measured my own LLM, and changed the design because of it.** Asking Gemma 3 1B to reword answers around the numbers passed my checks **2 times out of 14**. Giving it a smaller job passed **13 of 14**.
-- **Runs on a budget laptop:** an i3-1215U with integrated graphics, **1.0 GB** of memory at peak, and every what-if answered in **0.05 s**. <!-- source: out/bench.json --> Gemma 1B by default; the 4B model only loads if 5 GB is actually free.
+- **Runs on a budget laptop:** an i3-1215U with integrated graphics, **1.0 GB** of memory at peak, and every what-if answered in **0.05 s**. Gemma 1B by default; the 4B model only loads if 5 GB is actually free.
 
 ## 3 findings in 30 seconds
 
@@ -91,10 +85,10 @@ Here's what happens when he types *"Can I afford a ₹400 movie on Saturday?"*:
 ![How a question gets answered](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig0_pipeline.png)
 
 1. **The browser reads the question.** ₹400, a movie, Saturday the 26th. That's plain parsing, no AI involved.
-2. **It reruns all 500 futures** with ₹400 leaving his account on the 26th, using the **same random draws** as the forecast without the movie. On the i3 that takes **0.053 s**. <!-- source: out/bench.json one_scenario_rollout_s -->
-3. **It counts.** 476 of 500 still make payday, which is 16 fewer. It costs him **2.7 days** of runway on his own money, and the chance of going broke becomes 5%, under his 10% line, so the verdict is **comfortable**. <!-- source: docs/images/ui_ask.png, sample data -->
+2. **It reruns all 500 futures** with ₹400 leaving his account on the 26th, using the **same random draws** as the forecast without the movie. On the i3 that takes **0.053 s**.
+3. **It counts.** 476 of 500 still make payday, which is 16 fewer. It costs him **2.7 days** of runway on his own money, and the chance of going broke becomes 5%, under his 10% line, so the verdict is **comfortable**.
 4. **It writes the checked answer**, a plain sentence with every number in it.
-5. **Gemma gets the answer with the numbers blanked out** and writes one line on top, about **3 seconds** after he hits Enter. <!-- source: out/chat/chat_eval_english.json -->
+5. **Gemma gets the answer with the numbers blanked out** and writes one line on top, about **3 seconds** after he hits Enter.
 6. **The line is checked** (no digits, no number words, no invented days, no disagreeing with the verdict). If it fails, it's dropped and he just sees the answer.
 
 Only steps 5 and 6 involve an LLM, and neither can change a number.
@@ -105,9 +99,9 @@ TabPFN is a foundation model for small tables: you hand it rows, it predicts, wi
 
 **1. Forecast the spread, not one number.** For each day ahead, TabPFN predicts **99 quantiles** of how much he might spend, from 14 numbers: balance (and balance per day left until payday), spending over the last 3 and 14 days, and the calendar (weekday, days since and until the allowance, festivals, exam weeks, bills due that day). "₹160 tomorrow" would be useless. The spread is the point: some days are ₹20 chai days, some are ₹600 birthday days.
 
-**2. Play out 500 futures.** Starting from today's balance, each future draws one day at a time from TabPFN's distribution, feeds the new balance back in, and keeps going until payday. When money gets low he spends less, and because balance is a feature, the simulation learned that too. A plan's **price in days** is the same 500 futures rerun with the same random draws, plus the plan: in the sample data, Saturday's movie costs 2.05 days of runway. <!-- source: web/public/demo/forecast.json plans -->
+**2. Play out 500 futures.** Starting from today's balance, each future draws one day at a time from TabPFN's distribution, feeds the new balance back in, and keeps going until payday. When money gets low he spends less, and because balance is a feature, the simulation learned that too. A plan's **price in days** is the same 500 futures rerun with the same random draws, plus the plan: in the sample data, Saturday's movie costs 2.05 days of runway.
 
-**Where "safe to spend" comes from.** The headline number on the dashboard is the same trick turned around. Rerun the 500 futures for ₹0, ₹100, ₹200… spent today, and find the most he can spend while the chance of going broke stays under his comfort line (10% by default, and he can change it). In the sample data that comes to ₹700. <!-- source: web/public/demo/forecast.json safe_curve -->
+**Where "safe to spend" comes from.** The headline number on the dashboard is the same trick turned around. Rerun the 500 futures for ₹0, ₹100, ₹200… spent today, and find the most he can spend while the chance of going broke stays under his comfort line (10% by default, and he can change it). In the sample data that comes to ₹700.
 
 **3. Spot the weird spends, with real odds.** For every recent spend, TabPFN, trained only on earlier spends, predicts what a spend *like this one* usually costs, given its category, the merchant's history, weekday, time of month and balance.
 
@@ -116,18 +110,18 @@ Here's the feature almost nobody touches: `predict(output_type="full")` returns 
 Here's that difference, on noise where the true answer is known:
 
 ![The TabPFN feature almost nobody uses](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig11_tail_demo.png)
-*Same TabPFN fit, read two ways. Read through 99 quantiles (gray), anything past the 99th is "impossible". Read through the full distribution (green), it keeps giving odds out to 1 in 100,000, close to the truth (dotted), though a little thin around 2 to 3 standard deviations.* <!-- source: scripts/make_post_figures.py fig_tail_demo, computed live -->
+*Same TabPFN fit, read two ways. Read through 99 quantiles (gray), anything past the 99th is "impossible". Read through the full distribution (green), it keeps giving odds out to 1 in 100,000, close to the truth (dotted), though a little thin around 2 to 3 standard deviations.*
 
 Odds are only worth showing if they're honest, so I checked:
 
 ![Are TabPFN's odds honest?](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig6_tails.png)
-*If its odds mean what they say, about 3% of ordinary spends should look "1 in 33" rare. It expected 5.8 and found 4; at the 10% level it expected 19.3 and found 21. Four back-to-back 45-day windows, each scored by a model fit only on what came before.* <!-- source: out/insights/anomaly_eval_sim.json tail_check -->
+*If its odds mean what they say, about 3% of ordinary spends should look "1 in 33" rare. It expected 5.8 and found 4; at the 10% level it expected 19.3 and found 21. Four back-to-back 45-day windows, each scored by a model fit only on what came before.*
 
-Does it catch real weirdness? Statements don't come labelled, so I **planted** some: copied the history, picked 5 ordinary recent spends, multiplied them by 3× or 5×, and asked three detectors to find them, with the same plants for each: 15 plants at 3× and 15 at 5×. No detector raised a single false alarm. <!-- source: out/insights/anomaly_eval_sim.json -->
+Does it catch real weirdness? Statements don't come labelled, so I **planted** some: copied the history, picked 5 ordinary recent spends, multiplied them by 3× or 5×, and asked three detectors to find them, with the same plants for each: 15 plants at 3× and 15 at 5×. No detector raised a single false alarm.
 
 At 5× everyone finds them. At 3×, TabPFN finds **13 of 15** against **11 of 15** for both rules. A 3× spend at a place he rarely goes, late in the month with little money left, only looks odd if you know *when* and *with how much* he usually spends like that, which is exactly what TabPFN gets as input. Fifteen plants is a small test, so read it as "at least as good, and better on the subtle ones".
 
-On the demo date it checked 96 spends and flagged **none**. The closest call was ₹90 at a roll stall, *about 1 in 213* for him, but under the ₹100 floor, because a ₹90 roll can't be what's sinking his month. I'd rather show an empty list and the closest calls than lower the bar until something turns up. <!-- source: web/public/demo/insights.json closest -->
+On the demo date it checked 96 spends and flagged **none**. The closest call was ₹90 at a roll stall, *about 1 in 213* for him, but under the ₹100 floor, because a ₹90 roll can't be what's sinking his month. I'd rather show an empty list and the closest calls than lower the bar until something turns up.
 
 **4. Sort the transactions.** Indian UPI narrations are chaos (`UPI-RAJU MAHATO-rajum12@ybl-SBIN0016209-6524...-Payment`: is Raju a friend or the auto driver?). Regex rules handle the obvious ones. TabPFN learns from the rows the rules were sure about and labels the leftovers it's confident on. Only what's still unclear goes to Gemma or to a "you decide" list. Results are in "What I got wrong", because they didn't go the way I hoped.
 
@@ -138,7 +132,7 @@ A chatbot that invents "you have ₹2,000 left" is worse than no chatbot. So the
 My first design had Gemma reword that whole answer, with each number swapped for a placeholder like `{f1}` that the app filled back in. I measured it on the 14 questions the chat suggests, and **Gemma 3 1B passed my checks 2 times out of 14**. It dropped numbers, invented a "Friday" nobody had mentioned, and strung placeholders into nonsense.
 
 ![Same Gemma, different job](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig7_chat.png)
-*Same model, same 14 questions. Only the job changed.* <!-- source: out/chat/chat_eval_english_v1_reword.json, out/chat/chat_eval_english.json -->
+*Same model, same 14 questions. Only the job changed.*
 
 Now Gemma does the friend part. It writes **one short reaction line**, and the checked answer follows word for word: *"Whoa there, buddy! Let's not be hasty, yeah? You can spend up to…"* Gemma never sees a number (they're blanked out of what it reads). Its line is dropped if it:
 - types a **digit** (the stream is cut on the spot) or a **number word** ("five hundred", "pachsho");
@@ -152,21 +146,19 @@ When a line is dropped, the answer underneath doesn't change.
 | **Gemma 3 1B** (default) | **13 / 14** | **3.2 s** | 4.1 s |
 | Gemma 3 4B | 12 / 14 | 11.0 s | 12.7 s |
 
-<!-- source: 1B out/chat/chat_eval_english.json; 4B out/chat/chat_eval_english_prev_fixtures.json (previous export of the same 14 questions; in the final run the app refused to load 4B with under 5 GB free) -->
-
 (The 4B row is from an earlier run of the same 14 questions. In the final run the laptop had under 5 GB free, so the app refused to load it, which is the memory guard doing its job.)
 
 On the i3, the bigger model isn't better at this job, just four times slower. The checks aren't perfect either: one accepted line told the student *"you've got a decent cushion"* about a balance Gemma never saw. No digit and no wrong number, but a judgement it had no right to make.
 
 ## Built for a budget laptop, not a GPU
 
-Subarna has an **HP laptop with an Intel Core i3**, so that's the class of machine I designed for. Every number in this post was measured on my own i3, an **Intel Core i3-1215U** (2 performance + 4 efficiency cores) with **integrated graphics, no GPU**, with only **3 to 5 GB of its 16 GB RAM free** while I measured. <!-- source: out/bench.json machine -->
+Subarna has an **HP laptop with an Intel Core i3**, so that's the class of machine I designed for. Every number in this post was measured on my own i3, an **Intel Core i3-1215U** (2 performance + 4 efficiency cores) with **integrated graphics, no GPU**, with only **3 to 5 GB of its 16 GB RAM free** while I measured.
 
 What that forced:
 
 - **Gemma 3 1B by default.** The 4B model only loads if **5 GB is actually free right now**. If even 1B doesn't fit, the app answers with the checked text and no AI line. It never pushes the laptop into swapping.
 - **One model, one request, out after 5 minutes idle.** Ollama runs with `OLLAMA_MAX_LOADED_MODELS=1` and `NUM_PARALLEL=1`, so a forgotten tab can't stack models in memory.
-- **TabPFN predicts once, not 500 × 30 times.** Predicting quantiles for every future and every day on a CPU would be slow. So TabPFN predicts on a grid of states (balance × recent spending × day) and the simulator interpolates. A full forecast (fit TabPFN, predict the grid, play out 500 futures) takes **47 s** on the i3, about once a day, with **1.0 GB** peak memory. After that, rerunning all 500 futures for a what-if takes **0.053 s**. Gemma 1B writes at **22 tokens a second**. Those numbers were measured with the engine and the Gemma server both running alongside. <!-- source: out/bench.json -->
+- **TabPFN predicts once, not 500 × 30 times.** Predicting quantiles for every future and every day on a CPU would be slow. So TabPFN predicts on a grid of states (balance × recent spending × day) and the simulator interpolates. A full forecast (fit TabPFN, predict the grid, play out 500 futures) takes **47 s** on the i3, about once a day, with **1.0 GB** peak memory. After that, rerunning all 500 futures for a what-if takes **0.053 s**. Gemma 1B writes at **22 tokens a second**. Those numbers were measured with the engine and the Gemma server both running alongside.
 - **What-ifs run in the browser.** The browser reruns the exact same simulation (tested draw-for-draw against the Python engine), so flipping a plan on and off is instant, with no server round trip.
 - **Short prompts.** On a CPU, reading the prompt is most of Gemma's wait, and gemma3 can't reuse a cached prefix across questions. So the prompt is a few lines: **3.2 s to the first word** on the i3.
 
@@ -188,24 +180,24 @@ Across the simulated year (10 complete months, 138 evaluated days), five months 
 Here's every month at once, warts included:
 
 ![Every month, replayed](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig9_months.png)
-*Nine months of the simulated year (the first had only one evaluated day). January was flagged 27 days before the money ran out. The February miss is the interesting one: the money ran out on the 2nd, the very first day of that month's replay, so there was no earlier day to warn on.* <!-- source: web/public/demo/replay.json -->
+*Nine months of the simulated year (the first had only one evaluated day). January was flagged 27 days before the money ran out. The February miss is the interesting one: the money ran out on the 2nd, the very first day of that month's replay, so there was no earlier day to warn on.*
 
 **One month it never saw.** The synthetic statement runs past today, so I cut it at 3 October and kept the rest of the month hidden. On the morning of the 4th, with ₹48,606 in the account and payday 24 days away, Broke Date said **423 of 500 futures make it**, a 15% chance of running out, which is over the 10% comfort line. So it said **nothing was safe to spend** that day, and that at most ₹1,080 could go without making things noticeably worse.
 
 ![A held-out month](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig12_heldout.png)
-*The forecast from 4 October (green) against the rest of the month, which the app never saw (black). He made it, with ₹649 left on the morning of payday. Synthetic statement.* <!-- source: out/forecast/subarna_syn.json, data/subarna_syn/heldout.csv -->
+*The forecast from 4 October (green) against the rest of the month, which the app never saw (black). He made it, with ₹649 left on the morning of payday. Synthetic statement.*
 
 That's one month, so it proves nothing on its own. But it's the kind of answer I wanted: not "you're fine" and not "you're doomed", but "this one is close, don't add anything", about a month that then came down to ₹649.
 
 **Does it mean what it says?** When it says 30%, does it happen 30% of the time?
 
 ![Calibration](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig3_calibration.png)
-*Good at the extremes, too timid in the middle. When it said ~33%, the month ran out 79% of the time. The app shows this chart next to the time machine.* <!-- source: web/public/demo/replay.json -->
+*Good at the extremes, too timid in the middle. When it said ~33%, the month ran out 79% of the time. The app shows this chart next to the time machine.*
 
 **Against simple methods:**
 
 ![Brier scores](https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images/fig4_brier.png)
-*Error on "will I go broke before payday?" (lower is better). Simulated student.* <!-- source: out/backtest/sim/summary.json -->
+*Error on "will I go broke before payday?" (lower is better). Simulated student.*
 
 Broke Date's error was **0.207**, against **0.441** for "keep spending like the last 14 days", **0.340** for "copy last month", and **0.248** for LightGBM inside the same simulator.
 
@@ -222,19 +214,17 @@ Now the honest part. **By the rules I set myself, those differences aren't signi
 | Rules + Gemma | 82.3% | 0 |
 | Rules + TabPFN + Gemma | 82.3% | 0 |
 
-<!-- source: out/labels/sim.json (brokedate eval-labels, SIM) -->
-
 The 114 leftovers are almost all UPI payments to people like "BABLU SK", who in this student's life are auto and toto drivers. The rules never labelled a single payment to a person as transport, so there was nothing to learn it from, and TabPFN never got sure enough to clear its 60% bar. **It knew it didn't know.** Gemma labelled all 114 confidently and got 13 right. So in the app, a payment to a person goes to "you decide" once, and every later payment to them is remembered.
 
 **TabPFN v2 caps out at 10 categories.** My student has 14. The categorizer crashed on its first real run, and I only found out because the eval logged the error instead of hiding it. Now TabPFN sees the 9 most common plus an "other" bucket it never assigns.
 
-**TabPFN's embeddings didn't find better look-alike months.** I tried `get_embeddings()` to answer "which past month does this one feel like?". The month it picked ended the same way as this month **46%** of the time over 119 backtest days, against **60.5%** for my simple balance-curve match and **52%** for always guessing the same answer. Worse than guessing. Its embeddings are shaped for predicting tomorrow's spend, not how a whole month ends. It's not in the app. <!-- source: out/experiments/similar_month_embeddings_sim.json -->
+**TabPFN's embeddings didn't find better look-alike months.** I tried `get_embeddings()` to answer "which past month does this one feel like?". The month it picked ended the same way as this month **46%** of the time over 119 backtest days, against **60.5%** for my simple balance-curve match and **52%** for always guessing the same answer. Worse than guessing. Its embeddings are shaped for predicting tomorrow's spend, not how a whole month ends. It's not in the app.
 
-**My festival comparison was comparing against nothing.** The Diwali heads-up said last year's festival days cost the simulated student ₹920 *more than a normal stretch*. Rebuilding on a second dataset, I noticed "normal" was ₹0. The baseline was the 60 days before the festival, but the statement only began 16 days before it, and the missing days were being counted as days he spent nothing. Counting only days that are actually in the statement, normal is ₹320, so the honest number is **₹600 more**. The app now refuses to compare at all when it has fewer than 14 real days to compare against. <!-- source: web/public/demo/forecast.json context.upcoming; engine/tests/test_insights.py -->
+**My festival comparison was comparing against nothing.** The Diwali heads-up said last year's festival days cost the simulated student ₹920 *more than a normal stretch*. Rebuilding on a second dataset, I noticed "normal" was ₹0. The baseline was the 60 days before the festival, but the statement only began 16 days before it, and the missing days were being counted as days he spent nothing. Counting only days that are actually in the statement, normal is ₹320, so the honest number is **₹600 more**. The app now refuses to compare at all when it has fewer than 14 real days to compare against.
 
 ## Five things TabPFN taught me
 
-1. **Predicting is the expensive part, not fitting.** On the i3, fitting the spend model took 9.0 s, but predicting quantiles for 2,280 grid states took 28.3 s. So I predict once on a grid and interpolate, instead of asking TabPFN 500 × 12 questions. <!-- source: out/bench.json fit_spend_s, lattice_s, lattice_rows -->
+1. **Predicting is the expensive part, not fitting.** On the i3, fitting the spend model took 9.0 s, but predicting quantiles for 2,280 grid states took 28.3 s. So I predict once on a grid and interpolate, instead of asking TabPFN 500 × 12 questions.
 2. **Quantiles hide the tails.** `output_type="quantiles"` is what everyone uses, and it can't tell 1-in-100 from 1-in-10,000. `output_type="full"` hands back the distribution itself, tails included. It's the most useful line of code in the project.
 3. **It's allowed to say "I don't know", and you should let it.** Faced with transactions unlike anything it had seen, TabPFN stayed under my 60% bar on every one. A small LLM, asked the same question, was confidently wrong on 101 of 114.
 4. **Know the limits before your first real run.** TabPFN v2's classifier head has 10 slots. My student has 14 categories. The error message is clear once you hit it, but I'd rather have read the validation code first.
@@ -245,7 +235,7 @@ The 114 leftovers are almost all UPI payments to people like "BABLU SK", who in 
 - The test suite runs with **network sockets blocked** except localhost.
 - The built app ships a **Content-Security-Policy** that only allows connections to itself and the engine on `127.0.0.1`, so the browser itself refuses anything else. The build also **fails** if any external URL sneaks into the bundle. It caught one: the logo library was bundling Google's brand-guideline links, so I now copy in only the SVG path.
 - The app shows its **own receipt**: a sidebar card reads the browser's request log and says how many requests left the laptop. It says 0.
-- The script that took every screenshot in this post logged every request too: **zero went anywhere but 127.0.0.1**. <!-- source: docs/images/screenshots_requests.json -->
+- The script that took every screenshot in this post logged every request too: **zero went anywhere but 127.0.0.1**.
 
 ## Limitations
 
