@@ -71,6 +71,17 @@ pnpm run test
 The built `dist/index.html` now carries a Content-Security-Policy meta tag (connect-src 'self' + 127.0.0.1:8787).
 Open the preview and confirm DevTools → Console shows no CSP violations.
 
+## 4b. Post figures, screenshots, bench (all regenerated from files; re-run after any new export)
+
+```powershell
+uv --project engine run --no-sync python scripts/make_post_figures.py          # docs/images/fig*.png
+cd web; node scripts/screenshots.mjs; cd ..                                     # docs/images/ui_*.png + requests log
+uv --project engine run --no-sync brokedate bench -s sim --as-of 2026-09-20 --label "i3-1215U laptop"   # out/bench.json
+uv --project engine run --no-sync python scripts/experiment_similar_embeddings.py   # negative result file
+```
+
+Images are referenced from raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images, so push before publishing.
+
 ## 5. Video (the real demo: airplane mode)
 
 Follow docs/VIDEO_SCRIPT.md. Turn Wi-Fi OFF on camera first. Show: Overview → Ask "Can I afford a ₹400 movie on

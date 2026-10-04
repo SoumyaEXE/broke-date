@@ -93,7 +93,7 @@ export interface UnusualSpend {
 export interface TailCheck { n: number; levels: { level: number; expected: number; observed: number }[] }
 export interface Insights {
   unusual: { as_of: string; window_days: number; n_checked: number; n_train: number; model: string; note: string | null;
-    flag_percentile: number; unusual: UnusualSpend[]; tail_check?: TailCheck };
+    flag_percentile: number; unusual: UnusualSpend[]; tail_check?: TailCheck; closest?: UnusualSpend[] };
 }
 export interface LabelVariant { accuracy: number | null; needs_review: number; counts: Record<string, number>; gemma_error: string | null; tabpfn_error: string | null }
 export interface LabelsReport { subject: string; n_rows: number; accuracy_overall: number | null; compare?: Record<string, LabelVariant>; gemma_model?: string | null }

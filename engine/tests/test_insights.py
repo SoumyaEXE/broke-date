@@ -55,6 +55,8 @@ def test_planted_spend_is_flagged_and_normal_ones_mostly_are_not(sim_ledger):
     assert hit.percentile >= 0.97 and hit.amount_paise == 200000 and hit.usual_paise < 20000
     assert hit.chance <= 0.03 and hit.one_in >= 33
     assert rep.tail_check["n"] == rep.n_checked and [lv["level"] for lv in rep.tail_check["levels"]] == [0.03, 0.10]
+    assert len(rep.closest) <= 3 and not {c.txn_id for c in rep.closest} & set(ids)
+    assert [c.chance for c in rep.closest] == sorted(c.chance for c in rep.closest)
     assert len(rep.unusual) <= max(3, 0.1 * rep.n_checked)  # not crying wolf
     assert rep.n_train >= MIN_TRAIN and rep.n_checked > 0
 

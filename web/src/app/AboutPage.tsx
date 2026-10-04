@@ -28,7 +28,7 @@ export function AboutPage({ data }: { data: ForecastResponse | null }) {
   ];
   const rules = [
     { icon: ShieldCheck, name: "Gemma never writes a number", value: "Validated" },
-    { icon: GitBranch, name: "Evaluation rules frozen first", value: "In git" },
+    { icon: GitBranch, name: "Evaluation rules written down first", value: "PREREGISTRATION.md" },
     { icon: CheckCircle, name: "Every number opens its evidence", value: "Tap it" },
     { icon: Path, name: "Same seed, same answer", value: data ? `seed ${data.seed}` : "Fixed" },
   ];

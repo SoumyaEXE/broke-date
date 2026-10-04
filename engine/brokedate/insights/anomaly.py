@@ -57,12 +57,13 @@ class AnomalyReport:
     model: str = ""
     note: str | None = None
     tail_check: dict[str, Any] = field(default_factory=dict)
+    closest: list[Unusual] = field(default_factory=list)  # rarest spends that were NOT flagged, so "nothing unusual" shows its work
 
     def to_dict(self) -> dict[str, Any]:
         return {"as_of": self.as_of, "window_days": self.window_days, "n_checked": self.n_checked,
                 "n_train": self.n_train, "model": self.model, "note": self.note,
                 "flag_percentile": FLAG_PERCENTILE, "tail_check": self.tail_check,
-                "unusual": [u.__dict__ for u in self.unusual]}
+                "unusual": [u.__dict__ for u in self.unusual], "closest": [u.__dict__ for u in self.closest]}
 
 
 def spend_features(led: Ledger) -> pd.DataFrame:
@@ -113,9 +114,8 @@ def find_unusual(led: Ledger, as_of: date, make_model: Callable[[], DistRegresso
         q = Q[i]
         p = float(chance[i])
         amount = int(row["amount_paise"])
-        if p > 1 - FLAG_PERCENTILE or amount < MIN_FLAG_RUPEES * 100:
-            continue
-        rep.unusual.append(Unusual(
+        flagged = p <= 1 - FLAG_PERCENTILE and amount >= MIN_FLAG_RUPEES * 100
+        (rep.unusual if flagged else rep.closest).append(Unusual(
             txn_id=str(row["id"]), date=str(row["date"]), merchant=str(row["merchant"] or row["merchant_key"]).title(),
             category=row["category_"], amount_paise=amount,
             usual_paise=int(round(np.expm1(np.interp(0.5, QS, q)) * 100)),
@@ -124,6 +124,7 @@ def find_unusual(led: Ledger, as_of: date, make_model: Callable[[], DistRegresso
             chance=round(p, 6), one_in=one_in(p),
         ))
     rep.unusual.sort(key=lambda u: (u.chance, -u.amount_paise))
+    rep.closest = sorted(rep.closest, key=lambda u: (u.chance, -u.amount_paise))[:3]
     return rep
 
 

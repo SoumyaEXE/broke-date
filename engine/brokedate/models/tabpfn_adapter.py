@@ -105,6 +105,16 @@ class TabPFNDist(DistRegressor):
                 out.append(1.0 - cdf.detach().cpu().numpy().reshape(-1))
         return np.clip(np.concatenate(out), 0.0, 1.0) if out else np.zeros(0)
 
+    def embed(self, X: np.ndarray) -> np.ndarray:
+        """TabPFN's own representation of each row (get_embeddings, test tokens), averaged over estimators.
+        Used only by scripts/experiment_similar_embeddings.py (a negative result: not used by the app)."""
+        if self._m is None:
+            raise RuntimeError("fit first")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            E = np.asarray(self._m.get_embeddings(np.asarray(X, dtype=np.float32), data_source="test"), dtype=float)
+        return E.mean(axis=0) if E.ndim == 3 else E
+
 
 class LGBMQuantileDist(DistRegressor):
     """B3 baseline: one LightGBM per quantile, fixed (pre-registered) hyperparameters."""

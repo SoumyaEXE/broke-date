@@ -33,7 +33,13 @@ export function InsightsPage({ data, provider }: { data: ForecastResponse; provi
         <Panel title="Unusual spends" icon={WarningCircle} flush
           sub="TabPFN learned what each kind of spend normally costs you, and how rare a bigger one is">
           {ins === undefined ? <Skeleton /> : !u ? <Empty>Not available yet.</Empty> : u.note ? <Empty>{u.note}.</Empty> : u.unusual.length === 0 ? (
-            <Empty>Nothing unusual in the last {Math.round(u.window_days / 7)} weeks. TabPFN checked {u.n_checked} spends.</Empty>
+            <>
+              <Empty>Nothing unusual in the last {Math.round(u.window_days / 7)} weeks. TabPFN checked {u.n_checked} spends.</Empty>
+              {!!u.closest?.length && <>
+                <p className="px-4 pt-1 pb-1 text-caption-1-medium text-text-tertiary">Closest calls: the rarest of them, and why they weren't flagged</p>
+                <Rows>{u.closest.map((s) => <UnusualRow key={s.txn_id} s={s} near />)}</Rows>
+              </>}
+            </>
           ) : (
             <Rows>{u.unusual.slice(0, 8).map((s) => <UnusualRow key={s.txn_id} s={s} />)}</Rows>
           )}
@@ -85,12 +91,12 @@ export function InsightsPage({ data, provider }: { data: ForecastResponse; provi
   );
 }
 
-function UnusualRow({ s }: { s: UnusualSpend }) {
+function UnusualRow({ s, near }: { s: UnusualSpend; near?: boolean }) {
   const max = Math.max(s.amount_paise, s.usual_hi_paise) * 1.1 || 1;
   const x = (v: number) => `${Math.min(100, (v / max) * 100)}%`;
   return (
     <Row>
-      <Tile icon={catIcon(s.category)} tone="orange" />
+      <Tile icon={catIcon(s.category)} tone={near ? "neutral" : "orange"} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-3">
           <p className="truncate text-body-medium text-text-primary">{s.merchant}</p>
@@ -99,12 +105,12 @@ function UnusualRow({ s }: { s: UnusualSpend }) {
         <div className="mt-2 flex items-center gap-3">
           <div className="relative h-2 flex-1 rounded-full bg-background-secondary-default" aria-hidden>
             <span className="absolute inset-y-0 rounded-full bg-accent-200" style={{ left: x(Math.min(s.usual_paise, s.usual_hi_paise)), width: `calc(${x(s.usual_hi_paise)} - ${x(s.usual_paise)})` }} />
-            <span className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-orange-500 shadow-card" style={{ left: x(s.amount_paise) }} />
+            <span className={cx("absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-card", near ? "bg-text-tertiary" : "bg-orange-500")} style={{ left: x(s.amount_paise) }} />
           </div>
           <span className="w-28 shrink-0 text-end text-caption-1-medium text-text-tertiary tabular-nums">usual {inr0(s.usual_paise)}–{inr0(s.usual_hi_paise)}</span>
         </div>
         <p className="mt-1 text-caption-1-medium text-text-tertiary">
-          {catLabel(s.category)} · {shortDate(s.date)} · {s.one_in ? `${oneIn(s.one_in)} spends like this` : `bigger than ${pct(s.percentile)} of what TabPFN expected`}{s.times_seen === 0 ? " · first time here" : ""}
+          {catLabel(s.category)} · {shortDate(s.date)} · {s.one_in ? `${oneIn(s.one_in)} spends like this` : `bigger than ${pct(s.percentile)} of what TabPFN expected`}{near ? (s.amount_paise < 10000 ? " · under ₹100, never flagged" : " · flagged only at 1 in 33 or rarer") : ""}{s.times_seen === 0 ? " · first time here" : ""}
         </p>
       </div>
     </Row>

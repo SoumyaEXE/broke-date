@@ -1,0 +1,5 @@
+{
+  "base": "http://127.0.0.1:4173/",
+  "pages": 7,
+  "outside_requests": []
+}

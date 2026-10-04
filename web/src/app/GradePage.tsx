@@ -17,22 +17,26 @@ const NAMES: Record<string, [string, string]> = {
   B3: ["LightGBM", "a standard ML model in the same simulator"],
 };
 const f = (c: CI | null | undefined, d = 3) => (c && Number.isFinite(c.point) ? c.point.toFixed(d) : "–");
+const BASELINE: Record<string, string> = { B1: "Pace rule", B2: "Last month", B3: "LightGBM" };
+const coverageGap = (p: number) => { const d = Math.round((p - 0.8) * 100); return d === 0 ? "on target" : d < 0 ? `${-d} pts short` : `${d} pts over`; };
 const ci = (c: CI | null | undefined, d = 3) => (c && Number.isFinite(c.lo) ? `${c.lo.toFixed(d)} – ${c.hi.toFixed(d)}` : "");
 
 export function GradePage({ provider }: { provider: DataProvider }) {
   const [s, setS] = useState<BacktestSummary | null | undefined>(undefined);
   useEffect(() => { void provider.backtest().then(setS); }, [provider]);
   if (s === undefined) return <div className="h-64 animate-pulse rounded-2xl bg-background-secondary-default" />;
-  if (s === null) return <Panel title="Not graded yet" icon={SealCheck}><p className="text-body-regular text-text-secondary">[[pending: backtest]] No evaluation has run on this data yet.</p></Panel>;
+  if (s === null) return <Panel title="Not graded yet" icon={SealCheck}><p className="text-body-regular text-text-secondary">No evaluation has run on this data yet.</p></Panel>;
 
   const m1 = s.models.M1;
   const sim = s.meta?.subject === "sim";
   const baselines = ["B1", "B2", "B3"].filter((k) => s.models[k]);
   const best = baselines.sort((a, b) => s.models[a].brier.point - s.models[b].brier.point)[0];
+  // months warned at least a day before running out (a same-day warning is not counted as notice)
+  const ahead = m1.lead_time.lead_days.filter((d) => d > 0).length;
   const stats: Stat[] = [
-    { icon: duo(Crosshair), tone: "purple", label: "Prediction error (Brier)", value: f(m1.brier), caption: `${best} ${f(s.models[best].brier)}`, delta: m1.brier.point < s.models[best].brier.point ? "lower" : "higher", deltaColor: m1.brier.point < s.models[best].brier.point ? "lime" : "rose", hint: "Mean squared error of the predicted chance of going broke before payday, across every evaluated day." },
-    { icon: duo(Timer), tone: "orange", label: "Warned ahead by", value: Number.isFinite(m1.lead_time.mean_lead) ? `${m1.lead_time.mean_lead.toFixed(1)} days` : "–", caption: `${m1.lead_time.n_broke_cycles} broke months`, delta: `${m1.lead_time.n_no_warning} missed`, deltaColor: m1.lead_time.n_no_warning === 0 ? "lime" : "rose", hint: "In months that went broke: days between the first warning (50%+ chance) and the actual broke day." },
-    { icon: duo(Scales), tone: "blue", label: "Ranges that held", value: m1.coverage80 ? `${Math.round(m1.coverage80.point * 100)}%` : "–", caption: "aim: 80%", delta: m1.coverage80 ? `${Math.round((m1.coverage80.point - 0.8) * 100)} pts` : "–", deltaColor: m1.coverage80 && Math.abs(m1.coverage80.point - 0.8) <= 0.07 ? "lime" : "rose", hint: "How often the real end-of-month balance landed inside the claimed 80% range." },
+    { icon: duo(Crosshair), tone: "purple", label: "Prediction error (Brier)", value: f(m1.brier), caption: `${BASELINE[best] ?? best} ${f(s.models[best].brier)}`, delta: m1.brier.point < s.models[best].brier.point ? "lower" : "higher", deltaColor: m1.brier.point < s.models[best].brier.point ? "lime" : "rose", hint: "Mean squared error of the predicted chance of going broke before payday, across every evaluated day." },
+    { icon: duo(Timer), tone: "orange", label: "Warned ahead by", value: Number.isFinite(m1.lead_time.mean_lead) ? `${m1.lead_time.mean_lead.toFixed(1)} days` : "–", caption: `${m1.lead_time.n_broke_cycles} broke months`, delta: `${ahead} of ${m1.lead_time.n_broke_cycles} ahead`, deltaColor: ahead === m1.lead_time.n_broke_cycles ? "lime" : "neutral", hint: "In months that went broke: days between the first warning (50%+ chance) and the actual broke day." },
+    { icon: duo(Scales), tone: "blue", label: "Ranges that held", value: m1.coverage80 ? `${Math.round(m1.coverage80.point * 100)}%` : "–", caption: "aim: 80%", delta: m1.coverage80 ? coverageGap(m1.coverage80.point) : "–", deltaColor: m1.coverage80 && Math.abs(m1.coverage80.point - 0.8) <= 0.02 ? "lime" : "neutral", hint: "How often the real end-of-month balance landed inside the claimed 80% range." },
     { icon: duo(ChartBar), tone: "emerald", label: "Days tested", value: `${s.n_origins}`, caption: `${s.n_cycles} months`, delta: "walk-forward", deltaColor: "neutral", hint: "Every 2nd day with 60+ days of history; each model fit only on days before it." },
   ];
 
