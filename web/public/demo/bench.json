@@ -1,0 +1,31 @@
+[
+  {
+    "label": "i3-1215U laptop",
+    "when": "2026-10-04T03:36:27+00:00",
+    "machine": {
+      "cpu": "12th Gen Intel(R) Core(TM) i3-1215U",
+      "logical_cores": 8,
+      "ram_gb": 15.7,
+      "os": "Windows 11",
+      "python": "3.12.15"
+    },
+    "subject": "sim",
+    "as_of": "2026-09-20",
+    "n_futures": 500,
+    "tabpfn": "v2 n_estimators=2",
+    "torch_threads": 6,
+    "fit_spend_s": 8.98,
+    "lattice_s": 28.25,
+    "lattice_rows": 2280,
+    "direct_model_s": 4.35,
+    "prepare_s": 42.47,
+    "outputs_s": 4.55,
+    "full_forecast_s": 47.02,
+    "one_scenario_rollout_s": 0.053,
+    "horizon_days": 12,
+    "safe_to_spend_search_iterations": 9,
+    "peak_rss_mb": 1024.7,
+    "gemma_tokens_per_s": 22.2,
+    "gemma_model": "gemma3:1b"
+  }
+]

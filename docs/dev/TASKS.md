@@ -107,8 +107,8 @@ rule changed after the prereg commit (or a dated deviation entry exists).
 
 ## M12. Benchmarks, video, post (Sun afternoon, 2.5 h)
 - [ ] `make bench` on both laptops (+ 8 GB cap run) -> table.
-- [ ] Record video per `docs/VIDEO_SCRIPT.md`; capture the eaten-calendar GIF.
-- [ ] `make post-numbers`; fill `docs/POST_TEMPLATE.md`; Subarna reviews; publish.
+- [ ] Record video per `docs/submission/VIDEO_SCRIPT.md`; capture the eaten-calendar GIF.
+- [ ] `make post-numbers`; fill `docs/submission/POST_DRAFT.md`; Subarna reviews; publish.
 **AC:** SPEC section 23 checklist fully ticked. Post live with categories listed.
 
 ## Mon until 12:29 PM IST: buffer only. Do not plan work here.

@@ -187,6 +187,13 @@ def test_festival_heads_up_uses_last_years_real_spend(sim_ledger):
     durga = next(u for u in up if "Durga" in u["name"])
     assert durga["days_until"] == 14
     assert durga["last"] is None  # 2025 Puja started before the statement does: no partial, made-up comparison
+    # the "ordinary stretch" is measured only on days inside the statement: a day before it starts is unknown, not Rs 0
+    daily = spend.groupby("date")["amount_paise"].sum()
+    base = [d for d in (a - timedelta(days=2 + i) for i in range(1, 61)) if d >= led.first_day]
+    assert diwali["last"]["baseline_days"] == len(base) >= 14
+    usual = int(round(float(np.median([int(daily.get(d, 0)) for d in base])) * diwali["last"]["days"]))
+    assert diwali["last"]["usual_paise"] == usual > 0
+    assert diwali["last"]["extra_paise"] == diwali["last"]["spent_paise"] - usual
 
 
 def test_anomaly_eval_scores_every_detector_on_the_same_plants(sim_ledger):

@@ -73,7 +73,7 @@ export function FuturesPage({ data }: { data: ForecastResponse; prev: ForecastRe
           </Rows>
         </Panel>
         <div className="flex min-w-0 flex-col gap-4">
-          <Panel title="Where you land on payday" sub="Balance the day before your allowance, across every simulated month" icon={ChartBar} className="flex-1" bodyClassName="flex flex-col">
+          <Panel title="Where you land on payday" sub="Balance the day before payday, across every simulated month" icon={ChartBar} className="flex-1" bodyClassName="flex flex-col">
             <PaydayHistogram data={data} />
           </Panel>
           {data.similar_month && (

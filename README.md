@@ -109,6 +109,22 @@ every number the write-up uses.
   spending is replaced), not eliminated.
 - "Offline" means after the one-time downloads above.
 
+## Repository layout
+
+```text
+engine/     Python engine: ingest, TabPFN forecast and simulation, insights, evaluation, API (127.0.0.1 only)
+web/        React dashboard; `pnpm run build:demo` makes the no-network sample preview
+scripts/    simulate_statement.py (simulated student), build_subarna_statement.py (synthetic statement),
+            make_post_figures.py (every chart in the write-up), dev.ps1 / env.ps1 (Windows task runner)
+data/       sim/ and subarna_syn/: synthetic data only. Real statements never enter the repo
+config/     example configuration
+docs/       SPEC.md (design), PREREGISTRATION.md (evaluation rules), NOTES.md (verified API notes)
+  images/       the 12 images the write-up uses, rebuilt by the scripts above
+  submission/   the write-up draft, video script, image list, runbook
+  dev/          the build plan used during the hackathon
+out/        results the engine writes (git-ignored)
+```
+
 ## Licences
 
 The code is MIT. The TabPFN weights are under Prior Labs' licence, which is **non-commercial**; this is a

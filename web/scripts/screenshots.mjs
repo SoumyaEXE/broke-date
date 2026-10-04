@@ -1,4 +1,4 @@
-// UI screenshots for the post, taken from the built sample-data preview (simulated student, no engine, no network).
+// The two UI screenshots the post uses (overview, ask), taken from the built sample-data preview (simulated student, no engine, no network).
 //   pnpm run build:demo && node scripts/screenshots.mjs        (serves dist/ on 127.0.0.1:4173 itself)
 import { spawn } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -38,17 +38,9 @@ try {
     await box.press("Enter");
     await sleep(6000); // the checked answer types out word by word
   });
-  await shot("futures", "futures");
-  await shot("plans", "plans");
-  await shot("insights", "insights");
-  await shot("grade", "grade", async () => {
-    await page.getByText("Time machine").first().scrollIntoViewIfNeeded();
-    await sleep(1200);
-  });
-  await shot("about", "about");
   await browser.close();
   console.log(outside.length ? `REQUESTS THAT LEFT THE LAPTOP: ${outside.join(", ")}` : "requests outside 127.0.0.1: 0");
-  writeFileSync(`${OUT}screenshots_requests.json`, JSON.stringify({ base: BASE, pages: 7, outside_requests: outside }, null, 2));
+  writeFileSync(`${OUT}screenshots_requests.json`, JSON.stringify({ base: BASE, pages: 2, outside_requests: outside }, null, 2));
 } finally {
   server.kill();
   if (process.platform === "win32") spawn("taskkill", ["/pid", String(server.pid), "/T", "/F"], { stdio: "ignore" });

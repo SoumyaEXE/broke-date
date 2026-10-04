@@ -56,30 +56,33 @@ function kpis(d: ForecastResponse, prev: ForecastResponse | null): Stat[] {
   const spare = d.runway_days_mean - left;
   return [
     {
-      icon: duo(Wallet), tone: "purple", label: "Safe to spend today",
+      // already over the risk line: nothing is "safe", so say that, and show what adds at most 2 points instead
+      icon: duo(Wallet), tone: "purple", label: d.nothing_safe ? "Nothing is safe today" : "Safe to spend today",
       value: inr(d.nothing_safe ? (d.marginal_spend_paise ?? 0) : d.safe_to_spend_paise),
-      caption: d.nothing_safe ? "Small extra only" : `Risk cap ${pct(d.risk_tolerance)}`,
+      caption: d.nothing_safe ? "adds ≤ 2 points" : `Risk cap ${pct(d.risk_tolerance)}`,
       delta: `${pct(d.risk_now)} risk`, deltaColor: d.risk_now <= d.risk_tolerance ? "lime" : "rose",
-      hint: "The largest extra spend today that keeps the share of simulated futures going broke before payday at or below your risk setting. Found by bisection on the same 500 futures.",
+      hint: d.nothing_safe
+        ? `You are already above your ${pct(d.risk_tolerance)} risk line, so no extra spend is safe. This is the most you can spend today while adding at most 2 points to the chance of going broke before payday.`
+        : "The largest extra spend today that keeps the share of simulated futures going broke before payday at or below your risk setting. Found by bisection on the same 500 futures.",
     },
     {
       icon: duo(ChartLineUp), tone: "blue", label: "Futures that make it",
       value: `${d.n_make_it} / ${n}`, caption: madeDelta !== null ? "Since last edit" : `${n - d.n_make_it} go broke`,
       delta: madeDelta !== null ? `${madeDelta > 0 ? "+" : ""}${madeDelta}` : pct(d.p_make_it),
       deltaColor: madeDelta !== null ? (madeDelta > 0 ? "lime" : madeDelta < 0 ? "rose" : "neutral") : d.p_make_it >= 0.9 ? "lime" : "rose",
-      hint: "TabPFN simulated this many versions of the rest of your month from your own history. These stay above the broke line until your allowance lands.",
+      hint: "TabPFN simulated this many versions of the rest of your month from your own history. These stay above the broke line until payday.",
     },
     {
-      icon: duo(Hourglass), tone: "orange", label: "Allowance lands in",
+      icon: duo(Hourglass), tone: "orange", label: "Payday in",
       value: `${left} days`, caption: `${shortDate(d.next_anchor_date)}${d.next_anchor_known ? "" : " · predicted"}`,
       delta: d.broke_day ? `risk ${shortDate(d.broke_day.median)}` : "on track", deltaColor: d.broke_day ? "rose" : "lime",
-      hint: "When your next allowance is due, from the dates it arrived in past months.",
+      hint: "When your next payday is due, from the dates it arrived in past months.",
     },
     {
       icon: duo(Timer), tone: "emerald", label: "Your money alone lasts",
       value: days(d.runway_days_mean), caption: "Without top-ups",
       delta: `${spare >= 0 ? "+" : ""}${spare.toFixed(1)} d`, deltaColor: spare >= 0 ? "lime" : "rose",
-      hint: "Average over the futures of how many days your own money lasts with nobody helping out. The delta is the margin over the days left until your allowance.",
+      hint: "Average over the futures of how many days your own money lasts with nobody helping out. The delta is the margin over the days left until payday.",
     },
   ];
 }

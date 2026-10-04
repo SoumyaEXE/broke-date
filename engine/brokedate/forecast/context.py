@@ -102,10 +102,13 @@ def _base_name(name: str) -> str:
     return " / ".join(sorted(p.strip().lower() for p in name.split("/")))
 
 
+MIN_BASELINE_DAYS = 14  # fewer ordinary days than this inside the statement: no comparison is made
+
+
 def upcoming_festivals(led: Ledger, as_of: date, within_days: int = 60) -> list[dict[str, Any]]:
     """Festivals starting in the next `within_days` (or happening now), each with what the same festival cost last
     time it appears in the statement: spend in its window (plus two days of build-up) vs an ordinary stretch of the
-    same length (median daily spend of the 60 days before it). Measured from the ledger, never forecast."""
+    same length (median daily spend over ordinary days inside the statement). Measured, never forecast."""
     spend = led.txns[led.txns["is_spend"]]
     daily = spend.groupby("date")["amount_paise"].sum()
     out = []
@@ -120,9 +123,16 @@ def upcoming_festivals(led: Ledger, as_of: date, within_days: int = 60) -> list[
             win_start = x - timedelta(days=2)
             n_days = (y - win_start).days + 1
             spent = int(sum(int(daily.get(win_start + timedelta(days=i), 0)) for i in range(n_days)))
-            before = [int(daily.get(win_start - timedelta(days=i), 0)) for i in range(1, 61)]
-            usual = int(round(float(np.median(before)) * n_days)) if before else 0
+            # an ordinary stretch = days INSIDE the statement only (a day before it starts is unknown, not Rs 0):
+            # up to 60 days before the festival window, or, when the statement starts too close to it, after it
+            before = [win_start - timedelta(days=i) for i in range(1, 61)]
+            after = [y + timedelta(days=i) for i in range(1, 61)]
+            base = [d for d in before if d >= led.first_day]
+            if len(base) < MIN_BASELINE_DAYS:
+                base = [d for d in after if d < as_of]
+            usual = (int(round(float(np.median([int(daily.get(d, 0)) for d in base])) * n_days))
+                     if len(base) >= MIN_BASELINE_DAYS else None)
             last = {"start": str(x), "end": str(y), "days": n_days, "spent_paise": spent, "usual_paise": usual,
-                    "extra_paise": spent - usual}
+                    "extra_paise": None if usual is None else spent - usual, "baseline_days": len(base)}
         out.append({"name": name, "start": str(a), "end": str(b), "days_until": max(0, (a - as_of).days), "last": last})
     return out

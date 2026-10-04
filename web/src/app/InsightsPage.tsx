@@ -70,7 +70,7 @@ export function InsightsPage({ data, provider }: { data: ForecastResponse; provi
                       {f.last ? (
                         <p className="mt-1.5 text-body-2-medium text-text-secondary">
                           Last time you spent <span className="text-text-primary tabular-nums">{inr(f.last.spent_paise)}</span> in {f.last.days} days
-                          {f.last.extra_paise > 0 && <>, <span className="text-status-orange-text tabular-nums">{inr0(f.last.extra_paise)} more</span> than a normal stretch</>}.
+                          {f.last.extra_paise != null && f.last.extra_paise > 0 && <>, <span className="text-status-orange-text tabular-nums">{inr0(f.last.extra_paise)} more</span> than a normal stretch</>}.
                         </p>
                       ) : <p className="mt-1.5 text-body-2-medium text-text-tertiary">Not in your statement yet, so no comparison.</p>}
                     </div>

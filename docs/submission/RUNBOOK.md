@@ -1,4 +1,4 @@
-# Morning runbook (submission day, deadline Mon 2026-10-05 06:59 UTC = 12:29 IST)
+# Runbook (submission day, deadline Mon 2026-10-05 06:59 UTC = 12:29 IST)
 
 Run in order, one PowerShell window per long-running server. Everything stays on D:. Close Roblox and other heavy
 apps first: TabPFN + Gemma want ~3 GB free.
@@ -59,7 +59,7 @@ uv --project engine run --no-sync brokedate backtest -s subarna          # ~45 m
 uv --project engine run --no-sync brokedate share-card -s subarna --name Subarna   # relative-only, safe to quote
 ```
 
-4. Do docs/FRIEND_INTERVIEW.md with him (10 min). His words + the share card replace the `[[...]]` in "What I Built".
+4. Do docs/submission/FRIEND_INTERVIEW.md with him (10 min). His words + the share card replace the `[[...]]` in "What I Built".
 
 ## 4. Web build + checks
 
@@ -71,26 +71,26 @@ pnpm run test
 The built `dist/index.html` now carries a Content-Security-Policy meta tag (connect-src 'self' + 127.0.0.1:8787).
 Open the preview and confirm DevTools → Console shows no CSP violations.
 
-## 4b. Post figures, screenshots, bench (all regenerated from files; re-run after any new export)
+## 4b. Post images and bench (all rebuilt from files; re-run after any new export)
 
 ```powershell
-uv --project engine run --no-sync python scripts/make_post_figures.py          # docs/images/fig*.png
-cd web; node scripts/screenshots.mjs; cd ..                                     # docs/images/ui_*.png + requests log
+uv --project engine run --no-sync python scripts/make_post_figures.py          # docs/images: cover + 9 charts
+cd web; node scripts/screenshots.mjs; cd ..                                     # docs/images: 2 UI shots + requests log
 uv --project engine run --no-sync brokedate bench -s sim --as-of 2026-09-20 --label "i3-1215U laptop"   # out/bench.json
-uv --project engine run --no-sync python scripts/experiment_similar_embeddings.py   # negative result file
+uv --project engine run --no-sync python scripts/build_subarna_statement.py     # data/subarna_syn (synthetic statement)
 ```
 
-Images are referenced from raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/images, so push before publishing.
+The post's 12 images and their upload order are listed in docs/submission/IMAGES.md.
 
 ## 5. Video (the real demo: airplane mode)
 
-Follow docs/VIDEO_SCRIPT.md. Turn Wi-Fi OFF on camera first. Show: Overview → Ask "Can I afford a ₹400 movie on
+Follow docs/submission/VIDEO_SCRIPT.md. Turn Wi-Fi OFF on camera first. Show: Overview → Ask "Can I afford a ₹400 movie on
 Saturday?" (Gemma streaming) → "turn on the movie" (Undo) → Insights (unusual spends, Puja heads-up) → Plans
 timeline → How good am I?
 
 ## 6. Post
 
-`docs/POST_DRAFT.md` → fill every `[[...]]` from post-numbers and the video → read aloud once → publish on DEV with
+`docs/submission/POST_DRAFT.md` → fill every `[[...]]` from post-numbers and the video → read aloud once → publish on DEV with
 tags devchallenge, weekendchallenge, hf26challenge. Category: Best Use of TabPFN. Subarna approves first.
 
 ## 7. Commit

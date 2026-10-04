@@ -81,7 +81,7 @@ export interface DashboardContext {
 
 export interface Festival {
   name: string; start: string; end: string; days_until: number;
-  last: { start: string; end: string; days: number; spent_paise: number; usual_paise: number; extra_paise: number } | null;
+  last: { start: string; end: string; days: number; spent_paise: number; usual_paise: number | null; extra_paise: number | null; baseline_days?: number } | null;
 }
 
 export interface UnusualSpend {

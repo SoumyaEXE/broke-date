@@ -60,7 +60,7 @@ canvas{width:100%;height:180px;display:block}
 <div class="card"><div class="mut" style="font-size:12px;letter-spacing:.15em">SAFE TO SPEND TODAY</div>
 <div class="hero num" id="safe"></div><div class="mut" id="safeSub"></div>
 <div class="row"><span class="mut">Balance</span><span class="num" id="bal"></span></div>
-<div class="row"><span class="mut">Allowance</span><span class="num" id="pay"></span></div></div>
+<div class="row"><span class="mut">Payday</span><span class="num" id="pay"></span></div></div>
 <p style="font-size:20px"><b class="num ok" id="made"></b> of <span class="num" id="nf"></span> futures make it to payday.</p>
 <canvas id="cv" aria-label="simulated futures"></canvas>
 <div class="card"><b>Can I afford ₹X today?</b>

@@ -102,7 +102,7 @@ export function ImportPage({ provider, subject, onDone }: { provider: LiveProvid
 
       {report && (
         <div className="flex flex-col gap-4">
-          <Panel title="These look like your allowance" sub={`from ${report.anchor_sender || "?"} · correct?`} icon={Wallet} flush
+          <Panel title="These look like your paydays" sub={`from ${report.anchor_sender || "?"} · correct?`} icon={Wallet} flush
             action={<Button variant="primary" size="xs" disabled={anchorsOk} onClick={async () => { await provider.confirmAnchors(subject, report.anchors_detected.map((a) => a.id)); setAnchorsOk(true); }}>{anchorsOk ? "Confirmed" : "Yes, these"}</Button>}>
             <Rows>
               {report.anchors_detected.slice(0, 6).map((a) => (

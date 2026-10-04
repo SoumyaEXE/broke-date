@@ -149,8 +149,8 @@ export class Brain {
     const segs: Seg[] = [];
     if (idx >= T || date >= this.d.next_anchor_date) {
       segs.push({ t: date === this.d.next_anchor_date
-        ? `${shortDate(date)} is the day your allowance lands, so it doesn't touch this month's `
-        : `${shortDate(date)} is after your allowance lands (${shortDate(this.d.next_anchor_date)}), so it doesn't touch this month's ` },
+        ? `${shortDate(date)} is payday, so it doesn't touch this month's `
+        : `${shortDate(date)} is after payday (${shortDate(this.d.next_anchor_date)}), so it doesn't touch this month's ` },
         { t: "futures", tone: "brand" }, { t: `. It still costs about ` }, { t: days(cost), tone: "num" }, { t: " of your own money's runway." });
     } else {
       const v = c.verdict;
@@ -203,8 +203,8 @@ export class Brain {
   runway(): Omit<Answer, "ms"> {
     const rw = meanRunway(this.run(this.plans(), false));
     const until = addDays(this.d.as_of, Math.floor(rw) - 1);
-    return { intent: "runway", segs: [{ t: "On your own money alone (no help from anyone, allowance not counted) it lasts about " }, { t: days(rw), tone: "num" },
-      { t: `, roughly until ${shortDate(until)}. Your allowance is due ${shortDate(this.d.next_anchor_date)}.` }], follow: ["When would I go broke?", "How much is safe today?"] };
+    return { intent: "runway", segs: [{ t: "On your own money alone (no help from anyone, next pay not counted) it lasts about " }, { t: days(rw), tone: "num" },
+      { t: `, roughly until ${shortDate(until)}. Payday is ${shortDate(this.d.next_anchor_date)}.` }], follow: ["When would I go broke?", "How much is safe today?"] };
   }
 
   safe(): Omit<Answer, "ms"> {
@@ -216,7 +216,7 @@ export class Brain {
   spending(): Omit<Answer, "ms"> {
     const c = this.d.context?.cycle;
     if (!c) return this.help();
-    const segs: Seg[] = [{ t: `Since your allowance on ${shortDate(c.start)} (${c.day_in_cycle} days) you've spent ` }, { t: inr(c.spent_paise), tone: "num" }];
+    const segs: Seg[] = [{ t: `Since payday on ${shortDate(c.start)} (${c.day_in_cycle} days) you've spent ` }, { t: inr(c.spent_paise), tone: "num" }];
     if (c.typical_spent_paise) {
       const diff = c.spent_paise - c.typical_spent_paise;
       segs.push({ t: `, vs ${inr(c.typical_spent_paise)} by this point in a typical month (` }, { t: `${diff >= 0 ? "+" : ""}${inr(diff)}`, tone: diff > 0 ? "bad" : "good" }, { t: "). " });
@@ -243,7 +243,7 @@ export class Brain {
       const f = fest.find((x) => q.includes(x.name.toLowerCase().split(/[ \/]/)[0])) ?? fest[0];
       const segs: Seg[] = [{ t: `${f.name} ${f.days_until === 0 ? "is on now" : `starts ${shortDate(f.start)}, in ${f.days_until} days`}. ` }];
       if (f.last) segs.push({ t: "Last time you spent " }, { t: inr(f.last.spent_paise), tone: "num" }, { t: ` over ${f.last.days} days` },
-        ...(f.last.extra_paise > 0 ? [{ t: ", " }, { t: inr(f.last.extra_paise), tone: "bad" as const }, { t: " more than a normal stretch." }] : [{ t: "." }]));
+        ...(f.last.extra_paise != null && f.last.extra_paise > 0 ? [{ t: ", " }, { t: inr(f.last.extra_paise), tone: "bad" as const }, { t: " more than a normal stretch." }] : [{ t: "." }]));
       else segs.push({ t: "Your statement doesn't cover the last one yet, so I can't compare." });
       return { intent: "festival", segs, follow: [`Can I afford ₹500 on ${shortDate(f.start)}?`, "How much is safe today?"] };
     }
@@ -329,18 +329,18 @@ export class Brain {
     const left = Math.round((Date.parse(pay) - Date.parse(today)) / 86400000);
     const payText = left <= 0 ? "today" : left === 1 ? `tomorrow, ${dow(pay)} ${shortDate(pay)}` : `${dow(pay)} ${shortDate(pay)}, in ${left} days`;
     if (words.length <= 4 && /^(hi|hii+|hey|hello|helo|yo|sup|namaste|nomoskar|hola|gm|good (morning|evening|afternoon))\b/.test(words.join(" "))) {
-      return { intent: "hello", segs: [{ t: "Hey! You have " }, { t: inr(this.d.balance_now_paise), tone: "num" }, { t: ` right now, and your allowance is due ${payText}. What do you want to check?` }],
+      return { intent: "hello", segs: [{ t: "Hey! You have " }, { t: inr(this.d.balance_now_paise), tone: "num" }, { t: ` right now, and payday is ${payText}. What do you want to check?` }],
         follow: ["How much is safe today?", "Can I afford ₹300 on Saturday?", "Where did my money go?"] };
     }
     if (words.length <= 6 && /\b(thanks|thank you|thx|ty|dhonnobad|ok|okay|cool|nice|great)\b/.test(q)) {
       return { intent: "thanks", segs: [{ t: "Anytime. Ask again whenever a plan comes up." }], follow: ["Show the range", "How much is safe today?"] };
     }
-    if (/\b(date|what day|which day|today'?s? date|day is it)\b/.test(q) && !/\b(broke|run out|pay ?day|allowance|afford)\b/.test(q)) {
-      return { intent: "date", segs: [{ t: "Today is " }, { t: `${dow(today)}, ${shortDate(today)}`, tone: "num" }, { t: `. Your allowance is due ${payText}.` }],
+    if (/\b(date|what day|which day|today'?s? date|day is it)\b/.test(q) && !/\b(broke|run out|pay ?day|allowance|salary|afford)\b/.test(q)) {
+      return { intent: "date", segs: [{ t: "Today is " }, { t: `${dow(today)}, ${shortDate(today)}`, tone: "num" }, { t: `. Payday is ${payText}.` }],
         follow: ["How much is safe today?", "When would I run out?"] };
     }
-    if (/\b(pay ?day|allowance|pocket money|when (do|will) i get|money (come|arrive))\b/.test(q) && !/\b(afford|spend|broke|run out)\b/.test(q)) {
-      return { intent: "payday", segs: [{ t: "Your allowance is due " }, { t: payText, tone: "num" }, { t: this.d.next_anchor_known ? "." : ", based on when it usually arrives." }],
+    if (/\b(pay ?day|allowance|salary|pocket money|when (do|will) i get|money (come|arrive))\b/.test(q) && !/\b(afford|spend|broke|run out)\b/.test(q)) {
+      return { intent: "payday", segs: [{ t: "Payday is " }, { t: payText, tone: "num" }, { t: this.d.next_anchor_known ? "." : ", based on when it usually arrives." }],
         follow: ["When would I run out?", "How much is safe today?"] };
     }
     if (/\b(balance|how much (money )?(do i have|is left|have i got)|money left|in my account)\b/.test(q)) {

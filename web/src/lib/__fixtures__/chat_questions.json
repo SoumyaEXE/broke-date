@@ -109,47 +109,47 @@
  },
  {
   "question": "How long does my money last?",
-  "template": "On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}. Your allowance is due {f3}.",
+  "template": "On your own money alone (no help from anyone, next pay not counted) it lasts about {f1}, roughly until {f2}. Payday is {f3}.",
   "verdict": null,
   "facts": [
    {
     "id": "f1",
-    "desc": "number of days, in \"On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}.\""
+    "desc": "number of days, in \"On your own money alone (no help from anyone, next pay not counted) it lasts about {f1}, roughly until {f2}.\""
    },
    {
     "id": "f2",
-    "desc": "date, in \"On your own money alone (no help from anyone, allowance not counted) it lasts about {f1}, roughly until {f2}.\""
+    "desc": "date, in \"On your own money alone (no help from anyone, next pay not counted) it lasts about {f1}, roughly until {f2}.\""
    },
    {
     "id": "f3",
-    "desc": "date, in \"Your allowance is due {f3}.\""
+    "desc": "date, in \"Payday is {f3}.\""
    }
   ]
  },
  {
   "question": "Where did my money go?",
-  "template": "Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}). Most of it: {f6}.",
+  "template": "Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}). Most of it: {f6}.",
   "verdict": null,
   "facts": [
    {
     "id": "f1",
-    "desc": "date, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+    "desc": "date, in \"Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
    },
    {
     "id": "f2",
-    "desc": "number of days, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+    "desc": "number of days, in \"Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
    },
    {
     "id": "f3",
-    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+    "desc": "amount, in \"Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
    },
    {
     "id": "f4",
-    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+    "desc": "amount, in \"Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
    },
    {
     "id": "f5",
-    "desc": "amount, in \"Since your allowance on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
+    "desc": "amount, in \"Since payday on {f1} ({f2}) you've spent {f3}, vs {f4} by this point in a typical month ({f5}).\""
    },
    {
     "id": "f6",
@@ -213,26 +213,26 @@
  },
  {
   "question": "hi",
-  "template": "Hey! You have {f1} right now, and your allowance is due Fri {f2}, in {f3}. What do you want to check?",
+  "template": "Hey! You have {f1} right now, and payday is Fri {f2}, in {f3}. What do you want to check?",
   "verdict": null,
   "facts": [
    {
     "id": "f1",
-    "desc": "amount, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+    "desc": "amount, in \"You have {f1} right now, and payday is Fri {f2}, in {f3}.\""
    },
    {
     "id": "f2",
-    "desc": "date, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+    "desc": "date, in \"You have {f1} right now, and payday is Fri {f2}, in {f3}.\""
    },
    {
     "id": "f3",
-    "desc": "number of days, in \"You have {f1} right now, and your allowance is due Fri {f2}, in {f3}.\""
+    "desc": "number of days, in \"You have {f1} right now, and payday is Fri {f2}, in {f3}.\""
    }
   ]
  },
  {
   "question": "what's the date today",
-  "template": "Today is {f1}. Your allowance is due Fri {f2}, in {f3}.",
+  "template": "Today is {f1}. Payday is Fri {f2}, in {f3}.",
   "verdict": null,
   "facts": [
    {
@@ -241,22 +241,22 @@
    },
    {
     "id": "f2",
-    "desc": "date, in \"Your allowance is due Fri {f2}, in {f3}.\""
+    "desc": "date, in \"Payday is Fri {f2}, in {f3}.\""
    },
    {
     "id": "f3",
-    "desc": "number of days, in \"Your allowance is due Fri {f2}, in {f3}.\""
+    "desc": "number of days, in \"Payday is Fri {f2}, in {f3}.\""
    }
   ]
  },
  {
   "question": "when is my allowance coming",
-  "template": "Your allowance is due {f1}.",
+  "template": "Payday is {f1}.",
   "verdict": null,
   "facts": [
    {
     "id": "f1",
-    "desc": "number of days, in \"Your allowance is due {f1}.\""
+    "desc": "number of days, in \"Payday is {f1}.\""
    }
   ]
  },

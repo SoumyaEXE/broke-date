@@ -46,14 +46,14 @@ def build_forecast(p: fe.Prepared, plans: list[Plan], subject: str, include_latt
                        "the same random draws.", {**src, "kind": "safe_to_spend_search",
                                                    "iterations": sts["iterations"]})
     facts.add("n_make_it", summ["n_make_it"], "futures", "how many of the simulated futures make it to payday",
-              "Futures whose balance never dips below the broke line before the next allowance.", src)
+              "Futures whose balance never dips below the broke line before the next payday.", src)
     facts.add("n_futures", N, "futures", "how many futures were simulated", "Fixed by settings.", src)
     facts.add("n_broke", N - summ["n_make_it"], "futures", "how many simulated futures go broke before payday",
               "Futures whose lowest balance on some day drops below the broke line before payday.", src)
     facts.add("broke_line", p.cfg.broke_line_paise, "paise", "the broke line", "Set in settings.",
               {"kind": "setting"})
-    facts.add("days_to_payday", p.H, "count", "days until the next allowance",
-              "Known allowance date" if p.anchor_known else "Predicted from past allowance dates.",
+    facts.add("days_to_payday", p.H, "count", "days until the next payday",
+              "Known payday" if p.anchor_known else "Predicted from past payday dates.",
               {"kind": "calendar", "next_anchor": str(p.next_anchor)})
     facts.add("balance_now", int(round(p.si.bal0 * 100)), "paise", "the balance right now",
               "Last balance on the imported statement.", {"kind": "statement"})
@@ -65,7 +65,7 @@ def build_forecast(p: fe.Prepared, plans: list[Plan], subject: str, include_latt
     facts.add("runway_days", summ["runway_own_money"]["mean"], "days",
               "how many days his own money lasts on average",
               "Mean over futures of days until the balance first dips below the broke line, with no help coming "
-              "in and the allowance not counted.", {**src, "kind": "runway_own_money"})
+              "in and the next pay not counted.", {**src, "kind": "runway_own_money"})
     for pr in plan_rows:
         facts.add("plan_day_cost", pr["day_cost"], "days", f"price in days of the plan '{pr['name']}'",
                   "Runway without the plan minus runway with it, averaged over the same futures.",

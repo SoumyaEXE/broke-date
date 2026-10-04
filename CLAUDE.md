@@ -9,7 +9,7 @@ Hard deadline: **Mon Oct 5 2026, 06:59 UTC (12:29 PM IST)**. Target publish: Sun
 
 Read these before writing any code, in this order:
 1. `docs/SPEC.md`: the full product and engineering spec (source of truth)
-2. `docs/TASKS.md`: ordered milestones with acceptance criteria (work strictly in order)
+2. `docs/dev/TASKS.md`: ordered milestones with acceptance criteria (work strictly in order)
 3. `docs/PREREGISTRATION.md`: the evaluation contract (frozen once committed)
 
 ## Non-negotiable rules
@@ -45,8 +45,8 @@ Read these before writing any code, in this order:
 
 ## How to work
 
-- Work milestone by milestone from `docs/TASKS.md`. Do not start a milestone until the previous one's
-  acceptance criteria pass. Tick boxes in `docs/TASKS.md` as you go and commit.
+- Work milestone by milestone from `docs/dev/TASKS.md`. Do not start a milestone until the previous one's
+  acceptance criteria pass. Tick boxes in `docs/dev/TASKS.md` as you go and commit.
 - Small commits, conventional messages (`feat(engine): ...`, `test(sim): ...`, `docs(prereg): ...`).
   The commit history is part of the submission (it proves the build happened inside the window).
 - After each milestone: run `make check` (lint + types + tests) and fix everything before moving on.
@@ -54,7 +54,7 @@ Read these before writing any code, in this order:
   write it in `docs/NOTES.md` under "Decisions", and continue. Do not stop to ask unless it touches
   rules 1 to 6.
 - Prefer boring, well-tested code over clever code. This runs on a 2022 i3 laptop.
-- Keep the cut list in mind (`docs/TASKS.md`, bottom). If a milestone runs long, cut from that list,
+- Keep the cut list in mind (`docs/dev/TASKS.md`, bottom). If a milestone runs long, cut from that list,
   never from the "never cut" list.
 
 ## Stack and commands

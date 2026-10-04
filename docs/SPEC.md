@@ -139,7 +139,7 @@ broke-date/
   .gitignore                   # data/real/, ~/.brokedate, *.pdf, out/real/
   .pre-commit-config.yaml      # + scripts/hooks/block_private.py
   config/brokedate.example.toml
-  docs/  SPEC.md TASKS.md PREREGISTRATION.md NOTES.md POST_TEMPLATE.md VIDEO_SCRIPT.md
+  docs/  SPEC.md PREREGISTRATION.md NOTES.md  dev/TASKS.md  submission/(POST_DRAFT VIDEO_SCRIPT RUNBOOK IMAGES).md  images/
   scripts/
     simulate.py                # public demo data generator
     hooks/block_private.py
@@ -726,11 +726,11 @@ Static build on GitHub Pages: home, futures canvas, eaten calendar, plan toggles
 backtest page computed on sim data (labelled as such), "Run it on your own data" section with install
 steps.
 
-### 22.2 Video (`docs/VIDEO_SCRIPT.md`)
+### 22.2 Video (`docs/submission/VIDEO_SCRIPT.md`)
 60 to 90 seconds, recorded with Wi-Fi off and the browser network panel visible for the first seconds.
 Ends on Subarna's real reaction.
 
-### 22.3 Post (`docs/POST_TEMPLATE.md`)
+### 22.3 Post (`docs/submission/POST_DRAFT.md`)
 Two layers. Story, GIF, demo, reaction up top. Technical depth inside DEV's `{% details %}` block.
 Required DEV template sections included. Every number pulled from `out/` artifacts by a small script
 (`make post-numbers` prints them) so nothing is typed by hand.

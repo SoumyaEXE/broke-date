@@ -37,7 +37,7 @@ export function ActivityPage({ data }: { data: ForecastResponse }) {
                   <div className="flex items-center gap-3">
                     <Tile icon={catIcon(t.category)} tone={credit ? "lime" : "neutral"} />
                     <span className="truncate text-body-medium text-text-primary">{t.merchant}</span>
-                    {t.is_anchor && <Chip variant="caption" color="purple">Allowance</Chip>}
+                    {t.is_anchor && <Chip variant="caption" color="purple">Payday</Chip>}
                   </div>
                 </Cell>
                 <Cell><Chip variant="caption" color="neutral">{catLabel(t.category)}</Chip></Cell>
