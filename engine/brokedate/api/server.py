@@ -173,6 +173,10 @@ async def import_file(file: UploadFile = File(...), subject: str = Form(...), pa
                       confirm_anchors: bool = Form(False)) -> dict[str, Any]:
     from brokedate.ingest.pipeline import ReconciliationError, import_statement
 
+    if subject == "sim":
+        # the built-in sample student is fed only by the generator (CLI); an upload here would mix two people's money
+        raise HTTPException(400, {"error": "sample_read_only",
+                                  "message": "The sample student is read-only. Save this statement under another name."})
     cfg, db = cfg_db()
     up = cfg.data_dir / "uploads"
     up.mkdir(parents=True, exist_ok=True)
