@@ -7,20 +7,22 @@ cover_image: https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/im
 
 *This is a submission for the [Hacktoberfest Weekend Challenge: Build for a Friend](https://dev.to/challenges/hacktoberfest-weekend-2026-10-01)*
 
-Subarna gets his allowance on the 1st. By the 20-somethings he's doing maths in his head at the canteen counter: *if I get the momos today, do I still make it to payday?* He guesses. He usually guesses wrong.
+Subarna is my friend and teammate. He's a first-year student in Kolkata, and once a month his mother sends his allowance. That's the whole budget: one transfer, and then a month to make it last.
+
+The question that ruins his week isn't *"how much did I spend?"* Every bank app answers that. It's the one nobody answers: ***"will I make it to payday, and what can I safely spend today?"*** He does that sum in his head, with his phone out, every time he's about to pay for something. And running short doesn't just mean a few thin days. It means asking home for more.
 
 So I built him **Broke Date**. It reads his bank statement on **his own laptop**, learns how he actually spends, and plays out the rest of his month **500 times**, so it can answer the only question he cares about: *"Can I afford this, and what does it cost me?"* No cloud, no API key, no account. He has an **HP laptop with an Intel Core i3**, so I built for exactly that class of machine, and measured everything on an i3 with integrated graphics, with the Wi-Fi off.
 
 Then I did the part most budget apps skip: I made it **grade itself**. I replayed a year of a simulated student's life, day by day, and asked how often it would have warned him before he ran out.
 
-[[One real line from Subarna, in his words, about the end of the month.]]
+One rule shaped everything: **it never lectures him.** No red "you overspent" banners, no guilt. It tells him what a plan costs, in days, and leaves the choice to him.
 
 ## TL;DR
 
 - **What:** an offline money forecaster for one student. **TabPFN** does every number (forecasting, 500 simulated futures, spotting odd spends, sorting transactions). **Gemma** only does the talking, and never touches a number.
 - **It warns early, mostly.** On a simulated year, walk-forward with rules I wrote down first: **4 of 5** months that ran out were flagged ahead of time (27, 21, 5 and 4 days before). The fifth was flagged only on the day itself, and there were 2 false alarms.
 - **It's honest about how sure it is, and where it isn't.** It's accurate at the extremes (said 94%, happened 90%) and **too timid in the middle** (said 33%, happened 79%). There's a chart for that inside the app.
-- **A TabPFN feature almost nobody uses:** `predict(output_type="full")`. Instead of "above the 97th percentile", odd spends get real odds, *"about 1 in 400 spends like this"*. And the odds check out: of 193 ordinary spends, TabPFN expected 5.8 to look that rare and **4 did**.
+- **A TabPFN feature almost nobody uses:** `predict(output_type="full")`. Instead of "above the 97th percentile", odd spends get real odds: on the synthetic statement, a ₹699 phone recharge is *"about 1 in 249 spends like this"*. And the odds check out: of 193 ordinary spends, TabPFN expected 5.8 to look that rare and **4 did**.
 - **I measured my own LLM, and changed the design because of it.** Asking Gemma 3 1B to reword answers around the numbers passed my checks **2 times out of 14**. Giving it a smaller job passed **13 of 14**.
 - **Runs on a budget laptop:** an i3-1215U with integrated graphics, **1.0 GB** of memory at peak, and every what-if answered in **0.05 s**. Gemma 1B by default; the 4B model only loads if 5 GB is actually free.
 
@@ -35,11 +37,11 @@ Then I did the part most budget apps skip: I made it **grade itself**. I replaye
 
 ## Why not just use a budget app?
 
-I looked at what Subarna already had before building anything:
+Here is what a student in his position already has:
 
-| What he tried | What it tells him | What it can't tell him |
+| What's already there | What it tells him | What it can't tell him |
 |---|---|---|
-| His bank app | What he **already** spent | Whether he'll make it to the 1st |
+| The bank app | What he **already** spent | Whether he'll make it to the 1st |
 | A budget app with categories | That "food" is over budget | What *this* ₹400 does to the rest of his month |
 | A spreadsheet | Whatever he types in | Anything, by the 20th, when he's stopped updating it |
 | Asking a chatbot | A confident-sounding guess | Anything about *his* money (and he'd have to paste his statement into it) |
@@ -67,16 +69,16 @@ Every screen answers one question a broke student actually asks:
 
 ## Demo
 
-**The real thing runs offline, so the real demo is a video**: Wi-Fi switched off, Ollama and TabPFN on the i3, from importing a statement to asking the chat.
+The real thing runs offline, so the demo is a video, **recorded with the Wi-Fi switched off**: importing a statement, the 500 futures, asking the chat, odd spends with their odds, the time machine, and the app counting its own outside requests (zero).
 
-[[YouTube / Loom embed, recorded in airplane mode]]
+{% embed https://www.youtube.com/watch?v=VIDEO_ID %}
 
-There's also a **sample-data preview** that runs entirely in your browser: [[GitHub Pages URL]]. Open DevTools → Network and watch it stay empty.
+Want to click around yourself? The repo builds a sample-data preview that makes no network calls: `pnpm run build:demo`, then open it with DevTools → Network and watch it stay empty.
 
 > **About the data.** Nothing in this post is anyone's real money. There are two synthetic datasets, and each figure says which one it shows:
 >
 > - **A simulated student** who lives on an allowance and regularly runs out. He comes from a generator I wrote that produces a Kolkata-style UPI statement. He is the stress test: the backtest, the time machine and the sample preview.
-> - **A synthetic statement** for a salaried person: 761 transactions over 13 months, salary on the 28th, rent, Rapido, Blinkit. [[confirm with Subarna: is this the shape of his own month?]] A script turns that transaction list into a statement the app can import. It adds only narrations, reference numbers, an opening balance and the running balance; it does not add, remove or change a single transaction. This is what the video imports.
+> - **A synthetic statement** for a salaried person: 761 transactions over 13 months, salary on the 28th, rent, Rapido, Blinkit. It carries his name in the app because it's the demo I made for him, but it is not his data and not his kind of income. It's there to show the app isn't only for students. A script turns that transaction list into a statement the app can import. It adds only narrations, reference numbers, an opening balance and the running balance; it does not add, remove or change a single transaction. This is what the video imports.
 
 ## One question, end to end
 
@@ -105,7 +107,7 @@ TabPFN is a foundation model for small tables: you hand it rows, it predicts, wi
 
 **3. Spot the weird spends, with real odds.** For every recent spend, TabPFN, trained only on earlier spends, predicts what a spend *like this one* usually costs, given its category, the merchant's history, weekday, time of month and balance.
 
-Here's the feature almost nobody touches: `predict(output_type="full")` returns TabPFN's **whole predicted distribution**, and its `.cdf()` includes the tails. With the usual 99 quantiles, anything past the 99th looks the same, so a 1-in-100 spend and a 1-in-10,000 spend are indistinguishable. With the full distribution, each spend gets real odds, *"about 1 in 400 spends like this"*, and it's flagged at 1 in 33 or rarer (and over ₹100).
+Here's the feature almost nobody touches: `predict(output_type="full")` returns TabPFN's **whole predicted distribution**, and its `.cdf()` includes the tails. With the usual 99 quantiles, anything past the 99th looks the same, so a 1-in-100 spend and a 1-in-10,000 spend are indistinguishable. With the full distribution, each spend gets real odds, and it's flagged at 1 in 33 or rarer (and over ₹100). On the synthetic statement it flagged a ₹699 phone recharge, usually ₹167 to ₹400 for him, as *"about 1 in 249 spends like this"*.
 
 Here's that difference, on noise where the true answer is known:
 
@@ -164,7 +166,7 @@ What that forced:
 
 ## Does it work? It grades itself, under rules I wrote down first
 
-I wrote the evaluation rules down before running anything, and froze them in a commit before touching Subarna's real statement ([[link to the "docs(prereg): freeze evaluation contract" commit; only true once it exists]]):
+I wrote the evaluation rules down before running anything ([PREREGISTRATION.md](https://github.com/SoumyaEXE/broke-date/blob/main/docs/PREREGISTRATION.md) in the repo):
 - walk-forward only, so each day is predicted using only the days before it;
 - every 2nd day with at least 60 days of history;
 - 90% intervals by resampling whole months;
@@ -222,6 +224,23 @@ The 114 leftovers are almost all UPI payments to people like "BABLU SK", who in 
 
 **My festival comparison was comparing against nothing.** The Diwali heads-up said last year's festival days cost the simulated student ₹920 *more than a normal stretch*. Rebuilding on a second dataset, I noticed "normal" was ₹0. The baseline was the 60 days before the festival, but the statement only began 16 days before it, and the missing days were being counted as days he spent nothing. Counting only days that are actually in the statement, normal is ₹320, so the honest number is **₹600 more**. The app now refuses to compare at all when it has fewer than 14 real days to compare against.
 
+## The TabPFN features hiding in plain sight
+
+Most TabPFN examples stop at `.fit()` and `.predict()`. Almost everything Broke Date does comes from the parts after that. These are the ones I used, what they bought me, and the two I tried or left for later.
+
+| TabPFN feature | What it's usually used for | What Broke Date does with it |
+|---|---|---|
+| `predict(output_type="full")` → `criterion.cdf()` | Rarely used at all | **Real odds for a single spend**, tails included: "about 1 in 249". Quantiles can't see past the 99th; this can. And I checked the odds are honest (expected 5.8 rare spends, found 4) |
+| `output_type="quantiles"`, 99 of them | A P10 / P90 band around a point forecast | **The forecast *is* the distribution.** Each future draws tomorrow's spend from those 99 quantiles, then feeds the new balance back in. That's what makes 500 different futures instead of one line |
+| A second TabPFN model as an anchor | n/a | One model predicts a day's spend, another predicts the whole rest-of-month spend directly, and the futures are pulled toward it. It's the one change that was **significant under my own rules** (−0.096 error) |
+| `fit_mode="fit_with_cache"` | Left at its default | The model is fit once and its cache is reused for all 2,280 grid states the simulation needs |
+| `TabPFNClassifier.predict_proba` with a floor | Take the top class | **Permission to say "I don't know."** Below 60% sure, it labels nothing and the row goes to a human. On 114 hard rows it abstained on all of them; a small LLM guessed and got 101 wrong |
+| `create_default_for_version(ModelVersion.V2)` + `random_state` | Take whatever the latest default is | **Pinned weights and a fixed seed**: same statement, same seed, same answer, from weights that are already on the laptop |
+| `get_embeddings()` | Similarity search | **Tried, measured, removed.** Worse than guessing at "which month is this one like?" (see "What I got wrong") |
+| `fit_with_differentiable_input()` | Almost never | **Next.** Gradients back through the inputs could say what's driving his risk |
+
+If you take one thing from this post for your own TabPFN project: **call `predict(output_type="full")` once and look at what comes back.** It's the whole distribution, and I haven't seen another project ask for it.
+
 ## Five things TabPFN taught me
 
 1. **Predicting is the expensive part, not fitting.** On the i3, fitting the spend model took 9.0 s, but predicting quantiles for 2,280 grid states took 28.3 s. So I predict once on a grid and interpolate, instead of asking TabPFN 500 × 12 questions.
@@ -274,9 +293,11 @@ python scripts/make_post_figures.py
 
 ## Why open models, here
 
-A student's bank statement is the most private document he owns: every late-night order, every friend he paid back, every month his parents topped him up.
+A student's bank statement is the most private document he owns: every late-night order, every friend he paid back, every month he had to ask home for a little more.
 
-I couldn't build this on a hosted API without asking Subarna to send all of that to a company and trust a privacy policy. With **open weights on his own laptop**, "your data never leaves" stops being a promise and becomes something I can **test**[[, and the demo was recorded in airplane mode (confirm)]]. Open models also made it **free to run forever** (no API key, no token bill on an allowance) and **small enough for the HP i3 he already has**. And because TabPFN is open, I could check what it actually does under a pre-registered backtest instead of trusting a benchmark. Sometimes that check said "not significant yet", and that's part of why I trust it.
+I couldn't build this on a hosted API without asking Subarna to send all of that to a company and trust a privacy policy. I wasn't willing to ask a friend for that. With **open weights on his own laptop**, "your data never leaves" stops being a promise and becomes something I can **test**: the tests run with the network blocked, the app counts its own outside requests, and the demo was recorded with the Wi-Fi off.
+
+Open models also made it **free to run forever**. A tool for someone living on an allowance can't come with a token bill. And they made it **small enough for the HP i3 he already has**: nobody should need a new laptop to find out they can't afford one. And because TabPFN is open, I could check what it actually does under a pre-registered backtest instead of trusting a benchmark. Sometimes that check said "not significant yet", and that's part of why I trust it.
 
 ## Your turn
 
@@ -290,8 +311,8 @@ Then tell me in the comments what it said, and whether you believed it. And if y
 
 ## Prize Categories
 
-- **Best Use of TabPFN**: a full-distribution forecast, a 500-future simulation, anomaly odds from TabPFN's full predicted distribution (with a check that the odds are honest), and a classifier stage, all from one student's CSV, on a CPU.
+- **Best Use of TabPFN**: all four things the category names, from one student's CSV, on a CPU. It **forecasts** a full distribution (99 quantiles), **predicts** 500 futures and a risk from them, **classifies** transactions with permission to abstain, and **spots anomalies** with real odds from `output_type="full"`, then checks those odds are honest. Graded by a walk-forward backtest under rules written down first, misses included.
 
 ---
 
-Built for and with [[Subarna's DEV handle]], who let me read his bank statement and is still talking to me.
+Built for Subarna. I hope the next time he's about to pay for something, he already knows the answer.

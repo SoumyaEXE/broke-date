@@ -317,7 +317,7 @@ def fig_pipeline() -> None:
     box(24, 34, 20, 21, "Sort transactions", "Regex rules first.\nTabPFN classifier for\nleftovers it's sure of.\nThe rest: “you decide”.", "tab")
     box(49, 34, 22, 21, "Forecast the spread", "TabPFN: 99 quantiles\nof tomorrow's spend\nfrom 14 numbers about\ntoday.", "tab")
     box(76, 34, 23, 21, "500 futures", "Play out every day to\npayday. Count who runs\nout. Price plans in\ndays, same draws.", "tab")
-    box(1, 3, 30, 23, "Odd spends, with odds", "TabPFN's full predicted\ndistribution: “about 1 in\n400 spends like this”.\nChecked: are the odds honest?", "tab")
+    box(1, 3, 30, 23, "Odd spends, with odds", "TabPFN's full predicted\ndistribution: “about 1 in\n249 spends like this”.\nChecked: are the odds honest?", "tab")
     box(36, 3, 29, 23, "The browser", "Reruns the same 500\nfutures for every what-if\nin 0.05 s. Computes every\nanswer and every number.", "plain")
     box(70, 3, 29, 23, "Gemma 3 1B", "Adds one friendly line.\nNever sees a number.\nDropped if it writes a digit,\ninvents a day, or disagrees.", "gem")
     arrow(19.6, 44.5, 23.4, 44.5)

@@ -28,6 +28,13 @@ claim, and the file the code wrote that backs it. Rebuild the files with the com
 | What I got wrong | My festival comparison was comparing against nothing. The Diwali heads-up said last year's festival days cost the simulated student ₹920 mor… | `web/public/demo/forecast.json context.upcoming; engine/tests/test_insights.py` |
 | Five things TabPFN taught me | 1. Predicting is the expensive part, not fitting. On the i3, fitting the spend model took 9.0 s, but predicting quantiles for 2,280 grid sta… | `out/bench.json fit_spend_s, lattice_s, lattice_rows` |
 | The offline part is a test, not a promise | - The script that took every screenshot in this post logged every request too: zero went anywhere but 127.0.0.1. | `docs/images/screenshots_requests.json` |
+| TL;DR, How TabPFN does all the numbers | The ₹699 recharge flagged as "about 1 in 249", usual ₹167 to ₹400 | `out/insights/subarna_syn.json` (saved from the engine's /insights for the synthetic statement) |
+| The TabPFN features hiding in plain sight | Anchor model is the one significant change (−0.096) | `out/backtest/sim/summary.json diff_vs_M1.M1a` |
+| The TabPFN features hiding in plain sight | 2,280 grid states | `out/bench.json lattice_rows` |
+| The TabPFN features hiding in plain sight | Abstained on all 114; Gemma got 101 wrong | `out/labels/sim.json compare` |
+| The TabPFN features hiding in plain sight | fit_with_cache, v2 weights, n_estimators, seed | `engine/brokedate/config.py`, `engine/brokedate/models/tabpfn_adapter.py` |
+| Demo | Recorded with Wi-Fi off | the author's recording (confirmed by the author) |
+| (opening) | Who Subarna is: first-year student in Kolkata, allowance from his mother once a month | the author (project spec, section 0) |
 
 ## Author notes (rules for editing the post)
 
