@@ -1,7 +1,7 @@
 # Broke Date
 
 **How much is safe to spend today, how many of 500 simulated futures make it to payday, and how many days each
-plan really costs.** Built for one person, Subarna, a first-year student in Kolkata who lives on a monthly
+plan really costs.** Built for one person, Subarna, a third-year student in Kolkata who lives on a monthly
 allowance. It runs on his laptop, reads his own bank statement, and never sends it anywhere.
 
 - Sample-data preview (simulated persona, not a real person): a static page that runs fully in the browser and calls nothing. The real app runs offline on your own laptop.

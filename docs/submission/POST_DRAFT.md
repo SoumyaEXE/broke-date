@@ -7,7 +7,7 @@ cover_image: https://raw.githubusercontent.com/SoumyaEXE/broke-date/main/docs/im
 
 *This is a submission for the [Hacktoberfest Weekend Challenge: Build for a Friend](https://dev.to/challenges/hacktoberfest-weekend-2026-10-01)*
 
-Subarna is my friend and teammate. He's a first-year student in Kolkata, and once a month his mother sends his allowance. That's the whole budget: one transfer, and then a month to make it last.
+Subarna is my friend and teammate. He's a third-year student in Kolkata, and once a month his mother sends his allowance. That's the whole budget: one transfer, and then a month to make it last.
 
 The question that ruins his week isn't *"how much did I spend?"* Every bank app answers that. It's the one nobody answers: ***"will I make it to payday, and what can I safely spend today?"*** He does that sum in his head, with his phone out, every time he's about to pay for something. And running short doesn't just mean a few thin days. It means asking home for more.
 
@@ -16,6 +16,14 @@ So I built him **Broke Date**. It reads his bank statement on **his own laptop**
 Then I did the part most budget apps skip: I made it **grade itself**. I replayed a year of a simulated student's life, day by day, and asked how often it would have warned him before he ran out.
 
 One rule shaped everything: **it never lectures him.** No red "you overspent" banners, no guilt. It tells him what a plan costs, in days, and leaves the choice to him.
+
+Then I gave it to him. He ran it on his own laptop, on his own bank statements. Here is what he said:
+
+> "I've wanted something like this for a long time. I tried a lot of things online, but they all asked for my bank details, so I never used them. I didn't think AI could even run on an i3. I'll use this every day."
+>
+> Subarna, after running it on his own statements
+
+That second sentence is the whole design brief. He had already walked away from every tool that wanted his bank details. This one never asks, because it never needs to: his statement, the model and the answers all stay on his laptop. Nothing was uploaded, to me or to anyone.
 
 ## TL;DR
 
@@ -44,6 +52,7 @@ Here is what a student in his position already has:
 | The bank app | What he **already** spent | Whether he'll make it to the 1st |
 | A budget app with categories | That "food" is over budget | What *this* ₹400 does to the rest of his month |
 | A spreadsheet | Whatever he types in | Anything, by the 20th, when he's stopped updating it |
+| Online budgeting tools | Probably something useful | He never found out. They asked for his bank details, so he stopped there |
 | Asking a chatbot | A confident-sounding guess | Anything about *his* money (and he'd have to paste his statement into it) |
 | **Broke Date** | How many of 500 futures reach payday, what's safe today, what a plan costs **in days** | Anything about anyone else. It only knows him |
 
@@ -75,7 +84,7 @@ The real thing runs offline, so the demo is a video, **recorded with the Wi-Fi s
 
 Want to click around yourself? The repo builds a sample-data preview that makes no network calls: `pnpm run build:demo`, then open it with DevTools → Network and watch it stay empty.
 
-> **About the data.** Nothing in this post is anyone's real money. There are two synthetic datasets, and each figure says which one it shows:
+> **About the data.** Subarna ran Broke Date on his own laptop with his real bank statements. Those never left his laptop, and none of his numbers are in this post. So every chart, screenshot and result below uses one of two synthetic datasets, and each figure says which:
 >
 > - **A simulated student** who lives on an allowance and regularly runs out. He comes from a generator I wrote that produces a Kolkata-style UPI statement. He is the stress test: the backtest, the time machine and the sample preview.
 > - **A synthetic statement** for a salaried person: 761 transactions over 13 months, salary on the 28th, rent, Rapido, Blinkit. It carries his name in the app because it's the demo I made for him, but it is not his data and not his kind of income. It's there to show the app isn't only for students. A script turns that transaction list into a statement the app can import. It adds only narrations, reference numbers, an opening balance and the running balance; it does not add, remove or change a single transaction. This is what the video imports.
@@ -154,7 +163,7 @@ On the i3, the bigger model isn't better at this job, just four times slower. Th
 
 ## Built for a budget laptop, not a GPU
 
-Subarna has an **HP laptop with an Intel Core i3**, so that's the class of machine I designed for. Every number in this post was measured on my own i3, an **Intel Core i3-1215U** (2 performance + 4 efficiency cores) with **integrated graphics, no GPU**, with only **3 to 5 GB of its 16 GB RAM free** while I measured.
+Subarna has an **HP laptop with an Intel Core i3**, so that's the class of machine I designed for, and it's the machine he ran it on. The timings in this post were measured on my own i3, an **Intel Core i3-1215U** (2 performance + 4 efficiency cores) with **integrated graphics, no GPU**, with only **3 to 5 GB of its 16 GB RAM free** while I measured.
 
 What that forced:
 
@@ -265,12 +274,13 @@ If you take one thing from this post for your own TabPFN project: **call `predic
 - The categorizer numbers are on simulated narrations; real ones are messier.
 - Gemma's reaction line can still carry a vibe it can't know ("decent cushion").
 - The held-out check is a single month on synthetic data.
+- Subarna has run it on his real statements, but the results published here are all from synthetic data. His real backtest hasn't been run yet.
 
 ## What I'd build next
 
 - **"What's driving my risk?"** TabPFN 9.1 can pass gradients back through its inputs (`fit_with_differentiable_input`). Pointed at the forecast, that could say *"half of your risk is last week's spending, a quarter is Saturday's plan"*. It's the most hidden feature of all, and the next thing I want to try.
 - **Fix the timid middle.** The calibration chart says a 33% should read closer to 79%. A recalibration fitted only on earlier months would fix that without touching TabPFN.
-- **His real year.** The pre-registered backtest on Subarna's own statement, reported only as relative numbers (months, days of notice), with his OK.
+- **His real year, graded.** He's using it on his real statements now. The next step is running the same backtest there, on his laptop, and publishing only what he's happy to share: months, and days of notice, never amounts.
 - **A Bengali voice.** The weekly letter already has a Bengali mode; the chat could too.
 
 ## Try it
@@ -295,7 +305,7 @@ python scripts/make_post_figures.py
 
 A student's bank statement is the most private document he owns: every late-night order, every friend he paid back, every month he had to ask home for a little more.
 
-I couldn't build this on a hosted API without asking Subarna to send all of that to a company and trust a privacy policy. I wasn't willing to ask a friend for that. With **open weights on his own laptop**, "your data never leaves" stops being a promise and becomes something I can **test**: the tests run with the network blocked, the app counts its own outside requests, and the demo was recorded with the Wi-Fi off.
+I couldn't build this on a hosted API without asking Subarna to send all of that to a company and trust a privacy policy. I wasn't willing to ask a friend for that, and it turns out he'd have said no: every tool that asked for his bank details, he closed. With **open weights on his own laptop**, "your data never leaves" stops being a promise and becomes something I can **test**: the tests run with the network blocked, the app counts its own outside requests, and the demo was recorded with the Wi-Fi off.
 
 Open models also made it **free to run forever**. A tool for someone living on an allowance can't come with a token bill. And they made it **small enough for the HP i3 he already has**: nobody should need a new laptop to find out they can't afford one. And because TabPFN is open, I could check what it actually does under a pre-registered backtest instead of trusting a benchmark. Sometimes that check said "not significant yet", and that's part of why I trust it.
 
@@ -315,4 +325,4 @@ Then tell me in the comments what it said, and whether you believed it. And if y
 
 ---
 
-Built for Subarna. I hope the next time he's about to pay for something, he already knows the answer.
+Built for Subarna, who now runs it on his own laptop. I hope the next time he's about to pay for something, he already knows the answer.

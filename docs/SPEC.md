@@ -33,7 +33,7 @@ Built for one person. Works for anyone on irregular money. The post leads with S
 
 | User | Context | What they need |
 |---|---|---|
-| Subarna (primary) | First-year student, Kolkata. Allowance from his mother once a month. Laptop + Android phone. Spends via UPI. | Know what is safe today; see what Saturday plans really cost; not be lectured. |
+| Subarna (primary) | Third-year student, Kolkata. Allowance from his mother once a month. Laptop + Android phone. Spends via UPI. | Know what is safe today; see what Saturday plans really cost; not be lectured. |
 | Soumyadeep (second validation subject) | Student + freelancer, irregular income. | Same engine with a different "anchor income" definition. Proves it generalizes beyond one person. |
 | Judges | 30 to 90 seconds per entry, desktop browser. | Instant demo with sample data, a striking visual, credible numbers. |
 

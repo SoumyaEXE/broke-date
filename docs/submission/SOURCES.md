@@ -34,7 +34,9 @@ claim, and the file the code wrote that backs it. Rebuild the files with the com
 | The TabPFN features hiding in plain sight | Abstained on all 114; Gemma got 101 wrong | `out/labels/sim.json compare` |
 | The TabPFN features hiding in plain sight | fit_with_cache, v2 weights, n_estimators, seed | `engine/brokedate/config.py`, `engine/brokedate/models/tabpfn_adapter.py` |
 | Demo | Recorded with Wi-Fi off | the author's recording (confirmed by the author) |
-| (opening) | Who Subarna is: first-year student in Kolkata, allowance from his mother once a month | the author (project spec, section 0) |
+| (opening) | Who Subarna is: third-year student in Kolkata, allowance from his mother once a month | the author |
+| (opening) | Subarna's quote, and that he ran it on his own laptop with his real statements | Subarna, relayed by the author on 2026-10-04. Wording tidied from his spoken feedback: **show him the exact sentence before publishing** |
+| (opening), About the data | No real numbers are published; all figures are synthetic | `data/sim/`, `data/subarna_syn/persona.json`, every figure's footer |
 
 ## Author notes (rules for editing the post)
 
