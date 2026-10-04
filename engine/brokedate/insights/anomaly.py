@@ -2,9 +2,11 @@
 
 For every spend in the recent window, TabPFN (fit only on spends *before* the window) predicts 99 quantiles of the
 amount from: category, how often this merchant was paid before and its usual amount, weekday, day of the allowance
-month, hour, and the balance just before paying. A spend is unusual when its amount sits above the
-`FLAG_PERCENTILE` of that predicted distribution and is at least `MIN_FLAG_RUPEES`. Nothing here is generated
-text; every value shown is the model's own quantile or the statement's own amount.
+month, hour, and the balance just before paying. A spend is unusual when TabPFN gives a spend that big a chance
+of at most `1 - FLAG_PERCENTILE` and it is at least `MIN_FLAG_RUPEES`. The chance comes from TabPFN's full
+predicted distribution (its exact CDF, tails included), so it can say "about 1 in 400" instead of only "above the
+99th percentile". `tail_check` reports how many ordinary spends TabPFN called that rare, against how many it should
+have if its tails are honest. Nothing here is generated text; every value is the model's or the statement's own.
 """
 
 from __future__ import annotations
@@ -25,6 +27,7 @@ WINDOW_DAYS = 45          # spends checked: the last six weeks before as_of
 MIN_TRAIN = 60            # spends needed before the window to learn what "normal" looks like
 FLAG_PERCENTILE = 0.97    # above this quantile of the predicted amount = unusual
 MIN_FLAG_RUPEES = 100     # never flag small change (a ₹30 chai can't be the problem)
+ONE_IN_CAP = 10_000       # beyond this the tail is extrapolation; shown as "rarer than 1 in 10,000"
 
 FEATURES = ["category", "merchant_seen", "merchant_usual_log", "weekday", "day_in_cycle", "hour", "balance_log"]
 
@@ -40,6 +43,8 @@ class Unusual:
     usual_hi_paise: int       # TabPFN 90th percentile
     percentile: float         # where the actual amount sits in TabPFN's predicted distribution (0..1)
     times_seen: int           # earlier payments to this merchant
+    chance: float = 0.0       # TabPFN's probability of a spend at least this big (exact CDF, tails included)
+    one_in: int = 0           # the same as "about 1 in N" (round(1 / chance), capped at ONE_IN_CAP)
 
 
 @dataclass
@@ -51,11 +56,13 @@ class AnomalyReport:
     unusual: list[Unusual] = field(default_factory=list)
     model: str = ""
     note: str | None = None
+    tail_check: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {"as_of": self.as_of, "window_days": self.window_days, "n_checked": self.n_checked,
                 "n_train": self.n_train, "model": self.model, "note": self.note,
-                "flag_percentile": FLAG_PERCENTILE, "unusual": [u.__dict__ for u in self.unusual]}
+                "flag_percentile": FLAG_PERCENTILE, "tail_check": self.tail_check,
+                "unusual": [u.__dict__ for u in self.unusual]}
 
 
 def spend_features(led: Ledger) -> pd.DataFrame:
@@ -96,20 +103,37 @@ def find_unusual(led: Ledger, as_of: date, make_model: Callable[[], DistRegresso
         return rep
     model = make_model().fit(train[FEATURES].to_numpy(float), train["y"].to_numpy(float))
     rep.model = getattr(model, "version", "") or getattr(model, "name", "")
-    Q = model.quantiles(test[FEATURES].to_numpy(float), QS)
+    Xt = test[FEATURES].to_numpy(float)
+    Q = model.quantiles(Xt, QS)
     y = test["y"].to_numpy(float)
+    # chance of a spend at least this big: the amount itself counts, so evaluate a hair below it
+    chance = model.exceed_prob(Xt, y - 1e-9)
+    rep.tail_check = tail_check(chance)
     for i, (_, row) in enumerate(test.iterrows()):
         q = Q[i]
-        pct = float(np.interp(y[i], q, QS, left=0.0, right=1.0))
+        p = float(chance[i])
         amount = int(row["amount_paise"])
-        if pct < FLAG_PERCENTILE or amount < MIN_FLAG_RUPEES * 100:
+        if p > 1 - FLAG_PERCENTILE or amount < MIN_FLAG_RUPEES * 100:
             continue
         rep.unusual.append(Unusual(
             txn_id=str(row["id"]), date=str(row["date"]), merchant=str(row["merchant"] or row["merchant_key"]).title(),
             category=row["category_"], amount_paise=amount,
             usual_paise=int(round(np.expm1(np.interp(0.5, QS, q)) * 100)),
             usual_hi_paise=int(round(np.expm1(np.interp(0.9, QS, q)) * 100)),
-            percentile=round(pct, 3), times_seen=int(row["merchant_seen"]),
+            percentile=round(1 - p, 4), times_seen=int(row["merchant_seen"]),
+            chance=round(p, 6), one_in=one_in(p),
         ))
-    rep.unusual.sort(key=lambda u: (-u.percentile, -u.amount_paise))
+    rep.unusual.sort(key=lambda u: (u.chance, -u.amount_paise))
     return rep
+
+
+def one_in(p: float) -> int:
+    return ONE_IN_CAP if p <= 1 / ONE_IN_CAP else int(round(1 / p))
+
+
+def tail_check(chance: np.ndarray) -> dict[str, Any]:
+    """If TabPFN's tails are honest, about 3% of spends get a chance <= 3% (and 10% get <= 10%). Small windows
+    are noisy, so counts are reported, not a verdict."""
+    n = int(len(chance))
+    return {"n": n, "levels": [{"level": lv, "expected": round(lv * n, 1), "observed": int((chance <= lv).sum())}
+                               for lv in (0.03, 0.10)]}

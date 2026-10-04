@@ -1,0 +1,140 @@
+{
+  "subject": "sim",
+  "n_rows": 569,
+  "gemma_used": true,
+  "gemma_model": "gemma3:1b",
+  "gemma_error": null,
+  "tabpfn_error": null,
+  "by_source_counts": {
+    "rules": 455,
+    "cache": 0,
+    "tabpfn": 0,
+    "gemma": 114
+  },
+  "rules_coverage": 0.7996,
+  "accuracy_overall": 0.8225,
+  "accuracy_by_source": {
+    "rule": {
+      "n": 455,
+      "accuracy": 1.0
+    },
+    "gemma": {
+      "n": 114,
+      "accuracy": 0.114
+    }
+  },
+  "needs_review": 0,
+  "confusion_top": [
+    {
+      "truth": "transport",
+      "predicted": "transfer_to_person",
+      "n": 28
+    },
+    {
+      "truth": "transport",
+      "predicted": "campus_food",
+      "n": 25
+    },
+    {
+      "truth": "transport",
+      "predicted": "food_delivery",
+      "n": 24
+    },
+    {
+      "truth": "transport",
+      "predicted": "shopping",
+      "n": 24
+    }
+  ],
+  "note": "simulated narrations vs simulator ground truth",
+  "compare": {
+    "rules": {
+      "accuracy": 0.7996,
+      "needs_review": 114,
+      "by_source": {
+        "rule": {
+          "n": 455,
+          "accuracy": 1.0
+        },
+        "unlabelled": {
+          "n": 114,
+          "accuracy": 0.0
+        }
+      },
+      "counts": {
+        "rules": 455,
+        "cache": 0,
+        "tabpfn": 0,
+        "gemma": 0
+      },
+      "gemma_error": null,
+      "tabpfn_error": null
+    },
+    "rules+tabpfn": {
+      "accuracy": 0.7996,
+      "needs_review": 114,
+      "by_source": {
+        "rule": {
+          "n": 455,
+          "accuracy": 1.0
+        },
+        "unlabelled": {
+          "n": 114,
+          "accuracy": 0.0
+        }
+      },
+      "counts": {
+        "rules": 455,
+        "cache": 0,
+        "tabpfn": 0,
+        "gemma": 0
+      },
+      "gemma_error": null,
+      "tabpfn_error": null
+    },
+    "rules+gemma": {
+      "accuracy": 0.8225,
+      "needs_review": 0,
+      "by_source": {
+        "rule": {
+          "n": 455,
+          "accuracy": 1.0
+        },
+        "gemma": {
+          "n": 114,
+          "accuracy": 0.114
+        }
+      },
+      "counts": {
+        "rules": 455,
+        "cache": 0,
+        "tabpfn": 0,
+        "gemma": 114
+      },
+      "gemma_error": null,
+      "tabpfn_error": null
+    },
+    "rules+tabpfn+gemma": {
+      "accuracy": 0.8225,
+      "needs_review": 0,
+      "by_source": {
+        "rule": {
+          "n": 455,
+          "accuracy": 1.0
+        },
+        "gemma": {
+          "n": 114,
+          "accuracy": 0.114
+        }
+      },
+      "counts": {
+        "rules": 455,
+        "cache": 0,
+        "tabpfn": 0,
+        "gemma": 114
+      },
+      "gemma_error": null,
+      "tabpfn_error": null
+    }
+  }
+}

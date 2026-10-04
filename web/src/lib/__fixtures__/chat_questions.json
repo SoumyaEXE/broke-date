@@ -36,20 +36,20 @@
  },
  {
   "question": "Can I afford ₹1200 shoes tomorrow?",
-  "template": "Doable, but tight. I reran your {f1} with {f2} shoes on Sun, {f3}. {f4} still make it to payday {f5}, and it costs {f6} of runway on your own money. Chance of going broke before payday would be {f7}.",
-  "verdict": "doable but tight",
+  "template": "I'd hold off. I reran your {f1} with {f2} shoes on Mon, {f3}. {f4} still make it to payday {f5}, and it costs {f6} of runway on your own money. Chance of going broke before payday would be {f7}.",
+  "verdict": "risky: better to hold off",
   "facts": [
    {
     "id": "f1",
-    "desc": "count, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+    "desc": "count, in \"I reran your {f1} with {f2} shoes on Mon, {f3}.\""
    },
    {
     "id": "f2",
-    "desc": "amount, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+    "desc": "amount, in \"I reran your {f1} with {f2} shoes on Mon, {f3}.\""
    },
    {
     "id": "f3",
-    "desc": "date, in \"I reran your {f1} with {f2} shoes on Sun, {f3}.\""
+    "desc": "date, in \"I reran your {f1} with {f2} shoes on Mon, {f3}.\""
    },
    {
     "id": "f4",
@@ -90,7 +90,7 @@
  },
  {
   "question": "When would I run out?",
-  "template": "{f1} simulated months run out before payday. When they do, it's most often around {f2} (most of them between {f3} and {f4}).",
+  "template": "{f1} simulated months run out before payday. When they do, it's most often around {f2} (most of them between {f3} and {f2}).",
   "verdict": null,
   "facts": [
    {
@@ -99,15 +99,11 @@
    },
    {
     "id": "f2",
-    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
+    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f2}).\""
    },
    {
     "id": "f3",
-    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
-   },
-   {
-    "id": "f4",
-    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f4}).\""
+    "desc": "date, in \"When they do, it's most often around {f2} (most of them between {f3} and {f2}).\""
    }
   ]
  },

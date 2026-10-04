@@ -17,7 +17,7 @@ lint:
 	$(UV) run ruff check engine scripts/hooks
 
 types:
-	$(UV) run mypy engine/brokedate
+	$(UV) run mypy --config-file engine/pyproject.toml engine/brokedate
 
 test:
 	$(UV) run pytest engine/tests

@@ -53,6 +53,8 @@ def test_planted_spend_is_flagged_and_normal_ones_mostly_are_not(sim_ledger):
     assert str(tx.loc[target, "id"]) in ids
     hit = next(u for u in rep.unusual if u.txn_id == str(tx.loc[target, "id"]))
     assert hit.percentile >= 0.97 and hit.amount_paise == 200000 and hit.usual_paise < 20000
+    assert hit.chance <= 0.03 and hit.one_in >= 33
+    assert rep.tail_check["n"] == rep.n_checked and [lv["level"] for lv in rep.tail_check["levels"]] == [0.03, 0.10]
     assert len(rep.unusual) <= max(3, 0.1 * rep.n_checked)  # not crying wolf
     assert rep.n_train >= MIN_TRAIN and rep.n_checked > 0
 
@@ -72,6 +74,26 @@ def test_tabpfn_runs_end_to_end_on_the_sim_month(sim_ledger):
     rep = find_unusual(led, led.last_day + timedelta(days=1), lambda: make_tabpfn(cfg, seed=0))
     assert rep.model.startswith("tabpfn") and rep.n_checked > 0
     assert all(u.percentile >= 0.97 for u in rep.unusual)
+
+
+def test_one_in_is_readable_and_capped():
+    from brokedate.insights.anomaly import ONE_IN_CAP, one_in
+
+    assert one_in(0.03) == 33 and one_in(0.0025) == 400 and one_in(1e-9) == ONE_IN_CAP
+
+
+@pytest.mark.slow
+def test_exact_tail_sees_past_the_99th_quantile():
+    """On N(0, 1) noise: quantiles call a 3-sigma value impossible; TabPFN's full distribution gives it a chance."""
+    from brokedate.models.tabpfn_adapter import DistRegressor, TabPFNDist
+
+    rng = np.random.default_rng(0)
+    m = TabPFNDist().fit(rng.random((400, 2)), rng.standard_normal(400))
+    X = np.full((3, 2), 0.5)
+    exact = m.exceed_prob(X, np.array([0.0, 3.0, 4.0]))
+    coarse = DistRegressor.exceed_prob(m, X, np.array([0.0, 3.0, 4.0]))
+    assert abs(exact[0] - 0.5) < 0.05 and coarse[1] == 0.0
+    assert 0 < exact[2] < exact[1] < 0.01
 
 
 # ---- TabPFN categorizer stage (stub classifier: nearest class centroid with softmax "probabilities") ----
@@ -110,6 +132,16 @@ def test_classify_pending_only_applies_confident_predictions():
     assert pending[0]["category"] == "campus_food" and pending[0]["label_source"] == "tabpfn"
     assert n == sum(p.get("label_source") == "tabpfn" for p in pending)
     assert classify_pending(canteen[:10], [_row(902, "x")], CentroidClf, 0.6, 40) == 0  # too little to learn from
+
+
+def test_more_categories_than_tabpfn_supports_are_pooled_and_never_assigned():
+    from brokedate.enrich.tabpfn_cat import MAX_CLASSES, OTHER, cap_classes
+
+    labels = [f"c{i:02d}" for i in range(14) for _ in range(20 - i)]  # 14 categories, c00 most common
+    capped = cap_classes(labels)
+    assert len(set(capped)) == MAX_CLASSES and OTHER in capped
+    assert {c for c in capped if c != OTHER} == {f"c{i:02d}" for i in range(MAX_CLASSES - 1)}
+    assert cap_classes(["a", "b", "a"]) == ["a", "b", "a"]
 
 
 def test_pipeline_counts_and_caches_tabpfn_labels(sim_ledger, db):

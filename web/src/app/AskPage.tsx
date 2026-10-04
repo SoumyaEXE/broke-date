@@ -154,7 +154,7 @@ export function AskPage({ data, provider, question, onUpdate, onSettings, go }: 
         else if (e.type === "token") append(id, e.text);
         else if (e.type === "done") {
           if (e.ok) patch(id, { text: e.text, status: "done" });
-          else typeOut(id, g.template, rejection(e.problems));
+          else typeOut(id, g.template); // Gemma's one-liner failed a check: drop it, the checked answer is unchanged
         } else if (e.type === "error") typeOut(id, g.template, started ? "Gemma stopped mid-reply; showing the checked answer." : `${e.message}. Showing the checked answer.`);
       }, ctl.signal).catch(() => typeOut(id, g.template, "Engine not reachable; showing the checked answer."));
   };
@@ -269,17 +269,6 @@ function HistoryMenu({ threads, activeId, onSelect, onDelete }: {
       </DropdownPopover>
     </Dropdown>
   );
-}
-
-/** Plain-English reason a Gemma draft was not shown (the validator's problems, translated). */
-function rejection(problems: string[]): string {
-  const p = problems.join(" ");
-  const why = /digit|number words/.test(p) ? "wrote a number itself instead of using TabPFN's"
-    : /left out/.test(p) ? "left out one of the numbers, which changed the meaning"
-    : /unit word/.test(p) ? "repeated a unit after a number"
-    : /unknown placeholders|malformed/.test(p) ? "referred to a number that does not exist"
-    : "did not pass the checks";
-  return `Gemma's draft ${why}, so this is the checked answer.`;
 }
 
 function BotTurn({ m, n, live, data, go, onFollow, onUndo, provider }: {

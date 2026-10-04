@@ -67,7 +67,7 @@ def test_render_links_facts():
     assert [s["fact_id"] for s in segs if s["type"] == "fact"] == ["f1", "f6"]
 
 
-# ---- chat (Gemma rephrases a simulated answer, streamed) ----
+# ---- chat (Gemma reacts in one line; the checked answer follows verbatim) ----
 
 class _FakeChatClient:
     def __init__(self, pieces: list[str], models: list[str] | None = None) -> None:
@@ -81,26 +81,29 @@ class _FakeChatClient:
         import re
 
         body = messages[1]["content"]
-        assert "{f1}" in body and not re.search(r"\d", re.sub(r"\{f\d+\}", "", body))
+        assert not re.search(r"\d|\{f", body)  # Gemma sees no numbers and no placeholders to copy
         yield from self.pieces
 
 
 _FACTS = [{"id": "f1", "desc": "amount you can safely spend today"}, {"id": "f2", "desc": "chance of going broke"}]
+_TPL = "You can spend up to {f1} today. Risk stays at {f2}."
+_YES = "comfortable: yes, they can afford it"
 
 
-def _run(pieces: list[str], models: list[str] | None = None) -> list[dict]:
+def _run(pieces: list[str], models: list[str] | None = None, verdict: str | None = _YES,
+         question: str = "how much can I spend?") -> list[dict]:
     from brokedate.config import Config
     from brokedate.narrate.chat import stream_reply
 
-    return list(stream_reply(Config(), "how much can I spend?", _FACTS, "You can spend up to {f1} today.", "yes",
-                             "English", client=_FakeChatClient(pieces, models)))  # type: ignore[arg-type]
+    return list(stream_reply(Config(), question, _FACTS, _TPL, verdict, "English",
+                             client=_FakeChatClient(pieces, models)))  # type: ignore[arg-type]
 
 
-def test_chat_streams_and_accepts_placeholders() -> None:
-    ev = _run(["Good news: ", "you can spend ", "{f1} today, ", "and the risk stays at {f2}."])
+def test_chat_streams_reaction_then_the_checked_answer_verbatim() -> None:
+    ev = _run(["Good news, ", "bhai!"])
     assert ev[0] == {"type": "start", "model": "gemma3:1b"}
-    assert [e["text"] for e in ev if e["type"] == "token"][2] == "{f1} today, "
-    assert ev[-1]["type"] == "done" and ev[-1]["ok"] is True
+    assert [e["text"] for e in ev if e["type"] == "token"] == ["Good news, ", "bhai!", f" {_TPL}"]
+    assert ev[-1] == {"type": "done", "ok": True, "text": f"Good news, bhai! {_TPL}", "problems": []}
 
 
 def test_chat_cuts_stream_on_digit() -> None:
@@ -109,12 +112,26 @@ def test_chat_cuts_stream_on_digit() -> None:
     assert not any(e.get("text", "").startswith(" and more") for e in ev if e["type"] == "token")
 
 
-def test_chat_rejects_number_words_and_unknown_placeholders() -> None:
-    ev = _run(["You can spend about five hundred, ", "see {f9}."])
+def test_chat_rejects_number_words_and_placeholders() -> None:
+    ev = _run(["About five hundred left, see {f1}."])
     assert ev[-1]["ok"] is False and any("number words" in p for p in ev[-1]["problems"])
-    assert any("unknown placeholders" in p for p in ev[-1]["problems"])
+    assert "tried to repeat a number" in ev[-1]["problems"]
 
 
+def test_chat_rejects_an_invented_day_but_allows_the_questions_own() -> None:
+    assert "invented a day ['friday']" in _run(["Save some for Friday, yaar."])[-1]["problems"]
+    assert _run(["Friday plans sorted, yaar."], question="movie on Friday?")[-1]["ok"] is True
+
+
+def test_chat_rejects_a_reaction_that_contradicts_the_verdict() -> None:
+    assert "contradicted the verdict" in _run(["Go for it, treat yourself!"], verdict="risky: better to hold off")[-1]["problems"]
+    assert "contradicted the verdict" in _run(["Nah, hold off on that."])[-1]["problems"]
+    assert _run(["Hmm, this is a stretch."], verdict="doable but tight")[-1]["ok"] is True
+
+
+def test_chat_keeps_only_the_first_line() -> None:
+    ev = _run(["Arre wah, sorted!\n", "Also here is a long ramble"])
+    assert ev[-1]["ok"] is True and ev[-1]["text"] == f"Arre wah, sorted! {_TPL}"
 class _VM:
     available = 2 * 2**30
 
@@ -164,24 +181,6 @@ def test_chat_reports_offline_gemma() -> None:
     assert ev == [{"type": "error", "message": "Gemma is offline (OllamaError)"}]
 
 
-def test_chat_guard_waits_for_placeholder_to_close() -> None:
-    ev = _run(["You can spend up to {", "f", "1", "} today."])
-    assert ev[-1]["ok"] is True and ev[-1]["text"] == "You can spend up to {f1} today."
-
-
-def test_chat_rejects_reply_that_drops_a_fact() -> None:
-    from brokedate.config import Config
-    from brokedate.narrate.chat import stream_reply
-
-    ev = list(stream_reply(Config(), "when?", _FACTS, "{f1} of them run out, around {f2}.", None, "English",
-                           client=_FakeChatClient(["Bhai, you will run out around {f2}, sorry."])))  # type: ignore[arg-type]
-    assert ev[-1]["ok"] is False and "left out facts ['f1']" in ev[-1]["problems"]
-
-
-def test_chat_rejects_repeated_unit() -> None:
-    ev = _run(["You can spend {f1} today; risk is {f2} percent."])
-    assert ev[-1]["ok"] is False and "unit word repeated after a placeholder" in ev[-1]["problems"]
-
 
 def test_chat_eval_counts_acceptance_and_reasons(monkeypatch) -> None:  # noqa: ANN001
     import json as _json
@@ -189,22 +188,24 @@ def test_chat_eval_counts_acceptance_and_reasons(monkeypatch) -> None:  # noqa: 
     from brokedate.config import Config
     from brokedate.narrate import chat_eval
 
-    class Echo:
-        """gemma3:1b repeats the plain answer (always valid); gemma3:4b sneaks in a digit."""
+    class Fake:
+        """gemma3:1b reacts without numbers (valid); gemma3:4b sneaks in a digit."""
 
         def available_models(self) -> list[str]:
             return ["gemma3:1b", "gemma3:4b"]
 
         def chat_stream(self, messages, temperature=0.6, seed=0, num_predict=200, model=None):  # noqa: ANN001
-            body = messages[1]["content"]
-            plain = body.split("Plain answer: ", 1)[1].split("\n", 1)[0]
-            yield ("Sure. " + plain) if model == "gemma3:1b" else "You have 5 rupees."
+            yield "Arre, let's see this." if model == "gemma3:1b" else "You have 5 rupees."
 
     monkeypatch.setattr(chat_eval, "fits", lambda m: True)
     monkeypatch.setattr("brokedate.narrate.chat.fits", lambda m: True)
-    res = chat_eval.evaluate_chat(Config(), client=Echo())  # type: ignore[arg-type]
+    res = chat_eval.evaluate_chat(Config(), client=Fake())  # type: ignore[arg-type]
     n = len(_json.loads(chat_eval.FIXTURES.read_text(encoding="utf-8")))
     one, four = res["models"]["gemma3:1b"], res["models"]["gemma3:4b"]
-    assert one["n"] == four["n"] == n
-    assert one["acceptance_rate"] >= 0.8                      # echoing the checked answer passes (length rules aside)
+    assert one["n"] == four["n"] == n and one["accepted"] == n
     assert four["accepted"] == 0 and four["rejections"] == {"wrote a digit": n}
+
+
+def test_chat_strips_emojis() -> None:
+    ev = _run(["Arre wah \U0001f602, ", "sorted!"])
+    assert ev[-1]["ok"] is True and ev[-1]["text"] == f"Arre wah, sorted! {_TPL}"

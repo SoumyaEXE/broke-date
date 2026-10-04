@@ -19,6 +19,8 @@ from brokedate.enrich.rules import COUNTERPARTIES, parse_narration
 
 KINDS = ("UPI", "NEFT", "IMPS", "ATM", "POS", "REVERSAL", "CHARGES", "INTEREST", "OTHER")
 HASH_DIMS = 24
+MAX_CLASSES = 10  # TabPFN v2's output head is 10-way; more categories than that cannot be scored in one model
+OTHER = "__other__"  # the rarer categories pooled; a row predicted as this is left for Gemma / review
 _TOKEN = re.compile(r"[a-z]{3,}")
 
 
@@ -53,12 +55,24 @@ def classify_pending(labelled: list[dict[str, Any]], pending: list[dict[str, Any
     train = [r for r in labelled if r.get("category")]
     if len(train) < min_train or not pending or len({r["category"] for r in train}) < 2:
         return 0
-    clf = make_clf().fit(featurize(train), np.asarray([r["category"] for r in train]))
+    y = cap_classes([r["category"] for r in train])
+    clf = make_clf().fit(featurize(train), np.asarray(y))
     P = clf.proba(featurize(pending))
     n = 0
     for r, row in zip(pending, P, strict=True):
         j = int(np.argmax(row))
-        if row[j] >= min_prob:
+        if row[j] >= min_prob and str(clf.classes_[j]) != OTHER:
             r.update(category=str(clf.classes_[j]), label_source="tabpfn", confidence=round(float(row[j]), 3))
             n += 1
     return n
+
+
+def cap_classes(labels: list[str], max_classes: int = MAX_CLASSES) -> list[str]:
+    """Keep the most frequent `max_classes - 1` categories and pool the rest as OTHER (ties broken by name)."""
+    counts: dict[str, int] = {}
+    for c in labels:
+        counts[c] = counts.get(c, 0) + 1
+    if len(counts) <= max_classes:
+        return list(labels)
+    keep = {c for c, _ in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[: max_classes - 1]}
+    return [c if c in keep else OTHER for c in labels]

@@ -40,8 +40,9 @@ describe("chat can act on the workspace", () => {
     expect(a.ops).toEqual([expect.objectContaining({ kind: "toggle", active: true, name: "Saturday movie + popcorn" })]);
   });
   it("adds a plan with amount and date", () => {
-    const a = brain.ask("Add momos ₹150 on 12th Sep to plans");
-    expect(a.ops?.[0]).toMatchObject({ kind: "add", plan: { amount_paise: 15000, date: "2026-09-12" } });
+    // a date after the demo's as_of (2026-09-20), so it resolves to this year rather than rolling to the next
+    const a = brain.ask("Add momos ₹150 on 28th Sep to plans");
+    expect(a.ops?.[0]).toMatchObject({ kind: "add", plan: { amount_paise: 15000, date: `${data.as_of.slice(0, 4)}-09-28` } });
   });
   it("opens a tab", () => expect(brain.ask("open futures").ops).toEqual([{ kind: "go", route: "futures" }]));
   it("changes the risk limit and remembers the old one", () => {

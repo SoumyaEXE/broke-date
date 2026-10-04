@@ -26,12 +26,12 @@ switch ($Target) {
     }
     "lint" { Uv run ruff check engine scripts; Uv run ruff format --check engine scripts/hooks }
     "fmt" { Uv run ruff format engine scripts/hooks; Uv run ruff check --fix engine scripts/hooks }
-    "types" { Uv run mypy engine/brokedate }
+    "types" { Uv run mypy --config-file engine/pyproject.toml engine/brokedate }
     "test" { Uv run pytest engine/tests @Rest }
     "offline" { Uv run pytest engine/tests --disable-socket --allow-hosts=127.0.0.1,localhost,::1 @Rest }
     "check" {
         Uv run ruff check engine scripts
-        Uv run mypy engine/brokedate
+        Uv run mypy --config-file engine/pyproject.toml engine/brokedate
         Uv run pytest engine/tests -m "not slow and not ollama" --disable-socket --allow-hosts=127.0.0.1,localhost,::1
         if (Test-Path web/package.json) { Web run typecheck; Web run test }
     }

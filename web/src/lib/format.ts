@@ -72,3 +72,8 @@ export function days(n: number, digits = 1): string {
 export function pct(p: number): string {
   return `${Math.round(p * 100)}%`;
 }
+
+/** TabPFN's chance of a spend this big, as people say it: "1 in 400". The engine caps at 10,000 (beyond is tail extrapolation). */
+export function oneIn(n: number): string {
+  return n >= 10000 ? "rarer than 1 in 10,000" : `about 1 in ${groupIndian(n)}`;
+}

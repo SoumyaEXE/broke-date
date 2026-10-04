@@ -14,7 +14,7 @@ DRAFT for the author. Rules (from CLAUDE.md):
 - Replace [[...]] before publishing. Read it aloud once; cut anything that sounds like a brochure.
 -->
 
-[[GIF, 6 seconds: Plans tab, switch "Saturday movie" on, the orange "with this plan" line drops and "491 → 476 months make it" updates. Simulated demo.]]
+[[GIF, 6 seconds: Plans tab, switch "Saturday movie" on, the orange "with this plan" line drops and the "months make it" count updates. Simulated demo.]]
 
 ## What I Built
 
@@ -28,13 +28,13 @@ So I built him **Broke Date**. It reads his bank statement **on his own laptop**
 
 - **Safe to spend today**: the most he can spend right now and still keep the chance of going broke before payday under 10%.
 - **How many of the 500 futures make it** to his next allowance, and when the ones that don't usually run out.
-- **The price of a plan in days**: Saturday's movie costs him [[f: movie day cost]] days of runway. That number lands harder than "₹320" ever did.
+- **The price of a plan in days**: in the demo, Saturday's movie + popcorn costs **2.05 days** of runway. That number lands harder than a rupee amount ever did. <!-- source: post-numbers demo_sim.plan_day_costs (SIM, as of 2026-09-20) -->
 
 And then it does the things a good friend would:
 
 - 🗨️ **You can just ask it.** *"Can I afford ₹400 on Saturday?"*, *"turn on the movie"*, *"show where my money went"*. It reruns the futures and answers in plain English. It can also switch plans on and off and draw the chart for you.
-- 🚨 **It notices the weird ones.** [[f: one real flagged example from the simulated demo, e.g. "₹X at Y when spends like it are usually ₹A–₹B"]] gets flagged as unusual, with the usual range drawn next to it.
-- 🪔 **It knows Durga Puja is coming.** *"Durga Puja starts in [[f: days]] days. Last time that week cost you [[f: extra]] more than a normal stretch."*
+- 🚨 **It notices the weird ones, with odds.** A spend gets flagged when TabPFN says a spend that big is *"about 1 in 400"* for him, with the usual range drawn next to it. And when nothing is weird, it says so: on the demo date it checked 96 spends and flagged none.
+- 🪔 **It knows the festivals are coming.** *"Durga Puja starts in 27 days."* For Diwali it can compare with last year: those days cost the simulated student ₹920 more than a normal stretch. <!-- source: web/public/demo/forecast.json context.upcoming (SIM, as of 2026-09-20) -->
 - ✉️ **Once a week, a letter from a future that went broke**, written by Gemma: *"Bhai, I'm writing from the 27th…"*. Funny, a bit haunting, and every number in it is real.
 - ⏪ **A time machine for his own months.** Pick any past month and watch what Broke Date would have said every other day, using only the days before it, against the day the money actually ran out. It shows when it was right, when it was late, and when it cried wolf.
 
@@ -50,7 +50,7 @@ Want to click around yourself? There's a **sample-data preview** that runs entir
 
 [[Screenshot 1: Overview dashboard: safe to spend, futures that make it, balance this month vs last.]]
 [[Screenshot 2: Ask: "Can I afford a ₹400 movie on Saturday?" with the answer card.]]
-[[Screenshot 3: Insights: unusual spends with their usual range, Puja heads-up.]]
+[[Screenshot 3: Insights: "nothing unusual" (96 spends checked), Durga Puja + Diwali heads-up, the labeller comparison.]]
 [[Screenshot 4: Time machine: a month that ran out, the warning line crossed days before the orange "ran out" line, and the calibration chart next to it.]]
 
 > The preview and the video use a **simulated** student (a generator I wrote that produces a realistic Kolkata-style UPI statement). Subarna's real statement only ever lived on his laptop.
@@ -76,52 +76,62 @@ The TabPFN category asks to *"forecast, predict, classify, or spot anomalies"*. 
 
 **2. Simulate 500 futures.** Starting from today's balance, each future draws one day at a time from TabPFN's distribution, feeds the new balance back in, and keeps going until payday. When money gets low he spends less, and because balance is a feature, the simulation learned that too. A plan's **price in days** is the same 500 futures rerun with the same random draws, plus the plan. Same randomness means the difference is the plan and nothing else.
 
-**3. Spot anomalies.** For every recent spend, TabPFN, trained only on earlier spends, predicts what a spend *like this one* usually costs (same category, merchant history, weekday, time of month, balance). If the amount sits above the 97th percentile of that prediction and is over ₹100, it's flagged. [[f: on the simulated student, N of M spends in the last 6 weeks were flagged]].
+**3. Spot anomalies.** For every recent spend, TabPFN, trained only on earlier spends, predicts what a spend *like this one* usually costs (same category, merchant history, weekday, time of month, balance). Here I use a TabPFN feature almost nobody touches: `predict(output_type="full")` hands back the **whole predicted distribution**, not a handful of quantiles, and its `.cdf()` includes the tails. So instead of "above the 97th percentile" (99 quantiles can't see past the 99th, so 1-in-100 and 1-in-10,000 look the same), each spend gets real odds: *"about 1 in 400 spends like this"*. A spend is flagged when those odds are 1 in 33 or rarer and it's over ₹100.
 
-Does it actually catch things? Real statements don't come labelled "this one was weird", so I **planted** some: copied the history, picked 5 ordinary recent spends, multiplied them by 3× or 5×, and asked three detectors to find them. Same plants for everyone, three random seeds:
+Odds are only worth showing if they're honest, so I checked. If TabPFN's probabilities mean what they say, about 3% of ordinary spends should look "1 in 33" rare. Across four back-to-back 45-day windows of the simulated student's untouched statement (193 spends, each window scored by a model fit only on what came before), **it expected 5.8 and found 4**; at the 10% level it expected 19.3 and found 21. <!-- source: out/insights/anomaly_eval_sim.json tail_check --> The app shows this check live, under the list. On the simulated student, it checked the 96 spends of the 45 days before the demo date and flagged **none**. I'd rather show an empty list than lower the bar until something turns up. <!-- source: web/public/demo/insights.json -->
 
-<!-- source: out/insights/anomaly_eval_sim.json (brokedate eval-anomaly) -->
+Does it actually catch things? Real statements don't come labelled "this one was weird", so I **planted** some: copied the history, picked 5 ordinary recent spends, multiplied them by 3× or 5×, and asked three detectors to find them. Same plants for everyone, three random seeds, so 15 plants per column:
+
+<!-- source: out/insights/anomaly_eval_sim.json (brokedate eval-anomaly, SIM) -->
 | Detector | Found (3× plants) | Found (5× plants) | False alarms per run |
 |---|---|---|---|
-| **TabPFN (the app)** | [[f]] | [[f]] | [[f]] |
-| "More than 3× this merchant's usual" | [[f]] | [[f]] | [[f]] |
-| "3 standard deviations above its category" | [[f]] | [[f]] | [[f]] |
+| **TabPFN (the app)** | **13 / 15** | **14 / 15** | 0 |
+| "More than 3× this merchant's usual" | 11 / 15 | 13 / 15 | 0 |
+| "3 standard deviations above its category" | 11 / 15 | 14 / 15 | 0 |
 
-[[One honest sentence on the result, whichever way it goes: e.g. why context (balance, time of month) helps or doesn't.]]
+The gap is in the subtle cases. A 5× spend is obvious to everyone, but a 3× spend at a place he's rarely been, late in the month with little money left, only looks odd if you know *when* and *with how much* he usually spends like that, which is exactly what TabPFN gets as input and the rules don't. Fifteen plants is a small test, so read this as "TabPFN is at least as good, and better on the hard ones", not as a precise rate.
 
-**4. Classify transactions.** Indian UPI narrations are chaos (`UPI-RAJU MAHATO-rajum12@ybl-SBIN0016209-6524...-Payment`: is Raju a friend or the auto driver?). Regex rules handle the obvious ones. **TabPFN learns from the rows the rules were sure about** and labels the leftovers it is confident on. Only what's still unclear goes to Gemma or to a "you decide" list. On the simulated statement, measured against the generator's ground truth:
+**4. Classify transactions.** Indian UPI narrations are chaos (`UPI-RAJU MAHATO-rajum12@ybl-SBIN0016209-6524...-Payment`: is Raju a friend or the auto driver?). Regex rules handle the obvious ones. **TabPFN learns from the rows the rules were sure about** and labels the leftovers it is confident on. Only what's still unclear goes to Gemma or to a "you decide" list. On the simulated statement (569 transactions), measured against the generator's ground truth:
 
-| Pipeline | Correct |
-|---|---|
-| Rules only | [[f: labels.compare.rules]] |
-| Rules + TabPFN | [[f: labels.compare.rules+tabpfn]] |
-| Rules + Gemma | [[f: labels.compare.rules+gemma]] |
-| Rules + TabPFN + Gemma | [[f: labels.compare.rules+tabpfn+gemma]] |
+<!-- source: out/labels/sim.json (brokedate eval-labels, SIM) -->
+| Pipeline | Correct | Left for "you decide" |
+|---|---|---|
+| Rules only | 80.0% | 114 |
+| Rules + TabPFN | 80.0% | 114 |
+| Rules + Gemma | 82.3% | 0 |
+| Rules + TabPFN + Gemma | 82.3% | 0 |
+
+TabPFN added nothing here, and I think that's the right answer. The 114 leftovers are almost all UPI payments to people like "BABLU SK" or "RAJU MAHATO", who in this simulated student's life are auto and toto drivers. The rules never labelled a single payment to a person as transport, so there was nothing to learn it from, and TabPFN's best guess never got above 55% sure, under its 60% bar. **It knew it didn't know.** Gemma labelled all 114 confidently and got 13 right. In the app, a payment to a person goes to the "you decide" list once, and every later payment to the same person is remembered. (One engineering note: TabPFN v2 supports at most 10 classes and this student has 14 categories, so TabPFN sees the 9 most common plus an "other" bucket, and "other" is never assigned.)
 
 ### Gemma never touches a number
 
-A chatbot that invents "you have ₹2,000 left" is worse than no chatbot. So the browser works out every answer first, from the 500 futures, in milliseconds. Gemma then gets the answer with each number **replaced by a placeholder** like `{f1}`, plus what each placeholder means. It writes the sentence; the app puts the real numbers back.
+A chatbot that invents "you have ₹2,000 left" is worse than no chatbot. So the browser works out every answer first, from the 500 futures, in milliseconds, as a plain checked sentence.
 
-Three guards keep it honest:
-- the stream is **cut the instant Gemma types a digit**;
-- the finished reply is rejected if it uses a **number word** ("five hundred", "pachsho"), invents a placeholder, or **drops one of the numbers**, because "16 of 500 months run out" and "you'll run out" mean very different things;
-- when a draft is rejected, the checked plain answer is shown instead, and you can always see which one you got.
+My first design had Gemma reword that whole answer, with each number replaced by a placeholder like `{f1}` that the app filled back in. I measured it on the 14 questions the chat suggests, and **Gemma 3 1B passed the checks on only 2 of 14**. It dropped numbers, invented a "Friday" nobody mentioned, and strung placeholders into nonsense. Asking a 1B model to carry six numbers through a casual sentence is the wrong job. <!-- source: out/chat/chat_eval_english_v1_reword.json -->
 
-How often does Gemma get it right on the first try? I ran the same 14 questions the chat suggests through both sizes, exactly as the app does:
+So now Gemma does the part it's good at, being the friend. It writes **one short reaction line**, and the checked answer follows word for word: *"Whoa there, buddy! Let's not be hasty, yeah? You can spend up to…"* Gemma never sees a number (they're blanked out of what it reads), and its line is rejected if it:
 
-<!-- source: out/chat/chat_eval_english.json (brokedate eval-chat) -->
-| Model | Drafts accepted | Most common reason a draft was rejected | First word after | Whole reply |
+- types a **digit** (the stream is cut on the spot) or a **number word** ("five hundred", "pachsho");
+- mentions a **day** the question didn't ("save some for Friday");
+- **contradicts the verdict**, like "go for it!" when the answer is "risky".
+
+A rejected line is simply dropped. The answer underneath doesn't change, so the user never sees a wrong number.
+
+<!-- source: 1B: out/chat/chat_eval_english.json; 4B: out/chat/chat_eval_english_prev_fixtures.json (4B skipped in the final run: under 5 GB free) -->
+| Model | Lines accepted | Why the others were dropped | First word after | Whole line |
 |---|---|---|---|---|
-| Gemma 3 1B | [[f]] / 14 | [[f]] | [[f]] s | [[f]] s |
-| Gemma 3 4B | [[f]] / 14 | [[f]] | [[f]] s | [[f]] s |
+| Gemma 3 1B (default) | **12 / 14** (first design: 2 / 14) | contradicted the verdict, used a number word | 3.1 s | 3.9 s |
+| Gemma 3 4B | 12 / 14 | contradicted the verdict, used a number word | 11.0 s | 12.7 s |
 
-Every rejected draft is replaced by the checked answer, so the user never sees a wrong number, only plainer words.
+(4B numbers are from the run just before, on the previous export of the same 14 questions. In the final run the laptop had under 5 GB free, so the app refused to load 4B, which is the memory guard doing its job.)
+
+The 4B model isn't better at this job, just four times slower, which is why 1B is the default. The checks aren't perfect either: one accepted line told the student *"you've got a decent cushion"* about a balance Gemma never saw. No digit, no wrong number, but a judgement it had no right to make. The number right after it is correct; the vibe is a guess.
 
 It also never crashes a cheap laptop: the 1B model is the default, the 4B model only loads if **5 GB of RAM is actually free right now**, and if even 1B doesn't fit, the app answers with the checked text and no AI wording.
 
 ### It grades itself, under rules I wrote down first
 
-Before running any evaluation, I committed the rules to the repo ([[link to PREREGISTRATION.md commit]]): walk-forward only (each day predicted using only the days before it), every 2nd day with at least 60 days of history, a bootstrap over whole months for 90% intervals, and **TabPFN only "wins" if the entire interval of the difference favours it**.
+I wrote the rules down before evaluating anything, and froze them in a commit before touching Subarna's real statement ([[link to the "docs(prereg): freeze evaluation contract" commit; only true once it exists]]): walk-forward only (each day predicted using only the days before it), every 2nd day with at least 60 days of history, a bootstrap over whole months for 90% intervals, and **TabPFN only "wins" if the entire interval of the difference favours it**.
 
 On the simulated student (12 months, 138 evaluated days, 10 complete months, 5 of which ran out before payday):
 

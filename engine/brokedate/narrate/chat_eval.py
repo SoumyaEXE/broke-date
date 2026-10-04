@@ -25,7 +25,8 @@ MODELS = ("gemma3:1b", "gemma3:4b")
 def _reason(problem: str) -> str:
     for key, label in (("digit", "wrote a digit"), ("number words", "wrote a number word"), ("left out", "dropped a number"),
                        ("unknown placeholders", "invented a placeholder"), ("unit word", "repeated a unit"),
-                       ("currency", "currency next to a number"), ("length", "too long or short")):
+                       ("currency", "currency next to a number"), ("length", "too long or short"),
+                       ("invented a day", "invented a day"), ("repeat a number", "tried to repeat a number")):
         if key in problem:
             return label
     return problem

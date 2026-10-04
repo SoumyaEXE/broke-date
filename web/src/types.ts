@@ -87,10 +87,13 @@ export interface Festival {
 export interface UnusualSpend {
   txn_id: string; date: string; merchant: string; category: string | null; amount_paise: number;
   usual_paise: number; usual_hi_paise: number; percentile: number; times_seen: number;
+  chance?: number; one_in?: number;
 }
+/** Are TabPFN's odds honest? Of n spends, how many it called <= level likely, vs level * n expected. */
+export interface TailCheck { n: number; levels: { level: number; expected: number; observed: number }[] }
 export interface Insights {
   unusual: { as_of: string; window_days: number; n_checked: number; n_train: number; model: string; note: string | null;
-    flag_percentile: number; unusual: UnusualSpend[] };
+    flag_percentile: number; unusual: UnusualSpend[]; tail_check?: TailCheck };
 }
 export interface LabelVariant { accuracy: number | null; needs_review: number; counts: Record<string, number>; gemma_error: string | null; tabpfn_error: string | null }
 export interface LabelsReport { subject: string; n_rows: number; accuracy_overall: number | null; compare?: Record<string, LabelVariant>; gemma_model?: string | null }

@@ -27,6 +27,11 @@ class DistRegressor:
     def quantiles(self, X: np.ndarray, qs: np.ndarray) -> np.ndarray:
         raise NotImplementedError
 
+    def exceed_prob(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """P(Y > y) per row. Default: read off 99 quantiles, so it cannot see past the 1st/99th (0 beyond them)."""
+        Q = self.quantiles(X, QS)
+        return np.array([1.0 - float(np.interp(v, q, QS, left=0.0, right=1.0)) for v, q in zip(y, Q, strict=True)])
+
 
 class TabPFNDist(DistRegressor):
     name = "tabpfn"
@@ -80,6 +85,25 @@ class TabPFNDist(DistRegressor):
         self.predict_rows += len(X)
         Q = np.concatenate(out, axis=0) if out else np.zeros((0, len(qs)))
         return np.maximum.accumulate(Q, axis=1)
+
+    def exceed_prob(self, X: np.ndarray, y: np.ndarray, batch: int = 2000) -> np.ndarray:
+        """Exact P(Y > y) from TabPFN's full predicted distribution (predict(output_type="full") -> criterion.cdf).
+        Unlike 99 quantiles, this includes the distribution's half-normal tails, so a 1-in-100 and a 1-in-10,000
+        value are told apart. y is in the same space the model was fit on."""
+        if self._m is None:
+            raise RuntimeError("fit first")
+        import torch
+
+        out = []
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for s in range(0, len(X), batch):
+                res = self._m.predict(np.asarray(X[s:s + batch], dtype=np.float32), output_type="full")
+                logits = res["logits"]
+                ys = torch.as_tensor(np.asarray(y[s:s + batch], dtype=np.float64), dtype=logits.dtype).reshape(-1, 1)
+                cdf = res["criterion"].cdf(logits, ys.to(logits.device))
+                out.append(1.0 - cdf.detach().cpu().numpy().reshape(-1))
+        return np.clip(np.concatenate(out), 0.0, 1.0) if out else np.zeros(0)
 
 
 class LGBMQuantileDist(DistRegressor):

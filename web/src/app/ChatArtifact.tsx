@@ -7,7 +7,7 @@ import { cx } from "@/utils/cx";
 import type { ForecastResponse, Insights, UnusualSpend } from "../types";
 import type { DataProvider } from "../data/provider";
 import type { Artifact } from "../lib/chat";
-import { days, inr, inr0, shortDate } from "../lib/format";
+import { days, inr, inr0, oneIn, shortDate } from "../lib/format";
 import { BrokeByDay, FanChart, useFan } from "./FanChart";
 import { PaydayHistogram } from "./FuturesPage";
 import { Legend, Track, duo } from "./kit";
@@ -116,7 +116,7 @@ function UnusualList({ provider }: { provider?: DataProvider }) {
       {u.unusual.slice(0, 4).map((s: UnusualSpend) => (
         <div key={s.txn_id} className="flex items-baseline justify-between gap-3">
           <span className="min-w-0 truncate text-body-2-medium text-text-primary">{s.merchant} <span className="text-text-tertiary">· {shortDate(s.date)}</span></span>
-          <span className="shrink-0 text-body-2-medium tabular-nums"><span className="text-status-orange-text">{inr(s.amount_paise)}</span><span className="text-text-tertiary"> vs usual {inr0(s.usual_paise)}</span></span>
+          <span className="shrink-0 text-body-2-medium tabular-nums"><span className="text-status-orange-text">{inr(s.amount_paise)}</span><span className="text-text-tertiary"> vs usual {inr0(s.usual_paise)}{s.one_in ? ` · ${oneIn(s.one_in).replace("about ", "")}` : ""}</span></span>
         </div>
       ))}
     </div>

@@ -63,6 +63,25 @@ def _score(flags: set[str], planted: set[str], checked: set[str]) -> dict[str, A
             "false_alarms": fp, "false_alarm_rate": round(fp / len(clean), 3) if clean else None}
 
 
+def pooled_tail_check(led: Ledger, as_of: date, make_model: Callable[[], DistRegressor], windows: int = 4) -> dict[str, Any]:
+    """Are TabPFN's tails honest? On the untouched statement, over `windows` back-to-back 45-day windows (each
+    scored by a model fit only on what came before it), count spends TabPFN gave a chance <= 3% / <= 10%, against
+    the 3% / 10% of spends that should get one if its probabilities mean what they say."""
+    per, n = [], 0
+    obs = {0.03: 0, 0.10: 0}
+    for k in range(windows):
+        end = as_of - timedelta(days=WINDOW_DAYS * k)
+        rep = find_unusual(led, end, make_model)
+        if rep.note or not rep.tail_check:
+            continue
+        per.append({"as_of": str(end), **rep.tail_check})
+        n += rep.tail_check["n"]
+        for lv in rep.tail_check["levels"]:
+            obs[lv["level"]] += lv["observed"]
+    return {"n": n, "windows": per, "levels": [{"level": lv, "expected": round(lv * n, 1), "observed": o}
+                                                for lv, o in obs.items()]}
+
+
 def evaluate_detectors(led: Ledger, as_of: date, make_model: Callable[[], DistRegressor], seeds: tuple[int, ...] = (1, 2, 3),
                        factors: tuple[float, ...] = (3.0, 5.0), n_plants: int = 5) -> dict[str, Any]:
     rows = []
@@ -84,4 +103,5 @@ def evaluate_detectors(led: Ledger, as_of: date, make_model: Callable[[], DistRe
             "false_alarm_rate_mean": round(float(g["false_alarm_rate"].mean()), 4)}
     return {"as_of": str(as_of), "window_days": WINDOW_DAYS, "n_plants": n_plants, "seeds": list(seeds),
             "factors": list(factors), "summary": summary, "runs": rows,
+            "tail_check": pooled_tail_check(led, as_of, make_model),
             "note": "planted anomalies on the SIMULATED statement; real anomalies have no labels"}

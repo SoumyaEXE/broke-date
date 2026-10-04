@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { CalendarStar, ListChecks, MagnifyingGlass, WarningCircle } from "@phosphor-icons/react";
 import { Chip } from "@/components/base/badges/chip";
 import { cx } from "@/utils/cx";
-import type { ForecastResponse, Insights, LabelsReport, UnusualSpend } from "../types";
+import type { ForecastResponse, Insights, LabelsReport, TailCheck, UnusualSpend } from "../types";
 import type { DataProvider } from "../data/provider";
-import { inr, inr0, pct, shortDate } from "../lib/format";
+import { inr, inr0, oneIn, pct, shortDate } from "../lib/format";
 import { Empty, Panel, Row, Rows, Tile } from "./kit";
 import { catIcon, catLabel } from "./categories";
 
@@ -31,16 +31,19 @@ export function InsightsPage({ data, provider }: { data: ForecastResponse; provi
 
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
         <Panel title="Unusual spends" icon={WarningCircle} flush
-          sub="TabPFN learned what each kind of spend normally costs you; these sit far above that range">
+          sub="TabPFN learned what each kind of spend normally costs you, and how rare a bigger one is">
           {ins === undefined ? <Skeleton /> : !u ? <Empty>Not available yet.</Empty> : u.note ? <Empty>{u.note}.</Empty> : u.unusual.length === 0 ? (
             <Empty>Nothing unusual in the last {Math.round(u.window_days / 7)} weeks. TabPFN checked {u.n_checked} spends.</Empty>
           ) : (
             <Rows>{u.unusual.slice(0, 8).map((s) => <UnusualRow key={s.txn_id} s={s} />)}</Rows>
           )}
-          {u && u.unusual.length > 0 && (
-            <div className="flex flex-wrap gap-4 border-t border-separator-border px-4 py-2.5 text-caption-1-medium text-text-tertiary">
-              <span className="flex items-center gap-1.5"><span className="h-2 w-5 rounded-full bg-accent-200" />Usual range</span>
-              <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-orange-500" />What you paid</span>
+          {u && (u.unusual.length > 0 || u.tail_check) && (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-separator-border px-4 py-2.5 text-caption-1-medium text-text-tertiary">
+              {u.unusual.length > 0 && <>
+                <span className="flex items-center gap-1.5"><span className="h-2 w-5 rounded-full bg-accent-200" />Usual range</span>
+                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-orange-500" />What you paid</span>
+              </>}
+              {u.tail_check && <OddsCheck t={u.tail_check} />}
             </div>
           )}
         </Panel>
@@ -101,10 +104,21 @@ function UnusualRow({ s }: { s: UnusualSpend }) {
           <span className="w-28 shrink-0 text-end text-caption-1-medium text-text-tertiary tabular-nums">usual {inr0(s.usual_paise)}–{inr0(s.usual_hi_paise)}</span>
         </div>
         <p className="mt-1 text-caption-1-medium text-text-tertiary">
-          {catLabel(s.category)} · {shortDate(s.date)} · bigger than {pct(s.percentile)} of what TabPFN expected{s.times_seen === 0 ? " · first time here" : ""}
+          {catLabel(s.category)} · {shortDate(s.date)} · {s.one_in ? `${oneIn(s.one_in)} spends like this` : `bigger than ${pct(s.percentile)} of what TabPFN expected`}{s.times_seen === 0 ? " · first time here" : ""}
         </p>
       </div>
     </Row>
+  );
+}
+
+/** The honesty line: if TabPFN's odds mean what they say, about 3% of ordinary spends look "1 in 33" rare. */
+function OddsCheck({ t }: { t: TailCheck }) {
+  const l = t.levels.find((x) => x.level === 0.03);
+  if (!l || !t.n) return null;
+  return (
+    <span className="ms-auto">
+      Odds check: TabPFN expected about <span className="text-text-secondary tabular-nums">{Math.round(l.expected)}</span> of these {t.n} spends to look 1-in-33 rare; <span className="text-text-secondary tabular-nums">{l.observed}</span> did.
+    </span>
   );
 }
 
